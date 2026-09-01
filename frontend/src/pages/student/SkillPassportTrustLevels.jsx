@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function SkillPassportTrustLevels() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row">
@@ -9,11 +10,12 @@ export default function SkillPassportTrustLevels() {
       <header className="md:hidden bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline docked full-width top-0 sticky z-50">
       <div className="flex justify-between items-center px-4 py-md w-full max-w-max-width mx-auto">
       <span className="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">AcademiaLink</span>
-      <button className="material-symbols-outlined text-on-surface" id="mobile-menu-btn">menu</button>
+      <button onClick={() => setSidebarOpen(true)} className="material-symbols-outlined text-on-surface">menu</button>
       </div>
       </header>
       {/*SideNavBar (Desktop)*/}
-      <nav className="hidden md:flex flex-col bg-surface-container-low dark:bg-surface-container border-r border-outline-variant dark:border-outline h-screen w-64 fixed left-0 top-0 py-xl px-md z-40 overflow-y-auto">
+      <nav className={`${sidebarOpen ? "flex" : "hidden"} md:flex flex-col bg-surface-container-low dark:bg-surface-container border-r border-outline-variant dark:border-outline h-screen w-64 fixed left-0 top-0 py-xl px-md z-40 overflow-y-auto`}>
+      <button onClick={() => setSidebarOpen(false)} className="md:hidden self-end material-symbols-outlined text-on-surface-variant mb-md">close</button>
       <div className="mb-xl flex flex-col items-center">
       <img alt="User profile" className="w-24 h-24 rounded-full border border-outline-variant mb-md object-cover" data-alt="A professional headshot of a young male student, Arjun Mehta, with a clean corporate background, wearing a smart casual navy blazer. The lighting is soft and high-key, suitable for a minimalist institutional platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjUsU_N4TEXq2gsX6WkW2SvejW1ObOybb_XZaUKadiEiFa4dBxvUzIJOPuL5UQI1Yikm-bnj9-IK7IPZBaZeEJ6NG9YjjwTbwtqe0Qdy8Im-oYzdgspKsm9DmYvR6473SaoV8WYcFYfvjAu33ccJEDRi_lQTlstwHtTUFmqeIWGWD2ElCLVjfQSthHi5JzA-g_aDlEQOL2TIN4kvJ6Lby-YN5tsLJFB3W18XYKRDIQoCFyqxTKk5cP"/>
       <h2 className="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed text-center">Student Portal</h2>
