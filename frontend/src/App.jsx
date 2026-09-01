@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 import Landing from "./pages/public/Landing.jsx";
 import Login from "./pages/public/Login.jsx";
@@ -25,32 +26,34 @@ import ExplainableMatchBreakdown from "./pages/student/ExplainableMatchBreakdown
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignupRoleSelection />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignupRoleSelection />} />
 
-        <Route path="/dashboard" element={<StudentDashboard />} />
-        <Route path="/courses" element={<CourseCatalog />} />
-        <Route path="/courses/:courseId" element={<CourseDetail />} />
-        <Route path="/portfolio" element={<DigitalPortfolio />} />
-        <Route path="/portfolio/edit" element={<DigitalPortfolioEdit />} />
-        <Route path="/skill-assessment" element={<SkillAssessment />} />
-        <Route path="/skill-profile/gap-report" element={<SkillProfileGapReport />} />
-        <Route path="/skill-profile/graph" element={<SkillProfileGraph />} />
-        <Route path="/skill-passport" element={<SkillPassportTrustLevels />} />
-        <Route path="/learning-paths" element={<RecommendedLearningPaths />} />
-        <Route path="/internships" element={<InternshipJobListings />} />
-        <Route path="/internships/:jobId" element={<InternshipJobDetail />} />
-        <Route path="/applications" element={<MyApplications />} />
-        <Route path="/messages" element={<MessagesInbox />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/settings" element={<ProfileSettings />} />
-        <Route path="/proof-of-skill" element={<ProofOfSkillChallenge />} />
-        <Route path="/match-breakdown" element={<ExplainableMatchBreakdown />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="/dashboard" element={<StudentDashboard />} />
+          <Route path="/courses" element={<CourseCatalog />} />
+          <Route path="/courses/:courseId" element={<CourseDetail />} />
+          <Route path="/portfolio" element={<DigitalPortfolio />} />
+          <Route path="/portfolio/edit" element={<DigitalPortfolioEdit />} />
+          <Route path="/skill-assessment" element={<SkillAssessment />} />
+          <Route path="/skill-profile/gap-report" element={<SkillProfileGapReport />} />
+          <Route path="/skill-profile/graph" element={<SkillProfileGraph />} />
+          <Route path="/skill-passport" element={<SkillPassportTrustLevels />} />
+          <Route path="/learning-paths" element={<RecommendedLearningPaths />} />
+          <Route path="/internships" element={<InternshipJobListings />} />
+          <Route path="/internships/:jobId" element={<InternshipJobDetail />} />
+          <Route path="/applications" element={<MyApplications />} />
+          <Route path="/messages" element={<MessagesInbox />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/settings" element={<ProfileSettings />} />
+          <Route path="/proof-of-skill" element={<ProofOfSkillChallenge />} />
+          <Route path="/match-breakdown" element={<ExplainableMatchBreakdown />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
