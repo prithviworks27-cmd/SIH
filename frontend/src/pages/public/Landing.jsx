@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 export default function Landing() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="font-body-md text-body-md antialiased min-h-screen flex flex-col">
       {/*TopNavBar*/}
@@ -25,11 +29,18 @@ export default function Landing() {
                           Sign Up
                       </button>
       {/*Mobile Menu Toggle*/}
-      <button className="md:hidden text-primary p-2">
-      <span className="material-symbols-outlined">menu</span>
+      <button onClick={() => setMenuOpen((open) => !open)} className="md:hidden text-primary p-2">
+      <span className="material-symbols-outlined">{menuOpen ? "close" : "menu"}</span>
       </button>
       </div>
       </div>
+      {/*Navigation Links (Mobile)*/}
+      <nav className={`${menuOpen ? "flex" : "hidden"} md:hidden flex-col gap-1 px-4 pb-md`}>
+      <a className="font-body-md text-body-md text-primary py-2" href="#how-it-works">How it works</a>
+      <a className="font-body-md text-body-md text-on-surface-variant py-2" href="#">For Students</a>
+      <a className="font-body-md text-body-md text-on-surface-variant py-2" href="#">For Industry</a>
+      <a className="font-body-md text-body-md text-on-surface-variant py-2" href="#">For Institutions</a>
+      </nav>
       </header>
       {/*Main Content*/}
       <main className="flex-grow flex flex-col">

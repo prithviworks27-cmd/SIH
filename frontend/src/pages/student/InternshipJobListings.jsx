@@ -1,11 +1,18 @@
+import { useState } from "react";
+
 export default function InternshipJobListings() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden font-body-md text-body-md">
       {/*SideNavBar*/}
-      <aside className="hidden md:flex flex-col bg-surface-container-low border-r border-outline-variant h-full w-64 fixed left-0 top-0 py-xl px-md z-10">
-      <div className="mb-lg px-sm">
+      <aside className={`${sidebarOpen ? "flex" : "hidden"} md:flex flex-col bg-surface-container-low border-r border-outline-variant h-full w-64 fixed left-0 top-0 py-xl px-md z-10`}>
+      <div className="mb-lg px-sm flex items-center justify-between">
+      <div>
       <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Student Portal</h1>
       <p className="font-body-sm text-body-sm text-on-surface-variant">Academic Collaboration</p>
+      </div>
+      <button onClick={() => setSidebarOpen(false)} className="md:hidden material-symbols-outlined text-on-surface-variant">close</button>
       </div>
       <nav className="flex-1 space-y-xs overflow-y-auto">
       <a className="flex items-center gap-sm px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
@@ -53,7 +60,7 @@ export default function InternshipJobListings() {
       {/*Mobile Header (Visible only on mobile)*/}
       <header className="md:hidden flex items-center justify-between p-md border-b border-outline-variant bg-surface-container-lowest">
       <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Internships/Jobs</h1>
-      <button className="text-on-surface-variant">
+      <button onClick={() => setSidebarOpen(true)} className="text-on-surface-variant">
       <span className="material-symbols-outlined">menu</span>
       </button>
       </header>
