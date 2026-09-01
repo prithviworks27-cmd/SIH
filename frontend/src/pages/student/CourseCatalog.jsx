@@ -1,4 +1,6 @@
+import { Link, useNavigate } from "react-router-dom";
 export default function CourseCatalog() {
+  const navigate = useNavigate();
   return (
     <div className="font-body-md text-on-surface flex min-h-screen">
       {/*SideNavBar*/}
@@ -12,57 +14,57 @@ export default function CourseCatalog() {
       </div>
       <ul className="flex-1 flex flex-col gap-sm">
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/dashboard">
       <span className="material-symbols-outlined">dashboard</span>
                           Dashboard
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/skill-assessment">
       <span className="material-symbols-outlined">quiz</span>
                           Skill Assessment
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-primary dark:text-primary-fixed font-bold border-l-4 border-primary dark:border-primary-fixed bg-surface-container-high dark:bg-surface-container-highest transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-primary dark:text-primary-fixed font-bold border-l-4 border-primary dark:border-primary-fixed bg-surface-container-high dark:bg-surface-container-highest transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/learning-paths">
       <span className="material-symbols-outlined">school</span>
                           Learning Paths
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/internships">
       <span className="material-symbols-outlined">work</span>
                           Internships/Jobs
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/applications">
       <span className="material-symbols-outlined">description</span>
                           My Applications
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/portfolio">
       <span className="material-symbols-outlined">account_circle</span>
                           Portfolio
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/messages">
       <span className="material-symbols-outlined">mail</span>
                           Messages
-                      </a>
+                      </Link>
       </li>
       </ul>
       <ul className="flex flex-col gap-sm mt-auto pt-lg border-t border-e5">
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/settings">
       <span className="material-symbols-outlined">settings</span>
                           Settings
-                      </a>
+                      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <a className="flex items-center gap-sm px-md py-sm rounded text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
       <span className="material-symbols-outlined">logout</span>
                           Logout
                       </a>

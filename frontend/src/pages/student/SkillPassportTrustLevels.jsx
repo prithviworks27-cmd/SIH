@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SkillPassportTrustLevels() {
+  const navigate = useNavigate();
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -22,41 +24,41 @@ export default function SkillPassportTrustLevels() {
       <p className="font-body-sm text-body-sm text-on-surface-variant text-center">Academic Collaboration</p>
       </div>
       <div className="flex-grow flex flex-col gap-sm">
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" to="/dashboard">
       <span className="material-symbols-outlined">dashboard</span>
                       Dashboard
-                  </a>
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" to="/skill-assessment">
       <span className="material-symbols-outlined">quiz</span>
                       Skill Assessment
-                  </a>
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" to="/learning-paths">
       <span className="material-symbols-outlined">school</span>
                       Learning Paths
-                  </a>
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" to="/internships">
       <span className="material-symbols-outlined">work</span>
                       Internships/Jobs
-                  </a>
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" to="/applications">
       <span className="material-symbols-outlined">description</span>
                       My Applications
-                  </a>
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-primary dark:text-primary-fixed font-bold border-l-4 border-primary dark:border-primary-fixed bg-surface-container-high dark:bg-surface-container-highest font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-primary dark:text-primary-fixed font-bold border-l-4 border-primary dark:border-primary-fixed bg-surface-container-high dark:bg-surface-container-highest font-label-md text-label-md scale-95 active:scale-90" to="/portfolio">
       <span className="material-symbols-outlined">account_circle</span>
                       Portfolio
-                  </a>
-      <a className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md py-3 px-4 rounded-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all font-label-md text-label-md scale-95 active:scale-90" to="/messages">
       <span className="material-symbols-outlined">mail</span>
                       Messages
-                  </a>
+                  </Link>
       </div>
       <div className="mt-auto flex flex-col gap-sm pt-xl border-t border-outline-variant">
-      <a className="flex items-center gap-md py-2 px-4 rounded-md text-on-secondary-fixed-variant hover:bg-secondary-container transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+      <Link className="flex items-center gap-md py-2 px-4 rounded-md text-on-secondary-fixed-variant hover:bg-secondary-container transition-all font-label-md text-label-md scale-95 active:scale-90" to="/settings">
       <span className="material-symbols-outlined">settings</span>
                       Settings
-                  </a>
-      <a className="flex items-center gap-md py-2 px-4 rounded-md text-on-secondary-fixed-variant hover:bg-secondary-container transition-all font-label-md text-label-md scale-95 active:scale-90" href="#">
+                  </Link>
+      <a className="flex items-center gap-md py-2 px-4 rounded-md text-on-secondary-fixed-variant hover:bg-secondary-container transition-all font-label-md text-label-md scale-95 active:scale-90" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
       <span className="material-symbols-outlined">logout</span>
                       Logout
                   </a>

@@ -1,4 +1,6 @@
+import { Link, useNavigate } from "react-router-dom";
 export default function InternshipJobDetail() {
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen">
       {/*SideNavBar*/}
@@ -8,41 +10,41 @@ export default function InternshipJobDetail() {
       <p className="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant">Academic Collaboration</p>
       </div>
       <nav className="flex-1 space-y-sm">
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/dashboard">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>dashboard</span>
       <span>Dashboard</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/skill-assessment">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>quiz</span>
       <span>Skill Assessment</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/learning-paths">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>school</span>
       <span>Learning Paths</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-primary dark:text-primary-fixed font-bold border-l-4 border-primary dark:border-primary-fixed bg-surface-container-high dark:bg-surface-container-highest transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-primary dark:text-primary-fixed font-bold border-l-4 border-primary dark:border-primary-fixed bg-surface-container-high dark:bg-surface-container-highest transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/internships">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>work</span>
       <span>Internships/Jobs</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/applications">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>description</span>
       <span>My Applications</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/portfolio">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>account_circle</span>
       <span>Portfolio</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/messages">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>mail</span>
       <span>Messages</span>
-      </a>
+      </Link>
       </nav>
       <div className="mt-auto space-y-sm pt-xl border-t border-outline-variant dark:border-outline">
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/settings">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>settings</span>
       <span>Settings</span>
-      </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      </Link>
+      <a className="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>logout</span>
       <span>Logout</span>
       </a>

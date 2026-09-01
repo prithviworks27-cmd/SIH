@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,10 +10,10 @@ export default function Landing() {
       <header className="bg-surface-container-lowest border-b border-outline-variant w-full sticky top-0 z-50">
       <div className="flex justify-between items-center px-4 md:px-margin py-md w-full max-w-max-width mx-auto">
       {/*Brand*/}
-      <a className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2" href="#">
+      <Link className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2" to="/">
       <span aria-hidden="true" className="material-symbols-outlined" data-weight="fill">hub</span>
                        AcademiaLink
-                  </a>
+                  </Link>
       {/*Navigation Links (Desktop)*/}
       <nav className="hidden md:flex items-center gap-lg">
       <a className="font-body-md text-body-md text-primary border-b-2 border-primary pb-1 transition-colors duration-200" href="#how-it-works">How it works</a>
@@ -22,12 +23,12 @@ export default function Landing() {
       </nav>
       {/*Actions*/}
       <div className="flex items-center gap-md">
-      <button className="hidden md:block font-label-md text-label-md text-primary bg-surface-container-lowest border border-outline-variant px-4 py-2 rounded hover:bg-surface-container-low transition-colors duration-200">
+      <Link className="hidden md:block font-label-md text-label-md text-primary bg-surface-container-lowest border border-outline-variant px-4 py-2 rounded hover:bg-surface-container-low transition-colors duration-200" to="/login">
                           Login
-                      </button>
-      <button className="font-label-md text-label-md text-on-primary bg-primary-container px-4 py-2 rounded hover:bg-primary transition-colors duration-200 shadow-none">
+                      </Link>
+      <Link className="font-label-md text-label-md text-on-primary bg-primary-container px-4 py-2 rounded hover:bg-primary transition-colors duration-200 shadow-none" to="/signup">
                           Sign Up
-                      </button>
+                      </Link>
       {/*Mobile Menu Toggle*/}
       <button onClick={() => setMenuOpen((open) => !open)} className="md:hidden text-primary p-2">
       <span className="material-symbols-outlined">{menuOpen ? "close" : "menu"}</span>
@@ -54,9 +55,9 @@ export default function Landing() {
                           A unified platform for skill mapping, internships, and placements. Streamline institutional partnerships and elevate career trajectories with data-driven precision.
                       </p>
       <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <button className="font-label-md text-label-md text-on-primary bg-primary-container px-8 py-3 rounded w-full sm:w-auto hover:bg-primary transition-colors duration-200 shadow-none">
+      <Link className="font-label-md text-label-md text-on-primary bg-primary-container px-8 py-3 rounded w-full sm:w-auto hover:bg-primary transition-colors duration-200 shadow-none" to="/signup">
                               Get Started
-                          </button>
+                          </Link>
       <button className="font-label-md text-label-md text-primary bg-surface-container-lowest border border-outline-variant px-8 py-3 rounded w-full sm:w-auto hover:bg-surface-container-low transition-colors duration-200">
                               View Demo
                           </button>

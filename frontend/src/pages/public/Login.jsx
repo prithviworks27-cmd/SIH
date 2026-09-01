@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Login() {
   return (
     <div className="h-full flex items-center justify-center bg-surface-container-lowest text-on-surface">
@@ -62,9 +64,9 @@ export default function Login() {
       </div>
       {/*Sign Up Link*/}
       <div className="mt-lg text-center">
-      <a className="font-label-md text-label-md text-primary-container hover:text-primary transition-colors hover:underline" href="#">
+      <Link className="font-label-md text-label-md text-primary-container hover:text-primary transition-colors hover:underline" to="/signup">
                           Apply for Access
-                      </a>
+                      </Link>
       </div>
       </div>
       {/*Footer / Legal minimal*/}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const ROLES = [
   { icon: "school", label: "Student" },
@@ -61,7 +62,7 @@ export default function SignupRoleSelection() {
                           Sign Up
                       </button>
       <div className="text-center font-body-sm text-body-sm text-on-surface-variant mt-md">
-                          Already have an account? <a className="text-primary hover:underline" href="#">Login</a>
+                          Already have an account? <Link className="text-primary hover:underline" to="/login">Login</Link>
       </div>
       </form>
       </div>
