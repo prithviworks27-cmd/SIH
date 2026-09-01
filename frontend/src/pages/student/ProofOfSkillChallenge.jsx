@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const INITIAL_SECONDS = 24 * 60 + 15;
 
@@ -22,10 +23,10 @@ export default function ProofOfSkillChallenge() {
       <header className="bg-surface-container-lowest border-b border-outline-variant docked full-width top-0 z-50">
       <div className="flex justify-between items-center px-margin py-md w-full max-w-max-width mx-auto">
       <div className="flex items-center gap-lg">
-      <a className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-sm" href="#">
+      <Link className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-sm" to="/">
       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>science</span>
                           AcademiaLink
-                      </a>
+                      </Link>
       </div>
       <nav className="hidden md:flex items-center gap-lg font-body-md text-body-md">
       <a className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer duration-200" href="#">How it works</a>

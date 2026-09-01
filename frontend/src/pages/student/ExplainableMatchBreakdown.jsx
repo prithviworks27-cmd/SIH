@@ -1,4 +1,6 @@
+import { Link, useNavigate } from "react-router-dom";
 export default function ExplainableMatchBreakdown() {
+  const navigate = useNavigate();
   return (
     <div className="bg-surface text-on-surface font-body-md antialiased h-screen flex overflow-hidden">
       {/*TopNavBar for Web*/}
@@ -22,41 +24,41 @@ export default function ExplainableMatchBreakdown() {
       <p className="font-body-sm text-body-sm text-on-surface-variant">Academic Collaboration</p>
       </div>
       <nav className="flex-1 space-y-sm">
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/dashboard">
       <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                       Dashboard
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/skill-assessment">
       <span className="material-symbols-outlined" data-icon="quiz">quiz</span>
                       Skill Assessment
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/learning-paths">
       <span className="material-symbols-outlined" data-icon="school">school</span>
                       Learning Paths
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold border-l-4 border-primary bg-surface-container-high hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold border-l-4 border-primary bg-surface-container-high hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/internships">
       <span className="material-symbols-outlined" data-icon="work" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>work</span>
                       Internships/Jobs
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/applications">
       <span className="material-symbols-outlined" data-icon="description">description</span>
                       My Applications
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/portfolio">
       <span className="material-symbols-outlined" data-icon="account_circle">account_circle</span>
                       Portfolio
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/messages">
       <span className="material-symbols-outlined" data-icon="mail">mail</span>
                       Messages
-                  </a>
+                  </Link>
       </nav>
       <div className="mt-auto space-y-sm">
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/settings">
       <span className="material-symbols-outlined" data-icon="settings">settings</span>
                       Settings
-                  </a>
-      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
+                  </Link>
+      <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
       <span className="material-symbols-outlined" data-icon="logout">logout</span>
                       Logout
                   </a>

@@ -1,4 +1,6 @@
+import { Link, useNavigate } from "react-router-dom";
 export default function MyApplications() {
+  const navigate = useNavigate();
   return (
     <div className="bg-background text-on-surface antialiased flex h-screen overflow-hidden">
       {/*SideNavBar*/}
@@ -9,58 +11,58 @@ export default function MyApplications() {
       </div>
       <ul className="flex flex-col gap-sm flex-grow font-label-md text-label-md">
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/dashboard">
       <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
       <span>Dashboard</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/skill-assessment">
       <span className="material-symbols-outlined" data-icon="quiz">quiz</span>
       <span>Skill Assessment</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/learning-paths">
       <span className="material-symbols-outlined" data-icon="school">school</span>
       <span>Learning Paths</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/internships">
       <span className="material-symbols-outlined" data-icon="work">work</span>
       <span>Internships/Jobs</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-primary font-bold border-l-4 border-primary bg-surface-container-high transition-all duration-200 cursor-pointer scale-95" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-primary font-bold border-l-4 border-primary bg-surface-container-high transition-all duration-200 cursor-pointer scale-95" to="/applications">
       <span className="material-symbols-outlined" data-icon="description" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>description</span>
       <span>My Applications</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/portfolio">
       <span className="material-symbols-outlined" data-icon="account_circle">account_circle</span>
       <span>Portfolio</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/messages">
       <span className="material-symbols-outlined" data-icon="mail">mail</span>
       <span>Messages</span>
-      </a>
+      </Link>
       </li>
       </ul>
       <div className="mt-auto pt-lg border-t border-outline-variant font-label-md text-label-md">
       <ul className="flex flex-col gap-sm">
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" to="/settings">
       <span className="material-symbols-outlined" data-icon="settings">settings</span>
       <span>Settings</span>
-      </a>
+      </Link>
       </li>
       <li>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#">
+      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all duration-200 cursor-pointer" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
       <span className="material-symbols-outlined" data-icon="logout">logout</span>
       <span>Logout</span>
       </a>
