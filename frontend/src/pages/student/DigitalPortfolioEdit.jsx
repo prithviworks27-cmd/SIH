@@ -1,14 +1,21 @@
+import { useState } from "react";
+
 export default function DigitalPortfolioEdit() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/*SideNavBar*/}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen flex-col py-xl px-md bg-surface-container-low dark:bg-surface-container border-r border-outline-variant dark:border-outline h-full w-64 z-10 shrink-0">
-      <div className="mb-xl flex items-center gap-sm">
+      <aside className={`${sidebarOpen ? "flex" : "hidden"} md:flex fixed left-0 top-0 h-screen flex-col py-xl px-md bg-surface-container-low dark:bg-surface-container border-r border-outline-variant dark:border-outline h-full w-64 z-10 shrink-0`}>
+      <div className="mb-xl flex items-center gap-sm justify-between">
+      <div className="flex items-center gap-sm">
       <span className="material-symbols-outlined text-primary font-bold text-3xl">hub</span>
       <div>
       <h1 className="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">Student Portal</h1>
       <p className="font-label-sm text-label-sm text-on-surface-variant">Academic Collaboration</p>
       </div>
+      </div>
+      <button onClick={() => setSidebarOpen(false)} className="md:hidden material-symbols-outlined text-on-surface-variant">close</button>
       </div>
       <nav className="flex-1 flex flex-col gap-sm overflow-y-auto">
       <a className="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#">
@@ -56,7 +63,7 @@ export default function DigitalPortfolioEdit() {
       {/*Top App Bar (Mobile)*/}
       <header className="md:hidden flex items-center justify-between p-md border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-20">
       <h1 className="font-headline-md text-headline-md font-bold text-primary">Portfolio Edit</h1>
-      <button className="text-primary"><span className="material-symbols-outlined">menu</span></button>
+      <button onClick={() => setSidebarOpen(true)} className="text-primary"><span className="material-symbols-outlined">menu</span></button>
       </header>
       <div className="max-w-max-width mx-auto p-md md:p-margin pb-24">
       {/*Page Header*/}

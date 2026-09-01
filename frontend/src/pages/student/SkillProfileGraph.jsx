@@ -1,17 +1,24 @@
+import { useState } from "react";
+
 export default function SkillProfileGraph() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="h-full flex font-body-md bg-surface text-on-surface">
       {/*Top Navigation (Mobile Only)*/}
       <header className="md:hidden flex justify-between items-center px-md py-md w-full bg-surface-container-lowest border-b border-outline-variant fixed top-0 z-50">
       <div className="font-headline-md text-headline-md font-bold text-primary">AcademiaLink</div>
-      <button aria-label="Open menu" className="material-symbols-outlined text-primary">menu</button>
+      <button onClick={() => setSidebarOpen(true)} aria-label="Open menu" className="material-symbols-outlined text-primary">menu</button>
       </header>
       <div className="flex h-screen w-full pt-16 md:pt-0">
       {/*Side Navigation (Desktop)*/}
-      <nav className="hidden md:flex flex-col py-xl px-md bg-surface-container-low border-r border-outline-variant docked left-0 h-full w-64 shrink-0">
-      <div className="mb-xl px-md">
+      <nav className={`${sidebarOpen ? "flex" : "hidden"} md:flex flex-col py-xl px-md bg-surface-container-low border-r border-outline-variant docked left-0 h-full w-64 shrink-0 fixed md:relative top-16 md:top-0 z-40`}>
+      <div className="mb-xl px-md flex items-center justify-between">
+      <div>
       <div className="font-headline-sm text-headline-sm font-bold text-primary">Student Portal</div>
       <div className="font-body-sm text-body-sm text-on-surface-variant mt-xs">Academic Collaboration</div>
+      </div>
+      <button onClick={() => setSidebarOpen(false)} aria-label="Close menu" className="md:hidden material-symbols-outlined text-on-surface-variant">close</button>
       </div>
       <ul className="flex flex-col gap-xs flex-grow">
       <li>
