@@ -1,57 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import DashboardLayout from "../../components/layout/DashboardLayout";
+
 export default function ProfileSettings() {
-  const navigate = useNavigate();
   return (
-    <div className="bg-background text-on-background antialiased flex h-screen overflow-hidden">
-      {/*SideNavBar (Shared Component)*/}
-      <aside className="fixed left-0 top-0 h-screen flex flex-col py-xl px-md bg-surface-container-low border-r border-outline-variant w-64 z-10 hidden md:flex">
-      <div className="mb-xl px-md">
-      <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Student Portal</h1>
-      <p className="font-label-sm text-label-sm text-on-surface-variant mt-xs">Academic Collaboration</p>
-      </div>
-      <nav className="flex-1 overflow-y-auto flex flex-col gap-sm">
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/dashboard">
-      <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-                      Dashboard
-                  </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/skill-assessment">
-      <span className="material-symbols-outlined" data-icon="quiz">quiz</span>
-                      Skill Assessment
-                  </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/learning-paths">
-      <span className="material-symbols-outlined" data-icon="school">school</span>
-                      Learning Paths
-                  </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/internships">
-      <span className="material-symbols-outlined" data-icon="work">work</span>
-                      Internships/Jobs
-                  </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/applications">
-      <span className="material-symbols-outlined" data-icon="description">description</span>
-                      My Applications
-                  </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/portfolio">
-      <span className="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-                      Portfolio
-                  </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/messages">
-      <span className="material-symbols-outlined" data-icon="mail">mail</span>
-                      Messages
-                  </Link>
-      </nav>
-      <div className="mt-auto flex flex-col gap-sm pt-md border-t border-outline-variant">
-      <Link className="flex items-center gap-md px-md py-sm rounded text-primary font-bold border-l-4 border-primary bg-surface-container-high font-label-md text-label-md transition-all scale-95 active:scale-90" to="/settings">
-      <span className="material-symbols-outlined" data-icon="settings">settings</span>
-                      Settings
-                  </Link>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
-      <span className="material-symbols-outlined" data-icon="logout">logout</span>
-                      Logout
-                  </a>
-      </div>
-      </aside>
-      {/*Main Content Area*/}
-      <main className="flex-1 md:ml-64 overflow-y-auto p-margin max-w-max-width mx-auto w-full">
+    <DashboardLayout>
       <header className="mb-xl">
       <h2 className="font-headline-lg text-headline-lg text-primary">Profile Settings</h2>
       <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Manage your personal information and preferences.</p>
@@ -142,7 +93,6 @@ export default function ProfileSettings() {
       <button className="bg-surface-container-lowest border border-outline-variant text-on-background px-lg py-sm rounded font-label-md text-label-md hover:bg-surface-container transition-colors">Cancel</button>
       <button className="bg-primary-container text-on-primary px-lg py-sm rounded font-label-md text-label-md hover:bg-primary transition-colors">Save Changes</button>
       </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

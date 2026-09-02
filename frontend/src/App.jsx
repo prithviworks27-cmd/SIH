@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 import Landing from "./pages/public/Landing.jsx";
 import Login from "./pages/public/Login.jsx";
 import SignupRoleSelection from "./pages/public/SignupRoleSelection.jsx";
+import PortalPending from "./pages/public/PortalPending.jsx";
 
 import StudentDashboard from "./pages/student/StudentDashboard.jsx";
 import CourseCatalog from "./pages/student/CourseCatalog.jsx";
@@ -24,6 +26,8 @@ import ProfileSettings from "./pages/student/ProfileSettings.jsx";
 import ProofOfSkillChallenge from "./pages/student/ProofOfSkillChallenge.jsx";
 import ExplainableMatchBreakdown from "./pages/student/ExplainableMatchBreakdown.jsx";
 
+const STUDENT_ROLES = ["student"];
+
 function App() {
   return (
     <AuthProvider>
@@ -32,25 +36,159 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupRoleSelection />} />
+          <Route
+            path="/portal-pending"
+            element={
+              <ProtectedRoute>
+                <PortalPending />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/dashboard" element={<StudentDashboard />} />
-          <Route path="/courses" element={<CourseCatalog />} />
-          <Route path="/courses/:courseId" element={<CourseDetail />} />
-          <Route path="/portfolio" element={<DigitalPortfolio />} />
-          <Route path="/portfolio/edit" element={<DigitalPortfolioEdit />} />
-          <Route path="/skill-assessment" element={<SkillAssessment />} />
-          <Route path="/skill-profile/gap-report" element={<SkillProfileGapReport />} />
-          <Route path="/skill-profile/graph" element={<SkillProfileGraph />} />
-          <Route path="/skill-passport" element={<SkillPassportTrustLevels />} />
-          <Route path="/learning-paths" element={<RecommendedLearningPaths />} />
-          <Route path="/internships" element={<InternshipJobListings />} />
-          <Route path="/internships/:jobId" element={<InternshipJobDetail />} />
-          <Route path="/applications" element={<MyApplications />} />
-          <Route path="/messages" element={<MessagesInbox />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/settings" element={<ProfileSettings />} />
-          <Route path="/proof-of-skill" element={<ProofOfSkillChallenge />} />
-          <Route path="/match-breakdown" element={<ExplainableMatchBreakdown />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <CourseCatalog />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses/:courseId"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <CourseDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <DigitalPortfolio />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio/edit"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <DigitalPortfolioEdit />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-assessment"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillAssessment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-profile/gap-report"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillProfileGapReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-profile/graph"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillProfileGraph />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-passport"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillPassportTrustLevels />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/learning-paths"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <RecommendedLearningPaths />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/internships"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <InternshipJobListings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/internships/:jobId"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <InternshipJobDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/applications"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <MyApplications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <MessagesInbox />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <ProfileSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proof-of-skill"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <ProofOfSkillChallenge />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/match-breakdown"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <ExplainableMatchBreakdown />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

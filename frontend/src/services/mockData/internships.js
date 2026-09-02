@@ -1,0 +1,53 @@
+export const internships = [
+  {
+    id: "job-001",
+    title: "Machine Learning Engineer Intern",
+    company: "TechCorp AI Labs",
+    type: "Internship",
+    location: "Remote",
+    skills: ["Python", "TensorFlow", "Data Analysis"],
+    matchPercent: 92,
+  },
+  {
+    id: "job-002",
+    title: "Junior Backend Developer",
+    company: "Global Systems Solutions",
+    type: "Full-time",
+    location: "Bangalore (Hybrid)",
+    skills: ["Java", "Spring Boot", "SQL"],
+    matchPercent: 85,
+  },
+  {
+    id: "job-003",
+    title: "Frontend Engineer Intern",
+    company: "Creative Digital Agency",
+    type: "Internship",
+    location: "Mumbai",
+    skills: ["React", "TypeScript", "CSS"],
+    matchPercent: 78,
+  },
+  {
+    id: "job-004",
+    title: "Materials Science Research Intern",
+    company: "Zurich Institute of Technology - R&D Division",
+    type: "Internship",
+    location: "Zurich, Switzerland (Hybrid)",
+    skills: ["Polymer Synthesis", "Spectroscopy (UV-Vis, FTIR)", "Python / Data Analysis", "Device Fabrication", "Technical Writing"],
+    matchPercent: 92,
+    duration: "6 Months (Starts Sept 2024)",
+    stipend: "3,500 CHF / Month",
+    commitment: "Full-Time (40 hrs/week)",
+    overview: [
+      "We are seeking a highly motivated graduate or advanced undergraduate student to join our core research team focusing on the optimization of semi-transparent photovoltaics for urban infrastructure. This role involves direct collaboration with industry partners to translate theoretical models into scalable, real-world applications.",
+      "The successful candidate will assist in synthesizing novel polymer blends, conducting rigorous optical and electrical characterizations, and analyzing large datasets to identify performance bottlenecks. This internship provides unparalleled exposure to state-of-the-art laboratory facilities and a direct pathway to potential long-term commercial R&D roles.",
+    ],
+    responsibilities: [
+      "Synthesize and characterize novel organic semiconductor materials.",
+      "Fabricate and test thin-film photovoltaic devices under simulated urban conditions.",
+      "Perform statistical analysis on device performance metrics using Python or R.",
+      "Draft technical reports and present findings in weekly cross-functional meetings.",
+    ],
+    aboutCompany:
+      "The Zurich Institute of Technology's R&D Division bridges the gap between academic materials science and commercial infrastructure deployment, specializing in sustainable urban technologies.",
+  },
+];

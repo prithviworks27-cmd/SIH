@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { getPostLoginRedirect } from "../../utils/roleRedirect";
 import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
 
 export default function Login() {
@@ -45,10 +46,10 @@ export default function Login() {
       }
 
       // Call login function
-      await login(formData.email, formData.password);
+      const response = await login(formData.email, formData.password);
 
-      // Redirect to dashboard on successful login
-      navigate("/dashboard");
+      // Redirect based on role
+      navigate(getPostLoginRedirect(response.user.role), { replace: true });
     } catch (err) {
       setLocalError(err.message || "Login failed. Please try again.");
     } finally {
