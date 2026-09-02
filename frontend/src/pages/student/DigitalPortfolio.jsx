@@ -1,57 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import DashboardLayout from "../../components/layout/DashboardLayout";
+
 export default function DigitalPortfolio() {
-  const navigate = useNavigate();
   return (
-    <div className="bg-surface text-on-surface flex min-h-screen">
-      {/*SideNavBar (from JSON)*/}
-      <aside className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-outline-variant py-xl px-md z-40">
-      <div className="mb-xl">
-      <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Student Portal</h1>
-      <p className="font-body-sm text-body-sm text-on-surface-variant">Academic Collaboration</p>
-      </div>
-      <nav className="flex-1 flex flex-col gap-sm">
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/dashboard">
-      <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-      <span className="font-label-md text-label-md">Dashboard</span>
-      </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/skill-assessment">
-      <span className="material-symbols-outlined" data-icon="quiz">quiz</span>
-      <span className="font-label-md text-label-md">Skill Assessment</span>
-      </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/learning-paths">
-      <span className="material-symbols-outlined" data-icon="school">school</span>
-      <span className="font-label-md text-label-md">Learning Paths</span>
-      </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/internships">
-      <span className="material-symbols-outlined" data-icon="work">work</span>
-      <span className="font-label-md text-label-md">Internships/Jobs</span>
-      </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/applications">
-      <span className="material-symbols-outlined" data-icon="description">description</span>
-      <span className="font-label-md text-label-md">My Applications</span>
-      </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-primary font-bold border-l-4 border-primary bg-surface-container-high transition-all cursor-pointer duration-200" to="/portfolio">
-      <span className="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-      <span className="font-label-md text-label-md">Portfolio</span>
-      </Link>
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/messages">
-      <span className="material-symbols-outlined" data-icon="mail">mail</span>
-      <span className="font-label-md text-label-md">Messages</span>
-      </Link>
-      </nav>
-      <div className="mt-auto flex flex-col gap-sm pt-md border-t border-outline-variant">
-      <Link className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" to="/settings">
-      <span className="material-symbols-outlined" data-icon="settings">settings</span>
-      <span className="font-label-md text-label-md">Settings</span>
-      </Link>
-      <a className="flex items-center gap-md px-md py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all cursor-pointer duration-200" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
-      <span className="material-symbols-outlined" data-icon="logout">logout</span>
-      <span className="font-label-md text-label-md">Logout</span>
-      </a>
-      </div>
-      </aside>
-      {/*Main Content Area*/}
-      <main className="flex-1 md:ml-64 p-md md:p-margin bg-surface">
+    <DashboardLayout>
       {/*Top Bar / Actions*/}
       <div className="flex justify-end mb-lg">
       <button className="bg-primary-container text-on-primary px-md py-sm rounded font-label-md text-label-md hover:opacity-90 transition-opacity">Share Portfolio</button>
@@ -151,7 +102,6 @@ export default function DigitalPortfolio() {
       </div>
       </div>
       </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

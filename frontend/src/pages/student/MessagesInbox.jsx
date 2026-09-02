@@ -1,80 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import Sidebar from "../../components/layout/Sidebar";
+import { studentNavItems, studentFooterNavItems } from "../../config/studentNavConfig";
+
 export default function MessagesInbox() {
-  const navigate = useNavigate();
   return (
     <div className="bg-background text-on-surface flex min-h-screen font-body-md">
-      {/*SideNavBar (Shared Component)*/}
-      <nav className="bg-surface-container-low border-r border-outline-variant fixed left-0 top-0 h-screen w-64 flex flex-col py-xl px-md z-10 hidden md:flex">
-      {/*Header*/}
-      <div className="mb-xl px-sm flex items-center gap-md">
-      <img className="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A minimalist, monochromatic corporate logo featuring abstract geometric shapes representing academic collaboration. Clean lines, dark navy on white, high resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcZns8OyxVtF-5_7pPIjBCfRG-TPQYTCMb_Ncl3SItc6HT6ZGx9iHHd8K9k5l_B8fCOFxIbJ6RYzMLEd2LDmtyDKyYtXb4pd6LiV9SfPN0B3WMZNV4yBwbECBu991aiPQfQL6eZhRVcwkDjag3syKyYkce4MbOiNxoQaib14R_oFkkVdD_fvN6IdR3ulbSrjw8oHK3HKZ5rxZZBVkxRLM0C6JPKtUqiLqSLjZaCd8RmZjZeHLU5vse"/>
-      <div>
-      <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Student Portal</h1>
-      <p className="font-label-sm text-label-sm text-on-surface-variant">Academic Collaboration</p>
-      </div>
-      </div>
-      {/*Main Navigation*/}
-      <ul className="flex-1 space-y-sm">
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/dashboard">
-      <span className="material-symbols-outlined">dashboard</span>
-                          Dashboard
-                      </Link>
-      </li>
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/skill-assessment">
-      <span className="material-symbols-outlined">quiz</span>
-                          Skill Assessment
-                      </Link>
-      </li>
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/learning-paths">
-      <span className="material-symbols-outlined">school</span>
-                          Learning Paths
-                      </Link>
-      </li>
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/internships">
-      <span className="material-symbols-outlined">work</span>
-                          Internships/Jobs
-                      </Link>
-      </li>
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/applications">
-      <span className="material-symbols-outlined">description</span>
-                          My Applications
-                      </Link>
-      </li>
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/portfolio">
-      <span className="material-symbols-outlined">account_circle</span>
-                          Portfolio
-                      </Link>
-      </li>
-      <li>
-      {/*ACTIVE STATE APPLIED HERE*/}
-      <Link className="flex items-center gap-md px-sm py-sm rounded transition-all scale-95 active:scale-90 font-label-md text-label-md text-primary font-bold border-l-4 border-primary bg-surface-container-high" to="/messages">
-      <span className="material-symbols-outlined">mail</span>
-                          Messages
-                      </Link>
-      </li>
-      </ul>
-      {/*Footer Navigation*/}
-      <ul className="mt-auto space-y-sm pt-md border-t border-outline-variant">
-      <li>
-      <Link className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" to="/settings">
-      <span className="material-symbols-outlined">settings</span>
-                          Settings
-                      </Link>
-      </li>
-      <li>
-      <a className="flex items-center gap-md px-sm py-sm rounded text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
-      <span className="material-symbols-outlined">logout</span>
-                          Logout
-                      </a>
-      </li>
-      </ul>
-      </nav>
+      <Sidebar navItems={studentNavItems} footerNavItems={studentFooterNavItems} />
       {/*Main Content Area*/}
       <main className="md:ml-64 flex-1 flex flex-col h-screen overflow-hidden">
       {/*Two Column Layout Container*/}

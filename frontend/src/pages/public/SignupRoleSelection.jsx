@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { getPostLoginRedirect } from "../../utils/roleRedirect";
 
 const ROLES = [
   { id: "student", icon: "school", label: "Student" },
@@ -99,8 +100,8 @@ export default function SignupRoleSelection() {
         selectedRole
       );
 
-      // Redirect to dashboard on successful registration
-      navigate("/dashboard");
+      // Redirect based on role
+      navigate(getPostLoginRedirect(selectedRole), { replace: true });
     } catch (err) {
       setLocalError(err.message || "Registration failed. Please try again.");
     } finally {
