@@ -65,9 +65,6 @@ export default function Login() {
           <h1 className="font-headline-lg text-headline-lg font-bold text-primary mb-xs">
             AcademiaLink
           </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Secure Access Portal
-          </p>
         </div>
 
         {/*Login Form Container*/}
@@ -173,7 +170,7 @@ export default function Login() {
                 className="ml-sm block font-body-sm text-body-sm text-on-surface-variant"
                 htmlFor="remember-me"
               >
-                Remember my institutional device
+                Remember my credentials
               </label>
             </div>
 
@@ -221,7 +218,7 @@ export default function Login() {
               className="font-label-md text-label-md text-primary-container hover:text-primary transition-colors hover:underline"
               href="/signup"
             >
-              Apply for Access
+              REGISTER
             </a>
           </div>
         </div>
