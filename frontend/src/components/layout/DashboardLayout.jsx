@@ -10,11 +10,9 @@ export default function DashboardLayout({
   contentClassName = "",
 }) {
   return (
-    <div className="bg-surface-container-lowest text-on-surface min-h-screen">
+    <div className="bg-canvas text-charcoal min-h-screen">
       <Sidebar navItems={navItems} footerNavItems={footerNavItems} title={title} subtitle={subtitle} />
-      <main className={`md:ml-64 p-margin md:px-margin px-md py-xl max-w-max-width mx-auto w-full ${contentClassName}`}>
-        {children}
-      </main>
+      <main className={`md:ml-64 px-4 md:px-10 py-10 max-w-5xl mx-auto w-full ${contentClassName}`}>{children}</main>
     </div>
   );
 }

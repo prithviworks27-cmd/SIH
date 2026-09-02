@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getPostLoginRedirect } from "../../utils/roleRedirect";
+import { GraduationCap, Buildings, Flask, WarningCircle, ArrowClockwise } from "@phosphor-icons/react";
 
 const ROLES = [
-  { id: "student", icon: "school", label: "Student" },
-  { id: "industry", icon: "domain", label: "Industry Partner" },
-  { id: "academician", icon: "science", label: "Academician" },
+  { id: "student", icon: GraduationCap, label: "Student" },
+  { id: "industry", icon: Buildings, label: "Industry Partner" },
+  { id: "academician", icon: Flask, label: "Academician" },
 ];
 
 export default function SignupRoleSelection() {
@@ -93,12 +94,7 @@ export default function SignupRoleSelection() {
       }
 
       // Call register function
-      await register(
-        formData.email,
-        formData.password,
-        formData.fullname,
-        selectedRole
-      );
+      await register(formData.email, formData.password, formData.fullname, selectedRole);
 
       // Redirect based on role
       navigate(getPostLoginRedirect(selectedRole), { replace: true });
@@ -112,75 +108,55 @@ export default function SignupRoleSelection() {
   const errorMessage = localError || authError;
 
   return (
-    <div className="bg-surface-container-lowest text-on-surface min-h-screen flex flex-col font-body-md text-body-md antialiased">
-      {/*Transactional Page - No Navigation Shell*/}
-      <main className="flex-grow flex items-center justify-center py-xl px-margin md:px-margin sm:px-md">
-        <div className="max-w-[600px] w-full">
-          <div className="text-center mb-xl">
-            <h1 className="font-headline-lg text-headline-lg md:font-headline-lg md:text-headline-lg font-headline-lg-mobile text-headline-lg-mobile text-primary mb-sm">
-              Create your account
-            </h1>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Join AcademiaLink to collaborate and innovate.
-            </p>
+    <div className="bg-canvas text-charcoal min-h-screen flex flex-col antialiased">
+      <main className="flex-grow flex items-center justify-center py-16 px-4">
+        <div className="max-w-[560px] w-full">
+          <div className="text-center mb-10">
+            <h1 className="font-editorial text-3xl text-ink tracking-tight mb-2">Create your account</h1>
+            <p className="text-muted">Join AcademiaLink to collaborate and innovate.</p>
           </div>
 
           {/* Error Message */}
           {errorMessage && (
-            <div className="mb-md p-sm bg-error-container rounded border border-error text-on-error-container font-body-sm text-body-sm">
-              <div className="flex items-start gap-sm">
-                <span
-                  className="material-symbols-outlined flex-shrink-0"
-                  style={{ fontSize: "20px" }}
-                >
-                  error
-                </span>
-                <p>{errorMessage}</p>
+            <div className="mb-5 px-3 py-2.5 bg-pastel-red rounded-md">
+              <div className="flex items-start gap-2">
+                <WarningCircle size={18} weight="bold" className="text-pastel-red-ink flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-pastel-red-ink">{errorMessage}</p>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-xl">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/*Role Selection*/}
             <div>
-              <label className="block font-label-md text-label-md text-primary mb-md">
-                Select your role
-              </label>
-              <div className="grid grid-cols-3 gap-md">
-                {ROLES.map((role) => (
-                  <div
-                    key={role.id}
-                    onClick={() => handleRoleSelect(role.id)}
-                    className={`role-card border rounded-DEFAULT p-md cursor-pointer transition-colors text-center flex flex-col items-center justify-center gap-sm bg-surface-container-lowest ${
-                      selectedRole === role.id
-                        ? "border-primary ring-1 ring-primary"
-                        : "border-outline-variant hover:border-outline"
-                    }`}
-                  >
-                    <span
-                      className="material-symbols-outlined text-primary text-[32px]"
+              <label className="block text-xs uppercase tracking-wide text-muted mb-3">Select your role</label>
+              <div className="grid grid-cols-3 gap-3">
+                {ROLES.map((role) => {
+                  const Icon = role.icon;
+                  return (
+                    <div
+                      key={role.id}
+                      onClick={() => handleRoleSelect(role.id)}
+                      className={`border rounded-xl p-4 cursor-pointer transition-colors text-center flex flex-col items-center justify-center gap-2 bg-white ${
+                        selectedRole === role.id ? "border-ink" : "border-hairline hover:border-charcoal"
+                      }`}
                     >
-                      {role.icon}
-                    </span>
-                    <span className="font-label-md text-label-md text-on-surface">
-                      {role.label}
-                    </span>
-                  </div>
-                ))}
+                      <Icon size={26} className="text-ink" />
+                      <span className="text-sm text-charcoal">{role.label}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
             {/*Account Details*/}
-            <div className="space-y-md">
+            <div className="space-y-5">
               <div>
-                <label
-                  className="block font-label-sm text-label-sm text-on-surface-variant mb-xs"
-                  htmlFor="fullname"
-                >
+                <label className="block text-xs uppercase tracking-wide text-muted mb-1.5" htmlFor="fullname">
                   Full Name
                 </label>
                 <input
-                  className="w-full border border-outline-variant rounded-lg px-md py-[10px] bg-surface-container-lowest focus:border-primary focus:ring-0 font-body-md text-body-md placeholder:text-outline outline-none"
+                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
                   id="fullname"
                   name="fullname"
                   placeholder="Jane Doe"
@@ -192,14 +168,11 @@ export default function SignupRoleSelection() {
                 />
               </div>
               <div>
-                <label
-                  className="block font-label-sm text-label-sm text-on-surface-variant mb-xs"
-                  htmlFor="email"
-                >
+                <label className="block text-xs uppercase tracking-wide text-muted mb-1.5" htmlFor="email">
                   Work Email
                 </label>
                 <input
-                  className="w-full border border-outline-variant rounded-lg px-md py-[10px] bg-surface-container-lowest focus:border-primary focus:ring-0 font-body-md text-body-md placeholder:text-outline outline-none"
+                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
                   id="email"
                   name="email"
                   placeholder="jane@university.edu"
@@ -211,14 +184,11 @@ export default function SignupRoleSelection() {
                 />
               </div>
               <div>
-                <label
-                  className="block font-label-sm text-label-sm text-on-surface-variant mb-xs"
-                  htmlFor="password"
-                >
+                <label className="block text-xs uppercase tracking-wide text-muted mb-1.5" htmlFor="password">
                   Password
                 </label>
                 <input
-                  className="w-full border border-outline-variant rounded-lg px-md py-[10px] bg-surface-container-lowest focus:border-primary focus:ring-0 font-body-md text-body-md placeholder:text-outline outline-none"
+                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
                   id="password"
                   name="password"
                   placeholder="••••••••"
@@ -228,39 +198,29 @@ export default function SignupRoleSelection() {
                   disabled={isSubmitting || loading}
                   required
                 />
-                <p className="text-xs text-on-surface-variant mt-xs">
-                  Min 8 characters, 1 uppercase, 1 lowercase, 1 number
-                </p>
+                <p className="text-xs text-muted mt-1.5">Min 8 characters, 1 uppercase, 1 lowercase, 1 number</p>
               </div>
             </div>
 
             {/*Submit*/}
             <button
-              className="w-full bg-primary-container text-on-primary rounded-lg py-[12px] px-md font-label-md text-label-md transition-colors hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-4 hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"
               disabled={isSubmitting || loading}
             >
               {isSubmitting || loading ? (
                 <>
-                  <span
-                    className="material-symbols-outlined animate-spin inline-block mr-sm"
-                    style={{ fontSize: "16px" }}
-                  >
-                    sync
-                  </span>
-                  Creating account...
+                  <ArrowClockwise size={16} className="animate-spin" />
+                  Creating account
                 </>
               ) : (
                 "Sign Up"
               )}
             </button>
 
-            <div className="text-center font-body-sm text-body-sm text-on-surface-variant mt-md">
+            <div className="text-center text-sm text-muted">
               Already have an account?{" "}
-              <a
-                className="text-primary hover:underline"
-                href="/login"
-              >
+              <a className="text-ink hover:text-muted transition-colors" href="/login">
                 Login
               </a>
             </div>
@@ -268,29 +228,20 @@ export default function SignupRoleSelection() {
         </div>
       </main>
 
-      {/*Footer - Transactional Context, simplified*/}
-      <footer className="w-full py-xl px-margin flex flex-col md:flex-row justify-between items-center gap-md bg-surface-container-lowest border-t border-outline-variant font-body-sm text-body-sm text-secondary">
+      {/*Footer*/}
+      <footer className="w-full py-8 px-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-canvas border-t border-hairline text-xs text-muted">
         <div>© 2024 AcademiaLink Collaboration Portal. All rights reserved.</div>
-        <div className="flex gap-md">
-          <a className="hover:text-primary transition-colors duration-200" href="#">
+        <div className="flex gap-6">
+          <a className="hover:text-ink transition-colors" href="#">
             Privacy Policy
           </a>
-          <a
-            className="hover:text-primary transition-colors duration-200"
-            href="#"
-          >
+          <a className="hover:text-ink transition-colors" href="#">
             Terms of Service
           </a>
-          <a
-            className="hover:text-primary transition-colors duration-200"
-            href="#"
-          >
+          <a className="hover:text-ink transition-colors" href="#">
             Contact Us
           </a>
-          <a
-            className="hover:text-primary transition-colors duration-200"
-            href="#"
-          >
+          <a className="hover:text-ink transition-colors" href="#">
             Help Center
           </a>
         </div>

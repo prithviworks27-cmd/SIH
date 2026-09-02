@@ -1,15 +1,15 @@
-export default function EmptyState({ icon = "inbox", title, description, actionLabel, onAction }) {
+import { Tray } from "@phosphor-icons/react";
+
+export default function EmptyState({ icon: Icon = Tray, title, description, actionLabel, onAction }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center gap-sm border border-outline-variant rounded-DEFAULT bg-surface-container-lowest p-xl py-24">
-      <span className="material-symbols-outlined text-4xl text-on-surface-variant">{icon}</span>
-      <h3 className="font-headline-sm text-headline-sm text-on-surface">{title}</h3>
-      {description && (
-        <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm">{description}</p>
-      )}
+    <div className="flex flex-col items-center justify-center text-center gap-2 border border-hairline rounded-xl bg-white p-10 py-24">
+      <Icon size={32} className="text-muted" />
+      <h3 className="text-lg font-medium text-ink mt-2">{title}</h3>
+      {description && <p className="text-sm text-muted max-w-sm">{description}</p>}
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="mt-md bg-primary-container text-on-primary font-label-md text-label-md px-md py-sm rounded-DEFAULT hover:bg-primary transition-colors"
+          className="mt-4 bg-ink text-white text-sm px-4 py-2 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all"
         >
           {actionLabel}
         </button>

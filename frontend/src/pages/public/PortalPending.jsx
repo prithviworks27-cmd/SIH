@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { Wrench } from "@phosphor-icons/react";
 
 const ROLE_LABELS = {
   industry: "Industry",
@@ -18,20 +19,17 @@ export default function PortalPending() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-container-lowest text-on-surface px-md">
-      <div className="max-w-md w-full text-center bg-surface-container-lowest border border-outline-variant rounded-lg p-xl">
-        <span className="material-symbols-outlined text-primary-container text-4xl mb-md inline-block">construction</span>
-        <h1 className="font-headline-lg text-headline-lg text-primary mb-sm">
-          Your {roleLabel} portal is coming soon
-        </h1>
-        <p className="font-body-md text-body-md text-on-surface-variant mb-xl">
+    <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4">
+      <div className="max-w-md w-full text-center bg-white border border-hairline rounded-xl p-10">
+        <Wrench size={32} className="text-ink mb-4 inline-block" />
+        <h1 className="font-editorial text-2xl text-ink mb-3 tracking-tight">Your {roleLabel} portal is coming soon</h1>
+        <p className="text-sm text-muted mb-8 leading-relaxed">
           We're still building the {roleLabel.toLowerCase()} experience for AcademiaLink. You're signed in as{" "}
-          <span className="font-medium text-on-surface">{user?.email}</span>, and we'll let you know as soon as your
-          dashboard is ready.
+          <span className="text-charcoal">{user?.email}</span>, and we'll let you know as soon as your dashboard is ready.
         </p>
         <button
           onClick={handleLogout}
-          className="w-full flex justify-center py-sm px-md rounded-DEFAULT font-label-md text-label-md text-white bg-primary-container hover:bg-primary transition-colors"
+          className="w-full flex justify-center py-2.5 px-4 rounded-md text-sm text-white bg-ink hover:bg-[#333333] active:scale-[0.98] transition-all"
         >
           Logout
         </button>

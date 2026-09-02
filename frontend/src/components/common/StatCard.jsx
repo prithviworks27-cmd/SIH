@@ -1,13 +1,11 @@
-export default function StatCard({ label, value, icon, iconColorClass = "text-primary-container", valueColorClass = "text-on-surface" }) {
+export default function StatCard({ label, value, icon: Icon, iconColorClass = "text-ink", valueColorClass = "text-ink" }) {
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-DEFAULT flex flex-col justify-between h-32">
+    <div className="bg-white border border-hairline p-5 rounded-xl flex flex-col justify-between h-32">
       <div className="flex items-center justify-between">
-        <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">{label}</span>
-        <span className={`material-symbols-outlined ${iconColorClass}`}>{icon}</span>
+        <span className="text-xs uppercase tracking-wide text-muted">{label}</span>
+        {Icon && <Icon size={18} className={iconColorClass} />}
       </div>
-      <div>
-        <div className={`font-display-lg text-display-lg ${valueColorClass}`}>{value}</div>
-      </div>
+      <div className={`font-editorial text-3xl ${valueColorClass}`}>{value}</div>
     </div>
   );
 }

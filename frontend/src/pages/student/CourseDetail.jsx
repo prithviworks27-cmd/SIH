@@ -4,6 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getCourseById } from "../../services/coursesService";
+import { ArrowLeft, CaretRight, Clock, GraduationCap, Buildings, MagnifyingGlass, CheckCircle, DownloadSimple } from "@phosphor-icons/react";
 
 export default function CourseDetail() {
   const { courseId } = useParams();
@@ -27,7 +28,7 @@ export default function CourseDetail() {
 
       {course === null && (
         <EmptyState
-          icon="search_off"
+          icon={MagnifyingGlass}
           title="Course not found"
           description="This course may have been removed, or the link you followed is incorrect."
           actionLabel="Back to Catalog"
@@ -38,41 +39,34 @@ export default function CourseDetail() {
       {course && (
         <>
           {/*Breadcrumb / Back*/}
-          <div className="mb-lg flex items-center gap-sm font-label-md text-label-md text-on-surface-variant">
-            <span
-              className="material-symbols-outlined cursor-pointer hover:text-primary transition-colors"
-              onClick={() => navigate("/courses")}
-            >
-              arrow_back
-            </span>
-            <span className="cursor-pointer hover:text-primary transition-colors" onClick={() => navigate("/courses")}>
+          <div className="mb-6 flex items-center gap-2 text-sm text-muted">
+            <ArrowLeft size={16} className="cursor-pointer hover:text-ink transition-colors" onClick={() => navigate("/courses")} />
+            <span className="cursor-pointer hover:text-ink transition-colors" onClick={() => navigate("/courses")}>
               Course Catalog
             </span>
-            <span className="material-symbols-outlined text-sm">chevron_right</span>
-            <span className="text-primary font-bold">{course.title}</span>
+            <CaretRight size={12} />
+            <span className="text-ink font-medium">{course.title}</span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/*Main Content Area*/}
-            <div className="lg:col-span-8 flex flex-col gap-xl">
+            <div className="lg:col-span-8 flex flex-col gap-8">
               {/*Header / Title block*/}
-              <header className="border-b border-outline-variant pb-xl">
-                <div className="flex items-center gap-md mb-md">
+              <header className="border-b border-hairline pb-8">
+                <div className="flex items-center gap-3 mb-4">
                   {course.category && (
-                    <span className="bg-surface-container-high px-sm py-xs rounded text-on-surface font-label-sm text-label-sm border border-outline-variant">
-                      {course.category}
-                    </span>
+                    <span className="bg-bone px-2.5 py-1 rounded-full text-xs uppercase tracking-wide text-charcoal">{course.category}</span>
                   )}
-                  <span className="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[16px]">schedule</span> {course.duration}
+                  <span className="flex items-center gap-1.5 text-xs text-muted">
+                    <Clock size={14} /> {course.duration}
                   </span>
-                  <span className="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[16px]">school</span> {course.level}
+                  <span className="flex items-center gap-1.5 text-xs text-muted">
+                    <GraduationCap size={14} /> {course.level}
                   </span>
                 </div>
-                <h1 className="font-headline-lg text-headline-lg text-primary mb-sm">{course.title}</h1>
-                <p className="font-body-lg text-body-lg text-on-surface-variant flex items-center gap-sm">
-                  <span className="material-symbols-outlined text-primary">corporate_fare</span>
+                <h1 className="font-editorial text-3xl text-ink tracking-tight mb-3">{course.title}</h1>
+                <p className="text-muted flex items-center gap-2">
+                  <Buildings size={18} className="text-ink" />
                   Provided by {course.department ? `${course.department}, ` : ""}
                   {course.provider}
                 </p>
@@ -81,8 +75,8 @@ export default function CourseDetail() {
               {/*Description*/}
               {course.overview && (
                 <section>
-                  <h2 className="font-headline-sm text-headline-sm text-primary mb-md">Course Overview</h2>
-                  <div className="font-body-md text-body-md text-on-surface flex flex-col gap-md">
+                  <h2 className="text-lg font-medium text-ink mb-3">Course Overview</h2>
+                  <div className="text-charcoal leading-relaxed flex flex-col gap-4">
                     {course.overview.map((paragraph, i) => (
                       <p key={i}>{paragraph}</p>
                     ))}
@@ -93,13 +87,10 @@ export default function CourseDetail() {
               {/*Skills*/}
               {course.skillsAcquired && (
                 <section>
-                  <h2 className="font-headline-sm text-headline-sm text-primary mb-md">Skills &amp; Competencies Acquired</h2>
-                  <div className="flex flex-wrap gap-sm">
+                  <h2 className="text-lg font-medium text-ink mb-3">Skills &amp; Competencies Acquired</h2>
+                  <div className="flex flex-wrap gap-2">
                     {course.skillsAcquired.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-md py-sm rounded bg-surface-container-high border border-outline-variant font-label-md text-label-md text-on-surface"
-                      >
+                      <span key={skill} className="px-3 py-1.5 rounded-md bg-bone text-sm text-charcoal">
                         {skill}
                       </span>
                     ))}
@@ -109,19 +100,15 @@ export default function CourseDetail() {
 
               {/*Syllabus*/}
               {course.syllabus && (
-                <section className="border border-outline-variant rounded bg-surface-container-lowest p-lg">
-                  <h2 className="font-headline-sm text-headline-sm text-primary mb-lg border-b border-outline-variant pb-sm">
-                    Syllabus Overview
-                  </h2>
+                <section className="border border-hairline rounded-xl bg-white p-8">
+                  <h2 className="text-lg font-medium text-ink mb-6 border-b border-hairline pb-3">Syllabus Overview</h2>
                   <ol className="flex flex-col">
                     {course.syllabus.map((item, i) => (
-                      <li key={i} className="flex gap-md py-md border-b border-outline-variant last:border-0 last:pb-0 first:pt-0">
-                        <div className="font-headline-md text-headline-md font-bold text-primary-container min-w-[32px]">
-                          {String(i + 1).padStart(2, "0")}
-                        </div>
+                      <li key={i} className="flex gap-4 py-4 border-b border-hairline last:border-0 last:pb-0 first:pt-0">
+                        <div className="font-mono text-sm text-muted min-w-[24px]">{String(i + 1).padStart(2, "0")}</div>
                         <div>
-                          <h3 className="font-label-md text-label-md font-bold text-on-surface mb-xs">{item.title}</h3>
-                          <p className="font-body-sm text-body-sm text-on-surface-variant">{item.description}</p>
+                          <h3 className="text-sm font-medium text-ink mb-1">{item.title}</h3>
+                          <p className="text-sm text-muted leading-relaxed">{item.description}</p>
                         </div>
                       </li>
                     ))}
@@ -132,41 +119,37 @@ export default function CourseDetail() {
 
             {/*Sticky Sidebar / Action Area*/}
             <div className="lg:col-span-4">
-              <div className="sticky top-margin flex flex-col gap-md border border-outline-variant bg-surface-container-lowest p-lg rounded">
-                <div className="mb-sm">
-                  <div className="font-headline-sm text-headline-sm text-primary mb-xs">
-                    {course.enrollmentStatus || "Enrollment Open"}
-                  </div>
-                  {course.cohortStart && (
-                    <div className="font-body-sm text-body-sm text-on-surface-variant">Cohort begins {course.cohortStart}</div>
-                  )}
+              <div className="sticky top-10 flex flex-col gap-3 border border-hairline bg-white p-6 rounded-xl">
+                <div className="mb-2">
+                  <div className="text-sm font-medium text-ink mb-1">{course.enrollmentStatus || "Enrollment Open"}</div>
+                  {course.cohortStart && <div className="text-xs text-muted">Cohort begins {course.cohortStart}</div>}
                 </div>
-                <button className="w-full bg-primary-container text-on-primary font-label-md text-label-md py-md px-lg rounded flex justify-center items-center gap-sm hover:bg-primary transition-colors">
-                  <span className="material-symbols-outlined">how_to_reg</span>
+                <button className="w-full bg-ink text-white text-sm py-2.5 px-4 rounded-md flex justify-center items-center gap-2 hover:bg-[#333333] active:scale-[0.98] transition-all">
+                  <CheckCircle size={16} />
                   Enroll in Course
                 </button>
-                <button className="w-full bg-surface-container-lowest text-on-surface font-label-md text-label-md py-md px-lg rounded border border-outline-variant flex justify-center items-center gap-sm hover:bg-surface-container-high transition-colors">
-                  <span className="material-symbols-outlined">download</span>
+                <button className="w-full text-ink text-sm py-2.5 px-4 rounded-md border border-hairline flex justify-center items-center gap-2 hover:bg-bone transition-colors">
+                  <DownloadSimple size={16} />
                   Download Syllabus PDF
                 </button>
                 {(course.format || course.commitment || course.prerequisites) && (
-                  <div className="mt-lg pt-lg border-t border-outline-variant flex flex-col gap-sm">
+                  <div className="mt-4 pt-4 border-t border-hairline flex flex-col gap-2">
                     {course.format && (
-                      <div className="flex justify-between items-center font-body-sm text-body-sm">
-                        <span className="text-on-surface-variant">Format</span>
-                        <span className="font-medium text-on-surface">{course.format}</span>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted">Format</span>
+                        <span className="text-charcoal">{course.format}</span>
                       </div>
                     )}
                     {course.commitment && (
-                      <div className="flex justify-between items-center font-body-sm text-body-sm">
-                        <span className="text-on-surface-variant">Commitment</span>
-                        <span className="font-medium text-on-surface">{course.commitment}</span>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted">Commitment</span>
+                        <span className="text-charcoal">{course.commitment}</span>
                       </div>
                     )}
                     {course.prerequisites && (
-                      <div className="flex justify-between items-center font-body-sm text-body-sm">
-                        <span className="text-on-surface-variant">Prerequisites</span>
-                        <span className="font-medium text-on-surface">{course.prerequisites}</span>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted">Prerequisites</span>
+                        <span className="text-charcoal">{course.prerequisites}</span>
                       </div>
                     )}
                   </div>
