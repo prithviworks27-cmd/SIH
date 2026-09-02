@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
@@ -6,12 +6,87 @@ import EmptyState from "../../components/common/EmptyState";
 import { getCourses } from "../../services/coursesService";
 import { MagnifyingGlass, Bank, Clock, ChartBar, GraduationCap } from "@phosphor-icons/react";
 
+const CATEGORY_OPTIONS = ["Data Science", "Material Engineering", "Quantum Computing", "Bioinformatics"];
+const CATEGORY_KEYWORDS = {
+  "Data Science": ["Data Science"],
+  "Material Engineering": ["Material Eng", "Materials Science"],
+  "Quantum Computing": ["Quantum Computing"],
+  Bioinformatics: ["Bioinformatics"],
+};
+
+const DURATION_OPTIONS = ["Short (< 4 weeks)", "Medium (4-8 weeks)", "Extensive (8+ weeks)"];
+function durationBucket(durationStr) {
+  const weeks = parseInt(durationStr, 10);
+  if (Number.isNaN(weeks)) return null;
+  if (weeks < 4) return "Short (< 4 weeks)";
+  if (weeks <= 8) return "Medium (4-8 weeks)";
+  return "Extensive (8+ weeks)";
+}
+
+const PROVIDER_OPTIONS = ["Zurich Institute of Technology", "Global Research Consortium", "TechCorp Academy"];
+
+const DEFAULT_FILTERS = {
+  category: new Set(["Data Science"]),
+  duration: new Set(["Medium (4-8 weeks)"]),
+  provider: new Set(["Global Research Consortium"]),
+};
+
+function FilterGroup({ title, options, checked, onToggle }) {
+  return (
+    <div className="mb-6 last:mb-0">
+      <h4 className="text-xs uppercase tracking-wide text-muted mb-2">{title}</h4>
+      <div className="flex flex-col gap-2">
+        {options.map((option) => (
+          <label key={option} className="flex items-center gap-2 cursor-pointer">
+            <input
+              checked={checked.has(option)}
+              onChange={() => onToggle(option)}
+              className="rounded border-hairline text-ink focus:ring-0"
+              type="checkbox"
+            />
+            <span className="text-sm text-charcoal">{option}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CourseCatalog() {
   const [courses, setCourses] = useState(undefined);
+  const [pendingFilters, setPendingFilters] = useState(DEFAULT_FILTERS);
+  const [appliedFilters, setAppliedFilters] = useState(DEFAULT_FILTERS);
 
   useEffect(() => {
     getCourses().then(setCourses);
   }, []);
+
+  const toggle = (group, value) => {
+    setPendingFilters((prev) => {
+      const next = new Set(prev[group]);
+      next.has(value) ? next.delete(value) : next.add(value);
+      return { ...prev, [group]: next };
+    });
+  };
+
+  const hasPendingChanges =
+    [...pendingFilters.category].sort().join() !== [...appliedFilters.category].sort().join() ||
+    [...pendingFilters.duration].sort().join() !== [...appliedFilters.duration].sort().join() ||
+    [...pendingFilters.provider].sort().join() !== [...appliedFilters.provider].sort().join();
+
+  const filteredCourses = useMemo(() => {
+    if (!courses) return undefined;
+    return courses.filter((course) => {
+      const categoryOk =
+        appliedFilters.category.size === 0 ||
+        [...appliedFilters.category].some((cat) =>
+          CATEGORY_KEYWORDS[cat].some((keyword) => course.tags.includes(keyword))
+        );
+      const durationOk = appliedFilters.duration.size === 0 || appliedFilters.duration.has(durationBucket(course.duration));
+      const providerOk = appliedFilters.provider.size === 0 || appliedFilters.provider.has(course.provider);
+      return categoryOk && durationOk && providerOk;
+    });
+  }, [courses, appliedFilters]);
 
   return (
     <DashboardLayout>
@@ -42,47 +117,41 @@ export default function CourseCatalog() {
         <aside className="w-full md:w-64 flex-shrink-0">
           <div className="bg-white border border-hairline rounded-xl p-5">
             <h3 className="text-sm font-medium text-ink mb-4 border-b border-hairline pb-3">Filters</h3>
-            <div className="mb-6">
-              <h4 className="text-xs uppercase tracking-wide text-muted mb-2">Skill Category</h4>
-              <div className="flex flex-col gap-2">
-                {["Data Science", "Material Engineering", "Quantum Computing", "Bioinformatics"].map((c, i) => (
-                  <label key={c} className="flex items-center gap-2 cursor-pointer">
-                    <input defaultChecked={i === 0} className="rounded border-hairline text-ink focus:ring-0" type="checkbox" />
-                    <span className="text-sm text-charcoal">{c}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div className="mb-6">
-              <h4 className="text-xs uppercase tracking-wide text-muted mb-2">Duration</h4>
-              <div className="flex flex-col gap-2">
-                {["Short (< 4 weeks)", "Medium (4-8 weeks)", "Extensive (8+ weeks)"].map((d, i) => (
-                  <label key={d} className="flex items-center gap-2 cursor-pointer">
-                    <input defaultChecked={i === 1} className="rounded border-hairline text-ink focus:ring-0" type="checkbox" />
-                    <span className="text-sm text-charcoal">{d}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h4 className="text-xs uppercase tracking-wide text-muted mb-2">Provider</h4>
-              <div className="flex flex-col gap-2">
-                {["Zurich Institute of Technology", "Global Research Consortium", "TechCorp Academy"].map((p, i) => (
-                  <label key={p} className="flex items-center gap-2 cursor-pointer">
-                    <input defaultChecked={i === 1} className="rounded border-hairline text-ink focus:ring-0" type="checkbox" />
-                    <span className="text-sm text-charcoal">{p}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+
+            <FilterGroup
+              title="Skill Category"
+              options={CATEGORY_OPTIONS}
+              checked={pendingFilters.category}
+              onToggle={(v) => toggle("category", v)}
+            />
+            <FilterGroup
+              title="Duration"
+              options={DURATION_OPTIONS}
+              checked={pendingFilters.duration}
+              onToggle={(v) => toggle("duration", v)}
+            />
+            <FilterGroup
+              title="Provider"
+              options={PROVIDER_OPTIONS}
+              checked={pendingFilters.provider}
+              onToggle={(v) => toggle("provider", v)}
+            />
+
+            <button
+              onClick={() => setAppliedFilters(pendingFilters)}
+              disabled={!hasPendingChanges}
+              className="w-full mt-6 bg-ink text-white text-sm py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+            >
+              Apply
+            </button>
           </div>
         </aside>
 
         {/*Course List Area*/}
         <section className="flex-1 flex flex-col gap-4">
-          {courses && (
+          {filteredCourses && (
             <div className="flex justify-between items-center bg-white border border-hairline rounded-xl px-4 py-3">
-              <span className="text-sm text-muted">Showing {courses.length} results</span>
+              <span className="text-sm text-muted">Showing {filteredCourses.length} results</span>
               <div className="flex items-center gap-2">
                 <span className="text-xs uppercase tracking-wide text-muted">Sort by:</span>
                 <select className="border border-hairline rounded-md bg-white text-sm text-charcoal focus:border-ink focus:ring-0 outline-none py-1 pl-2 pr-8">
@@ -96,13 +165,13 @@ export default function CourseCatalog() {
 
           {courses === undefined && <LoadingState label="Loading courses…" />}
 
-          {courses && courses.length === 0 && (
-            <EmptyState icon={GraduationCap} title="No courses available" description="Check back soon for new course listings." />
+          {filteredCourses && filteredCourses.length === 0 && (
+            <EmptyState icon={GraduationCap} title="No courses match your filters" description="Try adjusting or clearing a filter to see more results." />
           )}
 
-          {courses && courses.length > 0 && (
+          {filteredCourses && filteredCourses.length > 0 && (
             <div className="bg-white border border-hairline rounded-xl flex flex-col">
-              {courses.map((course) => (
+              {filteredCourses.map((course) => (
                 <div
                   key={course.id}
                   className="flex flex-col md:flex-row justify-between items-start md:items-center p-5 border-b border-hairline last:border-b-0 hover:bg-bone transition-colors"
