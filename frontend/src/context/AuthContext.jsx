@@ -8,15 +8,34 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check if user is logged in on app load
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("user");
 
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (!token) {
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem("user");
+      }
+    }
+
+    authAPI
+      .getCurrentUser()
+      .then(({ user: currentUser }) => {
+        localStorage.setItem("user", JSON.stringify(currentUser));
+        setUser(currentUser);
+      })
+      .catch(() => {
+        authAPI.logout();
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // Login function

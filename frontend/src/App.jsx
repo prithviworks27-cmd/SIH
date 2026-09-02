@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import { useAuth } from "./hooks/useAuth";
+import { getPostLoginRedirect } from "./utils/roleRedirect";
+import LoadingState from "./components/common/LoadingState";
 
 import Landing from "./pages/public/Landing.jsx";
 import Login from "./pages/public/Login.jsx";
@@ -42,12 +45,26 @@ const STUDENT_ROLES = ["student"];
 const INDUSTRY_ROLES = ["industry"];
 const ADMIN_ROLES = ["admin"];
 
+function RootRoute() {
+  const { isAuthenticated, loading, user } = useAuth();
+
+  if (loading) {
+    return <LoadingState fullScreen label="Checking your session…" />;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to={getPostLoginRedirect(user.role)} replace />;
+  }
+
+  return <Landing />;
+}
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<RootRoute />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupRoleSelection />} />
           <Route
