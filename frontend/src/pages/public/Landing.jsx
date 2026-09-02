@@ -120,9 +120,6 @@ export default function Landing() {
               >
                 Get started
               </Link>
-              <button className="text-sm text-ink border border-hairline px-6 py-3 rounded-md w-full sm:w-auto hover:bg-bone transition-colors">
-                View demo
-              </button>
             </div>
           </div>
         </section>
