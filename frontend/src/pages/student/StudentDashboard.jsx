@@ -54,13 +54,13 @@ export default function StudentDashboard() {
                 View details
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-6">
               {skillProfile ? (
                 skillProfile.skillGaps
                   .slice(0, 3)
-                  .map((s) => <SkillProgress key={s.name} label={s.name} percent={s.currentScore} />)
+                  .map((s, i) => <SkillProgress key={s.name} label={s.name} percent={s.currentScore} index={i} />)
               ) : (
-                <p className="text-sm text-muted">Loading skill profile…</p>
+                <p className="text-sm text-muted col-span-3">Loading skill profile…</p>
               )}
             </div>
           </section>

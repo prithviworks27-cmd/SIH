@@ -1,13 +1,24 @@
-export default function SkillProgress({ label, percent, colorClass = "bg-ink" }) {
+const PALETTE = [
+  { fill: "bg-pastel-red", text: "text-pastel-red-ink" },
+  { fill: "bg-pastel-blue", text: "text-pastel-blue-ink" },
+  { fill: "bg-pastel-green", text: "text-pastel-green-ink" },
+  { fill: "bg-pastel-yellow", text: "text-pastel-yellow-ink" },
+];
+
+export default function SkillProgress({ label, percent, index = 0 }) {
+  const { fill, text } = PALETTE[index % PALETTE.length];
+
   return (
-    <div>
-      <div className="flex justify-between items-end mb-1.5">
-        <span className="text-sm text-charcoal">{label}</span>
-        <span className="text-xs text-muted">{percent}%</span>
+    <div className="flex flex-col items-center gap-3">
+      <div className="relative w-full h-40 bg-bone rounded-xl overflow-hidden flex items-end">
+        <div
+          className={`w-full ${fill} rounded-xl flex items-start justify-center pt-2 transition-[height] duration-500`}
+          style={{ height: `${percent}%` }}
+        >
+          <span className={`text-xs font-medium ${text}`}>{percent}%</span>
+        </div>
       </div>
-      <div className="h-1.5 w-full bg-bone rounded-full overflow-hidden">
-        <div className={`h-full ${colorClass} rounded-full`} style={{ width: `${percent}%` }} />
-      </div>
+      <span className="text-sm text-charcoal text-center">{label}</span>
     </div>
   );
 }
