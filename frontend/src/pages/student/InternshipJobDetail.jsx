@@ -4,6 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getInternshipById } from "../../services/internshipsService";
+import { ArrowLeft, Buildings, CheckCircle, MapPin, CalendarBlank, Money, Clock, MagnifyingGlass } from "@phosphor-icons/react";
 
 export default function InternshipJobDetail() {
   const { jobId } = useParams();
@@ -27,7 +28,7 @@ export default function InternshipJobDetail() {
 
       {job === null && (
         <EmptyState
-          icon="search_off"
+          icon={MagnifyingGlass}
           title="Opportunity not found"
           description="This internship or job may have closed, or the link you followed is incorrect."
           actionLabel="Back to Internships/Jobs"
@@ -38,49 +39,47 @@ export default function InternshipJobDetail() {
       {job && (
         <div className="max-w-4xl mx-auto w-full">
           <button
-            className="inline-flex items-center gap-sm text-secondary hover:text-primary transition-colors font-body-sm text-body-sm mb-lg"
+            className="inline-flex items-center gap-2 text-muted hover:text-ink transition-colors text-sm mb-6"
             onClick={() => navigate("/internships")}
           >
-            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            <ArrowLeft size={16} />
             Back to Internships
           </button>
 
-          <header className="bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg mb-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
-            <div className="flex items-center gap-lg">
+          <header className="bg-white border border-hairline rounded-xl p-8 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex items-center gap-6">
               <div>
-                <h1 className="font-headline-lg text-headline-lg text-primary mb-xs">{job.title}</h1>
-                <p className="font-body-lg text-body-lg text-on-surface-variant flex items-center gap-sm">
-                  <span className="material-symbols-outlined text-[20px]">domain</span>
+                <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">{job.title}</h1>
+                <p className="text-muted flex items-center gap-2">
+                  <Buildings size={18} />
                   {job.company}
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-md w-full md:w-auto">
-              <div className="flex items-center gap-sm font-label-md text-label-md text-primary">
-                <span className="material-symbols-outlined text-[20px] text-green-700">check_circle</span>
+            <div className="flex flex-col items-end gap-3 w-full md:w-auto">
+              <div className="flex items-center gap-2 text-sm text-pastel-green-ink">
+                <CheckCircle size={18} weight="fill" />
                 <span>{job.matchPercent}% Skill Match</span>
               </div>
-              <button className="bg-primary-container text-white px-lg py-sm rounded-DEFAULT font-label-md text-label-md hover:bg-opacity-90 transition-opacity w-full md:w-auto">
+              <button className="bg-ink text-white px-6 py-2.5 rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all w-full md:w-auto">
                 Apply Now
               </button>
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-            <div className="lg:col-span-2 space-y-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
               {job.overview && (
-                <section className="bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg">
-                  <h2 className="font-headline-md text-headline-md text-primary mb-md border-b border-outline-variant pb-sm">
-                    Overview
-                  </h2>
-                  <div className="space-y-md font-body-md text-body-md text-on-surface">
+                <section className="bg-white border border-hairline rounded-xl p-8">
+                  <h2 className="text-lg font-medium text-ink mb-4 border-b border-hairline pb-3">Overview</h2>
+                  <div className="space-y-4 text-charcoal leading-relaxed">
                     {job.overview.map((paragraph, i) => (
                       <p key={i}>{paragraph}</p>
                     ))}
                     {job.responsibilities && (
                       <>
-                        <h3 className="font-headline-sm text-headline-sm text-primary mt-lg mb-sm">Key Responsibilities</h3>
-                        <ul className="list-disc pl-lg space-y-sm text-on-surface-variant">
+                        <h3 className="text-base font-medium text-ink mt-6 mb-2">Key Responsibilities</h3>
+                        <ul className="list-disc pl-5 space-y-2 text-muted">
                           {job.responsibilities.map((item, i) => (
                             <li key={i}>{item}</li>
                           ))}
@@ -91,16 +90,11 @@ export default function InternshipJobDetail() {
                 </section>
               )}
 
-              <section className="bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg">
-                <h2 className="font-headline-md text-headline-md text-primary mb-md border-b border-outline-variant pb-sm">
-                  Required Competencies
-                </h2>
-                <div className="flex flex-wrap gap-sm">
+              <section className="bg-white border border-hairline rounded-xl p-8">
+                <h2 className="text-lg font-medium text-ink mb-4 border-b border-hairline pb-3">Required Competencies</h2>
+                <div className="flex flex-wrap gap-2">
                   {job.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="bg-surface-container-high text-on-background px-md py-xs rounded-sm font-label-sm text-label-sm"
-                    >
+                    <span key={skill} className="bg-bone text-charcoal px-3 py-1.5 rounded-md text-sm">
                       {skill}
                     </span>
                   ))}
@@ -108,43 +102,41 @@ export default function InternshipJobDetail() {
               </section>
             </div>
 
-            <div className="space-y-lg">
-              <aside className="bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg">
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-md border-b border-outline-variant pb-sm">
-                  Details
-                </h3>
-                <ul className="space-y-md font-body-sm text-body-sm">
-                  <li className="flex items-start gap-md">
-                    <span className="material-symbols-outlined text-outline">location_on</span>
+            <div className="space-y-6">
+              <aside className="bg-white border border-hairline rounded-xl p-6">
+                <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Details</h3>
+                <ul className="space-y-4 text-sm">
+                  <li className="flex items-start gap-3">
+                    <MapPin size={18} className="text-muted" />
                     <div>
-                      <span className="block font-label-md text-label-md text-on-surface">Location</span>
-                      <span className="text-on-surface-variant">{job.location}</span>
+                      <span className="block text-xs uppercase tracking-wide text-muted mb-0.5">Location</span>
+                      <span className="text-charcoal">{job.location}</span>
                     </div>
                   </li>
                   {job.duration && (
-                    <li className="flex items-start gap-md">
-                      <span className="material-symbols-outlined text-outline">calendar_month</span>
+                    <li className="flex items-start gap-3">
+                      <CalendarBlank size={18} className="text-muted" />
                       <div>
-                        <span className="block font-label-md text-label-md text-on-surface">Duration</span>
-                        <span className="text-on-surface-variant">{job.duration}</span>
+                        <span className="block text-xs uppercase tracking-wide text-muted mb-0.5">Duration</span>
+                        <span className="text-charcoal">{job.duration}</span>
                       </div>
                     </li>
                   )}
                   {job.stipend && (
-                    <li className="flex items-start gap-md">
-                      <span className="material-symbols-outlined text-outline">payments</span>
+                    <li className="flex items-start gap-3">
+                      <Money size={18} className="text-muted" />
                       <div>
-                        <span className="block font-label-md text-label-md text-on-surface">Compensation</span>
-                        <span className="text-on-surface-variant">{job.stipend}</span>
+                        <span className="block text-xs uppercase tracking-wide text-muted mb-0.5">Compensation</span>
+                        <span className="text-charcoal">{job.stipend}</span>
                       </div>
                     </li>
                   )}
                   {job.commitment && (
-                    <li className="flex items-start gap-md">
-                      <span className="material-symbols-outlined text-outline">schedule</span>
+                    <li className="flex items-start gap-3">
+                      <Clock size={18} className="text-muted" />
                       <div>
-                        <span className="block font-label-md text-label-md text-on-surface">Commitment</span>
-                        <span className="text-on-surface-variant">{job.commitment}</span>
+                        <span className="block text-xs uppercase tracking-wide text-muted mb-0.5">Commitment</span>
+                        <span className="text-charcoal">{job.commitment}</span>
                       </div>
                     </li>
                   )}
@@ -152,11 +144,9 @@ export default function InternshipJobDetail() {
               </aside>
 
               {job.aboutCompany && (
-                <aside className="bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg">
-                  <h3 className="font-headline-sm text-headline-sm text-primary mb-md border-b border-outline-variant pb-sm">
-                    About the Partner
-                  </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">{job.aboutCompany}</p>
+                <aside className="bg-white border border-hairline rounded-xl p-6">
+                  <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">About the Partner</h3>
+                  <p className="text-sm text-muted leading-relaxed">{job.aboutCompany}</p>
                 </aside>
               )}
             </div>

@@ -1,12 +1,41 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import {
+  SquaresFour,
+  ClipboardText,
+  GraduationCap,
+  Briefcase,
+  FileText,
+  UserCircle,
+  EnvelopeSimple,
+  Gear,
+  SignOut,
+  X,
+  List,
+  Bell,
+} from "@phosphor-icons/react";
+
+const ICONS = {
+  dashboard: SquaresFour,
+  quiz: ClipboardText,
+  school: GraduationCap,
+  work: Briefcase,
+  description: FileText,
+  account_circle: UserCircle,
+  mail: EnvelopeSimple,
+  settings: Gear,
+  notifications: Bell,
+};
+
+function NavIcon({ name, ...props }) {
+  const Icon = ICONS[name] || SquaresFour;
+  return <Icon {...props} />;
+}
 
 function navLinkClass({ isActive }) {
-  return `flex items-center gap-md px-md py-sm rounded-DEFAULT font-label-md text-label-md transition-all scale-95 active:scale-90 ${
-    isActive
-      ? "text-primary font-bold border-l-4 border-primary bg-surface-container-high"
-      : "text-on-secondary-fixed-variant hover:bg-secondary-container"
+  return `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+    isActive ? "text-ink font-medium bg-bone" : "text-muted hover:bg-bone hover:text-ink"
   }`;
 }
 
@@ -23,49 +52,49 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
   return (
     <>
       {/* Mobile top bar */}
-      <header className="md:hidden flex items-center justify-between p-md border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-20">
-        <h1 className="font-headline-sm text-headline-sm font-bold text-primary">{title}</h1>
-        <button onClick={() => setMobileOpen(true)} className="text-on-surface-variant">
-          <span className="material-symbols-outlined">menu</span>
+      <header className="md:hidden flex items-center justify-between p-4 border-b border-hairline bg-canvas sticky top-0 z-20">
+        <h1 className="font-editorial italic text-lg text-ink">{title}</h1>
+        <button onClick={() => setMobileOpen(true)} className="text-ink p-1">
+          <List size={20} />
         </button>
       </header>
 
       <aside
         className={`${
           mobileOpen ? "flex" : "hidden"
-        } md:flex flex-col bg-surface-container-low border-r border-outline-variant fixed left-0 top-0 h-screen w-64 py-xl px-md z-30 overflow-y-auto`}
+        } md:flex flex-col bg-canvas border-r border-hairline fixed left-0 top-0 h-screen w-64 py-8 px-4 z-30 overflow-y-auto`}
       >
-        <div className="flex items-center justify-between gap-sm mb-xl px-sm">
+        <div className="flex items-center justify-between gap-2 mb-8 px-2">
           <div>
-            <h2 className="font-headline-sm text-headline-sm font-bold text-primary">{title}</h2>
-            <p className="font-label-sm text-label-sm text-on-surface-variant">{subtitle}</p>
+            <h2 className="font-editorial italic text-lg text-ink leading-tight">{title}</h2>
+            <p className="text-xs text-muted mt-0.5">{subtitle}</p>
           </div>
-          <button onClick={() => setMobileOpen(false)} className="md:hidden material-symbols-outlined text-on-surface-variant">
-            close
+          <button onClick={() => setMobileOpen(false)} className="md:hidden text-muted p-1">
+            <X size={18} />
           </button>
         </div>
 
-        <nav className="flex-1 space-y-xs">
+        <nav className="flex-1 space-y-0.5">
           {navItems.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
-              <span className="material-symbols-outlined">{item.icon}</span>
+              <NavIcon name={item.icon} size={18} weight="regular" />
               <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
 
-        <div className="mt-auto border-t border-outline-variant pt-md space-y-xs">
+        <div className="mt-auto border-t border-hairline pt-4 space-y-0.5">
           {footerNavItems.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
-              <span className="material-symbols-outlined">{item.icon}</span>
+              <NavIcon name={item.icon} size={18} weight="regular" />
               <span>{item.label}</span>
             </NavLink>
           ))}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-secondary-fixed-variant hover:bg-secondary-container transition-all scale-95 active:scale-90 font-label-md text-label-md"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink transition-colors"
           >
-            <span className="material-symbols-outlined">logout</span>
+            <SignOut size={18} />
             <span>Logout</span>
           </button>
         </div>

@@ -1,20 +1,18 @@
 const STATUS_STYLES = {
-  Applied: "bg-surface-container-high text-on-surface",
-  "Under Review": "bg-surface-container-high text-on-surface",
-  Screening: "bg-surface-container-high text-on-surface",
-  Shortlisted: "bg-primary-fixed text-on-primary-fixed",
-  Assessment: "bg-primary-fixed text-on-primary-fixed",
-  Interview: "bg-primary-container text-white",
-  Selected: "bg-primary-container text-white",
-  Rejected: "bg-error-container text-on-error-container",
-  Closed: "bg-surface-variant text-on-surface-variant",
+  Applied: "bg-bone text-charcoal",
+  "Under Review": "bg-bone text-charcoal",
+  Screening: "bg-bone text-charcoal",
+  Shortlisted: "bg-pastel-blue text-pastel-blue-ink",
+  Assessment: "bg-pastel-blue text-pastel-blue-ink",
+  Interview: "bg-pastel-yellow text-pastel-yellow-ink",
+  Selected: "bg-pastel-green text-pastel-green-ink",
+  Rejected: "bg-pastel-red text-pastel-red-ink",
+  Closed: "bg-bone text-muted",
 };
 
 export default function ApplicationStatus({ status }) {
-  const styles = STATUS_STYLES[status] || "bg-surface-container-high text-on-surface";
+  const styles = STATUS_STYLES[status] || "bg-bone text-charcoal";
   return (
-    <span className={`inline-block px-sm py-xs rounded-DEFAULT font-label-md text-label-md ${styles}`}>
-      {status}
-    </span>
+    <span className={`inline-block px-2.5 py-1 rounded-full text-xs uppercase tracking-wide ${styles}`}>{status}</span>
   );
 }
