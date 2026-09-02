@@ -52,12 +52,32 @@ export default {
         "surface-dim": "#dadada",
         "on-tertiary-fixed": "#2b1700",
         "surface-container-low": "#f4f3f3",
+
+        /* Editorial minimalism palette (Landing / Login) */
+        canvas: "#FBFBFA",
+        bone: "#F7F6F3",
+        ink: "#111111",
+        charcoal: "#2F3437",
+        muted: "#787774",
+        hairline: "#EAEAEA",
+        "pastel-red": "#FDEBEC",
+        "pastel-red-ink": "#9F2F2D",
+        "pastel-blue": "#E1F3FE",
+        "pastel-blue-ink": "#1F6C9F",
+        "pastel-green": "#EDF3EC",
+        "pastel-green-ink": "#346538",
+        "pastel-yellow": "#FBF3DB",
+        "pastel-yellow-ink": "#956400",
       },
       borderRadius: {
         DEFAULT: "0.125rem",
         lg: "0.25rem",
         xl: "0.5rem",
         full: "0.75rem",
+      },
+      boxShadow: {
+        hairline: "0 1px 2px rgba(17, 17, 17, 0.03)",
+        lift: "0 2px 8px rgba(17, 17, 17, 0.04)",
       },
       spacing: {
         md: "16px",
@@ -81,6 +101,9 @@ export default {
         "headline-sm": ["IBM Plex Sans"],
         "label-sm": ["IBM Plex Sans"],
         "body-lg": ["IBM Plex Sans"],
+
+        editorial: ["Newsreader", "serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
         "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "600" }],

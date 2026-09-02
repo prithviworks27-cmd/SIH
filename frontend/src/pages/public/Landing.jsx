@@ -1,142 +1,195 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { List, X, ChartLineUp, Handshake, RocketLaunch } from "@phosphor-icons/react";
+import useScrollReveal from "../../hooks/useScrollReveal";
+
+const STEPS = [
+  {
+    number: "01",
+    icon: ChartLineUp,
+    tint: "bg-pastel-blue text-pastel-blue-ink",
+    title: "Skill mapping",
+    body: "Coursework and research experience are assessed against industry skill ontologies to surface core competencies automatically.",
+  },
+  {
+    number: "02",
+    icon: Handshake,
+    tint: "bg-pastel-green text-pastel-green-ink",
+    title: "Industry connection",
+    body: "Direct, authenticated channels to corporate R&D teams and university recruiters replace cold outreach and static resumes.",
+  },
+  {
+    number: "03",
+    icon: RocketLaunch,
+    tint: "bg-pastel-yellow text-pastel-yellow-ink",
+    title: "Career placement",
+    body: "Applications, contract negotiation, and placement tracking live in a single dashboard from first match to signed offer.",
+  },
+];
 
 export default function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const heroRef = useScrollReveal();
+  const stepsHeaderRef = useScrollReveal();
 
   return (
-    <div className="font-body-md text-body-md antialiased min-h-screen flex flex-col">
-      {/*TopNavBar*/}
-      <header className="bg-surface-container-lowest border-b border-outline-variant w-full sticky top-0 z-50">
-      <div className="flex justify-between items-center px-4 md:px-margin py-md w-full max-w-max-width mx-auto">
-      {/*Brand*/}
-      <Link className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2" to="/">
-      <span aria-hidden="true" className="material-symbols-outlined" data-weight="fill">hub</span>
-                       AcademiaLink
-                  </Link>
-      {/*Navigation Links (Desktop)*/}
-      <nav className="hidden md:flex items-center gap-lg">
-      <a className="font-body-md text-body-md text-primary border-b-2 border-primary pb-1 transition-colors duration-200" href="#how-it-works">How it works</a>
-      <a className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200 cursor-pointer" href="#">For Students</a>
-      <a className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200 cursor-pointer" href="#">For Industry</a>
-      <a className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200 cursor-pointer" href="#">For Institutions</a>
-      </nav>
-      {/*Actions*/}
-      <div className="flex items-center gap-md">
-      <Link className="hidden md:block font-label-md text-label-md text-primary bg-surface-container-lowest border border-outline-variant px-4 py-2 rounded hover:bg-surface-container-low transition-colors duration-200" to="/login">
-                          Login
-                      </Link>
-      <Link className="font-label-md text-label-md text-on-primary bg-primary-container px-4 py-2 rounded hover:bg-primary transition-colors duration-200 shadow-none" to="/signup">
-                          Sign Up
-                      </Link>
-      {/*Mobile Menu Toggle*/}
-      <button onClick={() => setMenuOpen((open) => !open)} className="md:hidden text-primary p-2">
-      <span className="material-symbols-outlined">{menuOpen ? "close" : "menu"}</span>
-      </button>
-      </div>
-      </div>
-      {/*Navigation Links (Mobile)*/}
-      <nav className={`${menuOpen ? "flex" : "hidden"} md:hidden flex-col gap-1 px-4 pb-md`}>
-      <a className="font-body-md text-body-md text-primary py-2" href="#how-it-works">How it works</a>
-      <a className="font-body-md text-body-md text-on-surface-variant py-2" href="#">For Students</a>
-      <a className="font-body-md text-body-md text-on-surface-variant py-2" href="#">For Industry</a>
-      <a className="font-body-md text-body-md text-on-surface-variant py-2" href="#">For Institutions</a>
-      </nav>
+    <div className="min-h-screen flex flex-col bg-canvas text-charcoal antialiased">
+      {/* Nav */}
+      <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
+        <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
+          <Link className="font-editorial italic text-xl text-ink flex items-center gap-2" to="/">
+            AcademiaLink
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-8 text-sm">
+            <a className="text-ink border-b border-ink pb-0.5" href="#how-it-works">
+              How it works
+            </a>
+            <a className="text-muted hover:text-ink transition-colors" href="#">
+              For students
+            </a>
+            <a className="text-muted hover:text-ink transition-colors" href="#">
+              For industry
+            </a>
+            <a className="text-muted hover:text-ink transition-colors" href="#">
+              For institutions
+            </a>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <Link
+              className="hidden md:block text-sm text-ink border border-hairline px-4 py-2 rounded-md hover:bg-bone transition-colors"
+              to="/login"
+            >
+              Login
+            </Link>
+            <Link
+              className="text-sm text-white bg-ink px-4 py-2 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all"
+              to="/signup"
+            >
+              Sign up
+            </Link>
+            <button
+              onClick={() => setMenuOpen((open) => !open)}
+              className="md:hidden text-ink p-1.5"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+            >
+              {menuOpen ? <X size={20} /> : <List size={20} />}
+            </button>
+          </div>
+        </div>
+
+        <nav className={`${menuOpen ? "flex" : "hidden"} md:hidden flex-col gap-1 px-4 pb-4 text-sm`}>
+          <a className="text-ink py-2" href="#how-it-works">
+            How it works
+          </a>
+          <a className="text-muted py-2" href="#">
+            For students
+          </a>
+          <a className="text-muted py-2" href="#">
+            For industry
+          </a>
+          <a className="text-muted py-2" href="#">
+            For institutions
+          </a>
+        </nav>
       </header>
-      {/*Main Content*/}
+
       <main className="flex-grow flex flex-col">
-      {/*Hero Section*/}
-      <section className="w-full bg-surface-container-lowest py-24 md:py-32 px-4 md:px-margin border-b border-outline-variant flex flex-col items-center justify-center text-center">
-      <div className="max-w-3xl mx-auto space-y-6">
-      <h1 className="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface">
-                          Bridge the Gap Between <span className="text-primary">Academia</span> and <span className="text-primary">Industry</span>
-      </h1>
-      <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
-                          A unified platform for skill mapping, internships, and placements. Streamline institutional partnerships and elevate career trajectories with data-driven precision.
-                      </p>
-      <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <Link className="font-label-md text-label-md text-on-primary bg-primary-container px-8 py-3 rounded w-full sm:w-auto hover:bg-primary transition-colors duration-200 shadow-none" to="/signup">
-                              Get Started
-                          </Link>
-      <button className="font-label-md text-label-md text-primary bg-surface-container-lowest border border-outline-variant px-8 py-3 rounded w-full sm:w-auto hover:bg-surface-container-low transition-colors duration-200">
-                              View Demo
-                          </button>
-      </div>
-      </div>
-      </section>
-      {/*How It Works Section*/}
-      <section className="w-full py-24 px-4 md:px-margin bg-surface max-w-max-width mx-auto" id="how-it-works">
-      <div className="text-center mb-16 space-y-4">
-      <h2 className="font-headline-lg text-headline-md md:text-headline-lg text-on-surface">Structured Pathway to Success</h2>
-      <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">
-                          Our methodology simplifies complex transitions from academic environments to corporate roles.
-                      </p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {/*Step 1*/}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded p-6 flex flex-col gap-4 relative">
-      <div className="absolute -top-4 -left-4 w-10 h-10 bg-primary-container text-on-primary rounded flex items-center justify-center font-label-md text-label-md border-4 border-surface">
-                               1
-                           </div>
-      <div className="text-primary mb-2 mt-4">
-      <span className="material-symbols-outlined text-4xl" data-weight="fill">insights</span>
-      </div>
-      <h3 className="font-headline-sm text-headline-sm text-on-surface">Skill Mapping</h3>
-      <p className="font-body-sm text-body-sm text-on-surface-variant flex-grow">
-                               Algorithmic assessment of academic coursework and research experience to identify core competencies and match them against industry standard skill ontologies.
-                           </p>
-      </div>
-      {/*Step 2*/}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded p-6 flex flex-col gap-4 relative">
-      <div className="absolute -top-4 -left-4 w-10 h-10 bg-primary-container text-on-primary rounded flex items-center justify-center font-label-md text-label-md border-4 border-surface">
-                               2
-                           </div>
-      <div className="text-primary mb-2 mt-4">
-      <span className="material-symbols-outlined text-4xl" data-weight="fill">handshake</span>
-      </div>
-      <h3 className="font-headline-sm text-headline-sm text-on-surface">Industry Connection</h3>
-      <p className="font-body-sm text-body-sm text-on-surface-variant flex-grow">
-                               Direct access to curated corporate R&amp;D teams and university recruiters through authenticated, secure communication channels.
-                           </p>
-      </div>
-      {/*Step 3*/}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded p-6 flex flex-col gap-4 relative">
-      <div className="absolute -top-4 -left-4 w-10 h-10 bg-primary-container text-on-primary rounded flex items-center justify-center font-label-md text-label-md border-4 border-surface">
-                               3
-                           </div>
-      <div className="text-primary mb-2 mt-4">
-      <span className="material-symbols-outlined text-4xl" data-weight="fill">rocket_launch</span>
-      </div>
-      <h3 className="font-headline-sm text-headline-sm text-on-surface">Career Placement</h3>
-      <p className="font-body-sm text-body-sm text-on-surface-variant flex-grow">
-                               End-to-end management of internship applications, contract negotiations, and final role placement tracking within a single dashboard.
-                           </p>
-      </div>
-      </div>
-      </section>
+        {/* Hero */}
+        <section className="relative w-full px-4 md:px-6 py-24 md:py-36 border-b border-hairline overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="ambient-blob pointer-events-none absolute -top-1/3 right-0 w-[600px] h-[600px] rounded-full opacity-[0.04]"
+            style={{ background: "radial-gradient(circle, #1F6C9F 0%, transparent 70%)" }}
+          />
+
+          <div ref={heroRef} className="reveal relative max-w-3xl mx-auto text-center space-y-7">
+            <h1 className="font-editorial text-4xl md:text-6xl leading-[1.1] tracking-tight text-ink">
+              Bridge the gap between <em className="not-italic text-pastel-blue-ink">academia</em> and{" "}
+              <em className="not-italic text-pastel-green-ink">industry</em>
+            </h1>
+            <p className="text-base md:text-lg text-muted max-w-xl mx-auto leading-relaxed">
+              A unified platform for skill mapping, internships, and placements — built to streamline
+              institutional partnerships and career trajectories with data-driven precision.
+            </p>
+            <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <Link
+                className="text-sm font-medium text-white bg-ink px-6 py-3 rounded-md w-full sm:w-auto hover:bg-[#333333] active:scale-[0.98] transition-all"
+                to="/signup"
+              >
+                Get started
+              </Link>
+              <button className="text-sm text-ink border border-hairline px-6 py-3 rounded-md w-full sm:w-auto hover:bg-bone transition-colors">
+                View demo
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* How it works — bento grid */}
+        <section className="w-full py-24 px-4 md:px-6 max-w-5xl mx-auto" id="how-it-works">
+          <div ref={stepsHeaderRef} className="reveal text-center mb-16 space-y-3">
+            <h2 className="font-editorial text-3xl md:text-4xl text-ink tracking-tight">
+              A structured pathway
+            </h2>
+            <p className="text-muted max-w-xl mx-auto leading-relaxed">
+              Three steps take a student from coursework to a verified industry placement.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {STEPS.map((step) => (
+              <StepCard key={step.number} step={step} />
+            ))}
+          </div>
+        </section>
       </main>
-      {/*Footer*/}
-      <footer className="bg-surface-container-lowest border-t border-outline-variant mt-auto">
-      <div className="w-full py-xl px-4 md:px-margin max-w-max-width mx-auto flex flex-col md:flex-row justify-between items-center gap-md">
-      {/*Brand / Copyright*/}
-      <div className="flex flex-col items-center md:items-start gap-2">
-      <span className="font-label-md text-label-md font-bold text-primary flex items-center gap-1">
-      <span className="material-symbols-outlined text-sm" data-weight="fill">hub</span>
-                          AcademiaLink
-                      </span>
-      <span className="font-body-sm text-body-sm text-secondary">
-                          © 2024 AcademiaLink Collaboration Portal. All rights reserved.
-                      </span>
-      </div>
-      {/*Links*/}
-      <nav className="flex flex-wrap justify-center gap-6">
-      <a className="font-body-sm text-body-sm text-on-secondary-fixed-variant hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
-      <a className="font-body-sm text-body-sm text-on-secondary-fixed-variant hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
-      <a className="font-body-sm text-body-sm text-on-secondary-fixed-variant hover:text-primary transition-colors duration-200" href="#">Contact Us</a>
-      <a className="font-body-sm text-body-sm text-on-secondary-fixed-variant hover:text-primary transition-colors duration-200" href="#">Help Center</a>
-      </nav>
-      </div>
+
+      {/* Footer */}
+      <footer className="bg-canvas border-t border-hairline mt-auto">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <span className="font-editorial italic text-base text-ink">AcademiaLink</span>
+            <span className="text-xs text-muted">© 2024 AcademiaLink Collaboration Portal.</span>
+          </div>
+          <nav className="flex flex-wrap justify-center gap-6 text-xs text-muted">
+            <a className="hover:text-ink transition-colors" href="#">
+              Privacy policy
+            </a>
+            <a className="hover:text-ink transition-colors" href="#">
+              Terms of service
+            </a>
+            <a className="hover:text-ink transition-colors" href="#">
+              Contact us
+            </a>
+            <a className="hover:text-ink transition-colors" href="#">
+              Help center
+            </a>
+          </nav>
+        </div>
       </footer>
+    </div>
+  );
+}
+
+function StepCard({ step }) {
+  const ref = useScrollReveal();
+  const Icon = step.icon;
+
+  return (
+    <div
+      ref={ref}
+      className="reveal border border-hairline rounded-xl p-8 bg-white hover:shadow-lift transition-shadow flex flex-col gap-4"
+    >
+      <div className="flex items-center justify-between">
+        <span className={`w-10 h-10 rounded-md flex items-center justify-center ${step.tint}`}>
+          <Icon size={20} weight="bold" />
+        </span>
+        <span className="font-mono text-xs text-muted">{step.number}</span>
+      </div>
+      <h3 className="text-lg font-medium text-ink">{step.title}</h3>
+      <p className="text-sm text-muted leading-relaxed">{step.body}</p>
     </div>
   );
 }
