@@ -145,25 +145,9 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="bg-canvas border-t border-hairline mt-auto">
-        <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col items-center md:items-start gap-1">
-            <span className="font-editorial italic text-base text-ink">AcademiaLink</span>
-            <span className="text-xs text-muted">© 2024 AcademiaLink Collaboration Portal.</span>
-          </div>
-          <nav className="flex flex-wrap justify-center gap-6 text-xs text-muted">
-            <a className="hover:text-ink transition-colors" href="#">
-              Privacy policy
-            </a>
-            <a className="hover:text-ink transition-colors" href="#">
-              Terms of service
-            </a>
-            <a className="hover:text-ink transition-colors" href="#">
-              Contact us
-            </a>
-            <a className="hover:text-ink transition-colors" href="#">
-              Help center
-            </a>
-          </nav>
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col items-center gap-1">
+          <span className="font-editorial italic text-base text-ink">AcademiaLink</span>
+          <span className="text-xs text-muted">© 2024 AcademiaLink Collaboration Portal.</span>
         </div>
       </footer>
     </div>
