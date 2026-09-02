@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -58,52 +59,38 @@ export default function Login() {
   const errorMessage = localError || authError;
 
   return (
-    <div className="h-full flex items-center justify-center bg-surface-container-lowest text-on-surface">
-      <main className="w-full max-w-md p-lg">
-        {/*Header / Logo*/}
-        <div className="text-center mb-xl">
-          <h1 className="font-headline-lg text-headline-lg font-bold text-primary mb-xs">
+    <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4">
+      <main className="w-full max-w-sm">
+        {/* Wordmark */}
+        <div className="text-center mb-10">
+          <h1 className="font-editorial italic text-3xl text-ink tracking-tight">
             AcademiaLink
           </h1>
         </div>
 
-        {/*Login Form Container*/}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg">
-          {/* Error Message */}
+        {/* Card */}
+        <div className="bg-white border border-hairline rounded-lg p-8">
           {errorMessage && (
-            <div className="mb-md p-sm bg-error-container rounded border border-error text-on-error-container font-body-sm text-body-sm">
-              <div className="flex items-start gap-sm">
-                <span
-                  className="material-symbols-outlined flex-shrink-0"
-                  style={{ fontSize: "20px" }}
-                >
-                  error
-                </span>
-                <p>{errorMessage}</p>
+            <div className="mb-5 px-3 py-2.5 bg-pastel-red rounded-md">
+              <div className="flex items-start gap-2">
+                <WarningCircle size={18} weight="bold" className="text-pastel-red-ink flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-pastel-red-ink">{errorMessage}</p>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-md">
-            {/*Email Field*/}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
             <div>
-              <label
-                className="block font-label-md text-label-md text-on-surface mb-sm"
-                htmlFor="email"
-              >
-                Email Address
+              <label className="block text-xs uppercase tracking-wide text-muted mb-1.5" htmlFor="email">
+                Email address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
-                  <span
-                    className="material-symbols-outlined text-outline"
-                    style={{ fontSize: "20px" }}
-                  >
-                    mail
-                  </span>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <EnvelopeSimple size={17} className="text-muted" />
                 </div>
                 <input
-                  className="block w-full pl-xl pr-sm py-sm border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:ring-0 focus:border-primary-container font-body-md text-body-md placeholder-outline transition-colors"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-hairline rounded-md bg-white text-charcoal focus:ring-0 focus:border-ink placeholder:text-muted text-sm outline-none transition-colors"
                   id="email"
                   name="email"
                   type="email"
@@ -116,33 +103,17 @@ export default function Login() {
               </div>
             </div>
 
-            {/*Password Field*/}
+            {/* Password */}
             <div>
-              <div className="flex items-center justify-between mb-sm">
-                <label
-                  className="block font-label-md text-label-md text-on-surface"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <a
-                  className="font-body-sm text-body-sm text-primary hover:underline transition-all"
-                  href="#"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              <label className="block text-xs uppercase tracking-wide text-muted mb-1.5" htmlFor="password">
+                Password
+              </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
-                  <span
-                    className="material-symbols-outlined text-outline"
-                    style={{ fontSize: "20px" }}
-                  >
-                    lock
-                  </span>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <LockSimple size={17} className="text-muted" />
                 </div>
                 <input
-                  className="block w-full pl-xl pr-sm py-sm border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:ring-0 focus:border-primary-container font-body-md text-body-md placeholder-outline transition-colors"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-hairline rounded-md bg-white text-charcoal focus:ring-0 focus:border-ink placeholder:text-muted text-sm outline-none transition-colors"
                   id="password"
                   name="password"
                   type="password"
@@ -153,12 +124,15 @@ export default function Login() {
                   required
                 />
               </div>
+              <a className="block mt-1.5 text-xs text-muted hover:text-ink transition-colors" href="#">
+                Forgot password?
+              </a>
             </div>
 
-            {/*Remember Me*/}
+            {/* Remember me */}
             <div className="flex items-center">
               <input
-                className="h-4 w-4 text-primary-container border-outline-variant rounded focus:ring-primary-container focus:ring-offset-0 bg-surface-container-lowest"
+                className="h-4 w-4 rounded border-hairline text-ink focus:ring-0 focus:ring-offset-0"
                 id="remember-me"
                 name="rememberMe"
                 type="checkbox"
@@ -166,30 +140,22 @@ export default function Login() {
                 onChange={handleInputChange}
                 disabled={isSubmitting}
               />
-              <label
-                className="ml-sm block font-body-sm text-body-sm text-on-surface-variant"
-                htmlFor="remember-me"
-              >
+              <label className="ml-2 text-sm text-muted" htmlFor="remember-me">
                 Remember my credentials
               </label>
             </div>
 
-            {/*Submit Button*/}
-            <div className="pt-sm">
+            {/* Submit */}
+            <div className="pt-1">
               <button
-                className="w-full flex justify-center py-sm px-md border border-transparent rounded-DEFAULT shadow-sm font-label-md text-label-md text-white bg-primary-container hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium text-white bg-ink hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={isSubmitting || loading}
               >
                 {isSubmitting || loading ? (
                   <>
-                    <span
-                      className="material-symbols-outlined animate-spin mr-sm"
-                      style={{ fontSize: "20px" }}
-                    >
-                      sync
-                    </span>
-                    Logging in...
+                    <ArrowClockwise size={16} className="animate-spin" />
+                    Logging in
                   </>
                 ) : (
                   "Login"
@@ -198,24 +164,20 @@ export default function Login() {
             </div>
           </form>
 
-          {/*Divider*/}
-          <div className="mt-lg">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-outline-variant"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-sm bg-surface-container-lowest text-on-surface-variant font-body-sm text-body-sm">
-                  Need an account?
-                </span>
-              </div>
+          {/* Divider */}
+          <div className="mt-8 relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-hairline" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="px-3 bg-white text-xs text-muted">Need an account?</span>
             </div>
           </div>
 
-          {/*Sign Up Link*/}
-          <div className="mt-lg text-center">
+          {/* Sign up */}
+          <div className="mt-6 text-center">
             <a
-              className="font-label-md text-label-md text-primary-container hover:text-primary transition-colors hover:underline"
+              className="text-xs uppercase tracking-wide text-ink hover:text-muted transition-colors"
               href="/signup"
             >
               REGISTER
@@ -223,11 +185,9 @@ export default function Login() {
           </div>
         </div>
 
-        {/*Footer*/}
-        <div className="mt-lg text-center">
-          <p className="font-body-sm text-body-sm text-outline">
-            © 2024 AcademiaLink Collaboration Portal.
-          </p>
+        {/* Footer */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-muted">© 2024 AcademiaLink Collaboration Portal.</p>
         </div>
       </main>
     </div>
