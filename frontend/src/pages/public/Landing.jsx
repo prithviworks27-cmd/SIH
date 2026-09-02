@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { List, X, ChartLineUp, Handshake, RocketLaunch } from "@phosphor-icons/react";
+import { ChartLineUp, Handshake, RocketLaunch } from "@phosphor-icons/react";
 import useScrollReveal from "../../hooks/useScrollReveal";
 
 const STEPS = [
@@ -28,7 +27,6 @@ const STEPS = [
 ];
 
 export default function Landing() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const heroRef = useScrollReveal();
   const stepsHeaderRef = useScrollReveal();
 
@@ -41,24 +39,9 @@ export default function Landing() {
             AcademiaLink
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm">
-            <a className="text-ink border-b border-ink pb-0.5" href="#how-it-works">
-              How it works
-            </a>
-            <a className="text-muted hover:text-ink transition-colors" href="#">
-              For students
-            </a>
-            <a className="text-muted hover:text-ink transition-colors" href="#">
-              For industry
-            </a>
-            <a className="text-muted hover:text-ink transition-colors" href="#">
-              For institutions
-            </a>
-          </nav>
-
           <div className="flex items-center gap-3">
             <Link
-              className="hidden md:block text-sm text-ink border border-hairline px-4 py-2 rounded-md hover:bg-bone transition-colors"
+              className="text-sm text-ink border border-hairline px-4 py-2 rounded-md hover:bg-bone transition-colors"
               to="/login"
             >
               Login
@@ -69,30 +52,8 @@ export default function Landing() {
             >
               Sign up
             </Link>
-            <button
-              onClick={() => setMenuOpen((open) => !open)}
-              className="md:hidden text-ink p-1.5"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-            >
-              {menuOpen ? <X size={20} /> : <List size={20} />}
-            </button>
           </div>
         </div>
-
-        <nav className={`${menuOpen ? "flex" : "hidden"} md:hidden flex-col gap-1 px-4 pb-4 text-sm`}>
-          <a className="text-ink py-2" href="#how-it-works">
-            How it works
-          </a>
-          <a className="text-muted py-2" href="#">
-            For students
-          </a>
-          <a className="text-muted py-2" href="#">
-            For industry
-          </a>
-          <a className="text-muted py-2" href="#">
-            For institutions
-          </a>
-        </nav>
       </header>
 
       <main className="flex-grow flex flex-col">
