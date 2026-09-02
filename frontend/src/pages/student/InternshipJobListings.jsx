@@ -1,17 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
-import { getInternships } from "../../services/internshipsService";
+import { getInternshipsWithMatch } from "../../services/matchService";
 import { Briefcase } from "@phosphor-icons/react";
+
+const SKILL_FILTERS = ["Python Programming", "React", "SQL / Databases", "Cloud Computing (AWS)"];
+const LOCATION_FILTERS = ["Remote", "Bangalore (Hybrid)", "Mumbai"];
+const TYPE_FILTERS = ["Full-time", "Internship"];
+
+function toggle(set, value) {
+  const next = new Set(set);
+  next.has(value) ? next.delete(value) : next.add(value);
+  return next;
+}
 
 export default function InternshipJobListings() {
   const [jobs, setJobs] = useState(undefined);
+  const [skillFilters, setSkillFilters] = useState(new Set());
+  const [locationFilters, setLocationFilters] = useState(new Set());
+  const [typeFilters, setTypeFilters] = useState(new Set(TYPE_FILTERS));
 
   useEffect(() => {
-    getInternships().then(setJobs);
+    getInternshipsWithMatch().then(setJobs);
   }, []);
+
+  const filteredJobs = useMemo(() => {
+    if (!jobs) return jobs;
+    return jobs.filter((job) => {
+      const matchesSkill = skillFilters.size === 0 || job.skills.some((s) => skillFilters.has(s));
+      const matchesLocation = locationFilters.size === 0 || locationFilters.has(job.location);
+      const matchesType = typeFilters.size === 0 || typeFilters.has(job.type);
+      return matchesSkill && matchesLocation && matchesType;
+    });
+  }, [jobs, skillFilters, locationFilters, typeFilters]);
 
   return (
     <DashboardLayout>
@@ -23,9 +46,14 @@ export default function InternshipJobListings() {
             <div className="mb-6 border-b border-hairline pb-4">
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Skills</h3>
               <div className="space-y-2">
-                {["Python", "Java", "React", "Data Analysis"].map((skill) => (
+                {SKILL_FILTERS.map((skill) => (
                   <label key={skill} className="flex items-center gap-2 cursor-pointer">
-                    <input className="rounded border-hairline text-ink focus:ring-ink h-4 w-4" type="checkbox" />
+                    <input
+                      className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
+                      type="checkbox"
+                      checked={skillFilters.has(skill)}
+                      onChange={() => setSkillFilters((prev) => toggle(prev, skill))}
+                    />
                     <span className="text-sm text-charcoal">{skill}</span>
                   </label>
                 ))}
@@ -34,9 +62,14 @@ export default function InternshipJobListings() {
             <div className="mb-6 border-b border-hairline pb-4">
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Location</h3>
               <div className="space-y-2">
-                {["Remote", "Bangalore", "Mumbai"].map((loc) => (
+                {LOCATION_FILTERS.map((loc) => (
                   <label key={loc} className="flex items-center gap-2 cursor-pointer">
-                    <input className="rounded border-hairline text-ink focus:ring-ink h-4 w-4" type="checkbox" />
+                    <input
+                      className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
+                      type="checkbox"
+                      checked={locationFilters.has(loc)}
+                      onChange={() => setLocationFilters((prev) => toggle(prev, loc))}
+                    />
                     <span className="text-sm text-charcoal">{loc}</span>
                   </label>
                 ))}
@@ -45,9 +78,14 @@ export default function InternshipJobListings() {
             <div>
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Type</h3>
               <div className="space-y-2">
-                {["Full-time", "Internship", "Part-time"].map((type, i) => (
+                {TYPE_FILTERS.map((type) => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer">
-                    <input defaultChecked={i < 2} className="rounded border-hairline text-ink focus:ring-ink h-4 w-4" type="checkbox" />
+                    <input
+                      className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
+                      type="checkbox"
+                      checked={typeFilters.has(type)}
+                      onChange={() => setTypeFilters((prev) => toggle(prev, type))}
+                    />
                     <span className="text-sm text-charcoal">{type}</span>
                   </label>
                 ))}
@@ -60,18 +98,18 @@ export default function InternshipJobListings() {
         <div className="flex-1">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-medium text-ink">Available Opportunities</h2>
-            {jobs && <span className="text-sm text-muted">Showing {jobs.length} results</span>}
+            {filteredJobs && <span className="text-sm text-muted">Showing {filteredJobs.length} results</span>}
           </div>
 
           {jobs === undefined && <LoadingState label="Loading opportunities…" />}
 
-          {jobs && jobs.length === 0 && (
-            <EmptyState icon={Briefcase} title="No opportunities available" description="Check back soon for new listings." />
+          {filteredJobs && filteredJobs.length === 0 && (
+            <EmptyState icon={Briefcase} title="No opportunities match your filters" description="Try clearing a filter to see more results." />
           )}
 
-          {jobs && jobs.length > 0 && (
+          {filteredJobs && filteredJobs.length > 0 && (
             <div className="space-y-3">
-              {jobs.map((job) => (
+              {filteredJobs.map((job) => (
                 <Link
                   key={job.id}
                   to={`/internships/${job.id}`}
@@ -95,7 +133,7 @@ export default function InternshipJobListings() {
                   </div>
                   <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 border-t md:border-t-0 border-hairline pt-4 md:pt-0 mt-4 md:mt-0">
                     <div className="text-right">
-                      <span className="block font-editorial text-2xl text-ink">{job.matchPercent}%</span>
+                      <span className="block font-editorial text-2xl text-ink">{job.match.overallScore}%</span>
                       <span className="text-xs text-muted">Match</span>
                     </div>
                     <span className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-[#333333] transition-colors">View Details</span>

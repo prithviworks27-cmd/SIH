@@ -1,52 +1,42 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { FileText, Flask, CheckCircle, ChatCircleText, CalendarBlank, UsersFour } from "@phosphor-icons/react";
+import LoadingState from "../../components/common/LoadingState";
+import EmptyState from "../../components/common/EmptyState";
+import { getNotifications, markNotificationRead, markAllNotificationsRead } from "../../services/notificationsService";
+import { FileText, Sparkle, CheckCircle, ChatCircleText, CalendarBlank, GraduationCap, Bell } from "@phosphor-icons/react";
 
-const NOTIFICATIONS = [
-  {
-    icon: FileText,
-    unread: true,
-    title: 'Your application for "Optimization of Semi-Transparent Photovoltaics" has been received.',
-    source: "Zurich Institute of Technology",
-    time: "10m ago",
-  },
-  {
-    icon: Flask,
-    unread: true,
-    title: "New grant opportunity matches your research profile: Advanced Materials Synthesis.",
-    source: "National Science Foundation",
-    time: "2h ago",
-  },
-  {
-    icon: CheckCircle,
-    unread: false,
-    title: "Your profile review is complete. You are now verified as a Doctoral Candidate.",
-    source: "System Administrator",
-    time: "1d ago",
-  },
-  {
-    icon: ChatCircleText,
-    unread: false,
-    title: 'Dr. Emily Chen commented on your portfolio artifact "Neural Network Optimization".',
-    source: '"Excellent methodology in section 3. Consider expanding on the..."',
-    time: "2d ago",
-  },
-  {
-    icon: CalendarBlank,
-    unread: false,
-    title: "Reminder: The deadline for the Global Innovation Fellowship is approaching.",
-    source: "Due in 5 days",
-    time: "3d ago",
-  },
-  {
-    icon: UsersFour,
-    unread: false,
-    title: 'You were added to the working group "Sustainable Urban Infrastructure".',
-    source: "By Prof. James Sterling",
-    time: "1w ago",
-  },
-];
+const ICONS = { FileText, Sparkle, CheckCircle, ChatCircleText, CalendarBlank, GraduationCap };
 
 export default function Notifications() {
+  const navigate = useNavigate();
+  const [notifications, setNotifications] = useState(undefined);
+  const [markingAll, setMarkingAll] = useState(false);
+
+  useEffect(() => {
+    getNotifications().then(setNotifications);
+  }, []);
+
+  const handleClick = async (notif) => {
+    if (notif.unread) {
+      await markNotificationRead(notif.id);
+      const refreshed = await getNotifications();
+      setNotifications(refreshed);
+    }
+    if (notif.linkTo) navigate(notif.linkTo);
+  };
+
+  const handleMarkAllRead = async () => {
+    setMarkingAll(true);
+    try {
+      await markAllNotificationsRead();
+      const refreshed = await getNotifications();
+      setNotifications(refreshed);
+    } finally {
+      setMarkingAll(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <header className="mb-10 flex justify-between items-end border-b border-hairline pb-6">
@@ -54,30 +44,44 @@ export default function Notifications() {
           <h2 className="font-editorial text-3xl text-ink tracking-tight">Notifications</h2>
           <p className="text-muted mt-2">Your recent activity and updates.</p>
         </div>
-        <button className="border border-hairline text-charcoal px-4 py-2 rounded-md hover:bg-bone transition-colors text-sm">
-          Mark all as read
+        <button
+          onClick={handleMarkAllRead}
+          disabled={markingAll}
+          className="border border-hairline text-charcoal px-4 py-2 rounded-md hover:bg-bone transition-colors text-sm disabled:opacity-50"
+        >
+          {markingAll ? "Marking…" : "Mark all as read"}
         </button>
       </header>
-      <div className="bg-white border border-hairline rounded-xl flex flex-col">
-        {NOTIFICATIONS.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={i}
-              className={`p-5 flex items-start gap-4 hover:bg-bone transition-colors cursor-pointer ${
-                i < NOTIFICATIONS.length - 1 ? "border-b border-hairline" : ""
-              }`}
-            >
-              <Icon size={20} className={`mt-0.5 ${item.unread ? "text-ink" : "text-muted"}`} />
-              <div className="flex-1">
-                <p className={`text-sm text-charcoal ${item.unread ? "font-medium" : ""}`}>{item.title}</p>
-                <p className="text-sm text-muted mt-1">{item.source}</p>
-              </div>
-              <span className="text-xs text-muted whitespace-nowrap">{item.time}</span>
-            </div>
-          );
-        })}
-      </div>
+
+      {notifications === undefined && <LoadingState label="Loading notifications…" />}
+
+      {notifications && notifications.length === 0 && (
+        <EmptyState icon={Bell} title="No notifications" description="You're all caught up." />
+      )}
+
+      {notifications && notifications.length > 0 && (
+        <div className="bg-white border border-hairline rounded-xl flex flex-col">
+          {notifications.map((item, i) => {
+            const Icon = ICONS[item.icon] || Bell;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleClick(item)}
+                className={`p-5 flex items-start gap-4 hover:bg-bone transition-colors cursor-pointer text-left ${
+                  i < notifications.length - 1 ? "border-b border-hairline" : ""
+                }`}
+              >
+                <Icon size={20} className={`mt-0.5 shrink-0 ${item.unread ? "text-ink" : "text-muted"}`} />
+                <div className="flex-1">
+                  <p className={`text-sm text-charcoal ${item.unread ? "font-medium" : ""}`}>{item.title}</p>
+                  <p className="text-sm text-muted mt-1">{item.source}</p>
+                </div>
+                <span className="text-xs text-muted whitespace-nowrap">{item.time}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </DashboardLayout>
   );
 }

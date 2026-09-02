@@ -1,112 +1,105 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { ArrowLeft, Check, X } from "@phosphor-icons/react";
+import LoadingState from "../../components/common/LoadingState";
+import EmptyState from "../../components/common/EmptyState";
+import WhyThisMatch from "../../components/common/WhyThisMatch";
+import { getMatchForOpportunity } from "../../services/matchService";
+import { applyToOpportunity, getApplications, hasAppliedTo } from "../../services/applicationsService";
+import { ArrowLeft, MagnifyingGlass } from "@phosphor-icons/react";
 
 export default function ExplainableMatchBreakdown() {
+  const { jobId } = useParams();
   const navigate = useNavigate();
+  const [data, setData] = useState(undefined); // undefined = loading, null = not found
+  const [applied, setApplied] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [applyError, setApplyError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    setData(undefined);
+    Promise.all([getMatchForOpportunity(jobId), getApplications()]).then(([result, applications]) => {
+      if (!active) return;
+      setData(result);
+      if (result) setApplied(hasAppliedTo(result.opportunity.id, applications));
+    });
+    return () => {
+      active = false;
+    };
+  }, [jobId]);
+
+  const handleApply = async () => {
+    if (!data) return;
+    setApplying(true);
+    setApplyError("");
+    try {
+      await applyToOpportunity(data.opportunity);
+      setApplied(true);
+    } catch (err) {
+      setApplyError(err.message);
+    } finally {
+      setApplying(false);
+    }
+  };
 
   return (
     <DashboardLayout>
-      <div className="max-w-[760px] mx-auto">
-        {/*Breadcrumbs / Back*/}
-        <button
-          className="inline-flex items-center gap-2 text-muted text-sm hover:text-ink mb-6 transition-colors"
-          onClick={() => navigate("/internships")}
-        >
-          <ArrowLeft size={16} />
-          Back to Internships
-        </button>
+      {data === undefined && <LoadingState label="Loading match breakdown…" />}
 
-        {/*Content Container*/}
-        <div className="bg-white border border-hairline rounded-xl p-8 flex flex-col gap-8">
-          {/*Top Section: Job Info*/}
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">Senior Data Research Intern</h1>
-              <p className="text-muted">Global Analytics Corp</p>
-              <div className="flex gap-2 mt-3">
-                <span className="bg-bone text-charcoal px-2.5 py-1 rounded-full text-xs">Zurich, CH (On-site)</span>
-                <span className="bg-bone text-charcoal px-2.5 py-1 rounded-full text-xs">Full-time Intern</span>
+      {data === null && (
+        <EmptyState
+          icon={MagnifyingGlass}
+          title="Opportunity not found"
+          description="This internship or job may have closed, or the link you followed is incorrect."
+          actionLabel="Back to Internships/Jobs"
+          onAction={() => navigate("/internships")}
+        />
+      )}
+
+      {data && (
+        <div className="max-w-[760px] mx-auto">
+          <button
+            className="inline-flex items-center gap-2 text-muted text-sm hover:text-ink mb-6 transition-colors"
+            onClick={() => navigate("/internships")}
+          >
+            <ArrowLeft size={16} />
+            Back to Internships
+          </button>
+
+          <div className="bg-white border border-hairline rounded-xl p-8 flex flex-col gap-8">
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">{data.opportunity.title}</h1>
+                <p className="text-muted">{data.opportunity.company}</p>
+                <div className="flex gap-2 mt-3">
+                  <span className="bg-bone text-charcoal px-2.5 py-1 rounded-full text-xs">{data.opportunity.location}</span>
+                  <span className="bg-bone text-charcoal px-2.5 py-1 rounded-full text-xs">{data.opportunity.type}</span>
+                </div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="font-editorial text-3xl text-ink">92%</div>
-              <div className="text-xs text-muted">Match Score</div>
-            </div>
+
+            <WhyThisMatch match={data.match} compact />
           </div>
 
-          {/*Match Breakdown Section*/}
-          <div className="border-t border-hairline pt-6">
-            <h2 className="text-lg font-medium text-ink mb-6">Why this match?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Skills Met</h3>
-                <ul className="space-y-2 text-sm text-charcoal">
-                  {["Python", "SQL", "Statistical Modeling", "Research Methodology"].map((skill) => (
-                    <li key={skill} className="flex items-center gap-2 py-2 border-b border-hairline">
-                      <Check size={16} className="text-pastel-green-ink" />
-                      {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Skills Gap</h3>
-                <ul className="space-y-2 text-sm text-charcoal">
-                  {["Tableau", "BigQuery"].map((skill) => (
-                    <li key={skill} className="flex items-center gap-2 py-2 border-b border-hairline">
-                      <X size={16} className="text-pastel-red-ink" />
-                      {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/*Eligibility*/}
-            <div className="mt-6">
-              <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Eligibility &amp; Preferences</h3>
-              <ul className="space-y-2 text-sm text-charcoal">
-                <li className="flex items-center gap-2 py-2 border-b border-hairline">
-                  <Check size={16} className="text-pastel-green-ink" />
-                  Master's Degree Candidate
-                </li>
-                <li className="flex items-center gap-2 py-2 border-b border-hairline">
-                  <Check size={16} className="text-pastel-green-ink" />
-                  2024/2025 Graduation Year
-                </li>
-                <li className="flex items-center gap-2 py-2 border-b border-hairline">
-                  <X size={16} className="text-pastel-red-ink" />
-                  On-site (Zurich) <span className="text-muted ml-1 text-xs">(You prefer Remote)</span>
-                </li>
-              </ul>
-            </div>
-
-            {/*Next Action*/}
-            <div className="mt-8 bg-bone p-5 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-charcoal">
-                <span className="font-medium text-ink">Bridge the gap:</span> Complete the Tableau Advanced module to increase match to 98%.
-              </p>
-              <Link
-                to="/courses"
-                className="bg-ink text-white text-sm px-4 py-2 rounded-md whitespace-nowrap hover:bg-[#333333] active:scale-[0.98] transition-all"
-              >
-                View Module
-              </Link>
-            </div>
+          <div className="mt-6 flex flex-col md:flex-row justify-end items-stretch md:items-center gap-3">
+            {applyError && <p className="text-sm text-pastel-red-ink md:mr-auto">{applyError}</p>}
+            <button
+              className="border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors"
+              onClick={() => navigate("/internships")}
+            >
+              Save for Later
+            </button>
+            <button
+              className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-60"
+              onClick={handleApply}
+              disabled={applied || applying}
+            >
+              {applied ? "Applied ✓" : applying ? "Applying…" : "Apply Now"}
+            </button>
           </div>
         </div>
-
-        {/*Bottom Action Row (for Apply)*/}
-        <div className="mt-6 flex justify-end gap-3">
-          <button className="border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors">
-            Save for Later
-          </button>
-          <button className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all">
-            Apply Now
-          </button>
-        </div>
-      </div>
+      )}
     </DashboardLayout>
   );
 }

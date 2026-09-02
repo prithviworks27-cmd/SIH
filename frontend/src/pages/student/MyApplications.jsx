@@ -1,21 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import ApplicationStatus from "../../components/common/ApplicationStatus";
 import { getApplications } from "../../services/applicationsService";
-import { FunnelSimple, FileText } from "@phosphor-icons/react";
+import { FileText } from "@phosphor-icons/react";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
 }
 
+const STATUS_FILTERS = ["All", "Applied", "Under Review", "Shortlisted", "Interview", "Selected", "Rejected", "Closed"];
+
 export default function MyApplications() {
   const [applications, setApplications] = useState(undefined);
+  const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
     getApplications().then(setApplications);
   }, []);
+
+  const filteredApplications = useMemo(() => {
+    if (!applications) return applications;
+    if (statusFilter === "All") return applications;
+    return applications.filter((a) => a.status === statusFilter);
+  }, [applications, statusFilter]);
 
   return (
     <DashboardLayout>
@@ -25,10 +34,22 @@ export default function MyApplications() {
           <h2 className="font-editorial text-3xl text-ink tracking-tight">Application History</h2>
           <p className="text-muted mt-1.5">Review and track the status of your submitted applications.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="px-4 py-2 border border-hairline rounded-md text-sm text-charcoal hover:bg-bone transition-colors flex items-center gap-2">
-            <FunnelSimple size={16} /> Filter
-          </button>
+        <div className="w-full md:w-56">
+          <label className="sr-only" htmlFor="status-filter">
+            Filter by status
+          </label>
+          <select
+            id="status-filter"
+            className="w-full border border-hairline bg-white text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            {STATUS_FILTERS.map((s) => (
+              <option key={s} value={s}>
+                {s === "All" ? "All Statuses" : s}
+              </option>
+            ))}
+          </select>
         </div>
       </header>
 
@@ -44,7 +65,11 @@ export default function MyApplications() {
         />
       )}
 
-      {applications && applications.length > 0 && (
+      {filteredApplications && applications.length > 0 && filteredApplications.length === 0 && (
+        <EmptyState icon={FileText} title={`No applications with status "${statusFilter}"`} description="Try a different filter." />
+      )}
+
+      {filteredApplications && filteredApplications.length > 0 && (
         <div className="bg-white border border-hairline rounded-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse">
@@ -57,7 +82,7 @@ export default function MyApplications() {
                 </tr>
               </thead>
               <tbody className="text-sm text-charcoal divide-y divide-hairline">
-                {applications.map((app) => (
+                {filteredApplications.map((app) => (
                   <tr key={app.id} className="hover:bg-bone transition-colors">
                     <td className="p-4">
                       <div className="font-medium text-ink">{app.companyName}</div>
@@ -78,7 +103,7 @@ export default function MyApplications() {
           </div>
           <div className="flex items-center justify-between p-4 border-t border-hairline text-xs text-muted">
             <div>
-              Showing 1 to {applications.length} of {applications.length} entries
+              Showing 1 to {filteredApplications.length} of {applications.length} entries
             </div>
           </div>
         </div>

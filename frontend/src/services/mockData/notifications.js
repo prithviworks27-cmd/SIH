@@ -1,0 +1,58 @@
+// linkTo lets clicking a notification navigate somewhere real, per the spec's
+// "clicking notification should navigate to the related page" requirement.
+export const notifications = [
+  {
+    id: "notif-001",
+    icon: "FileText",
+    unread: true,
+    title: 'Your application for "Machine Learning Engineer Intern" has been received.',
+    source: "TechCorp AI Labs",
+    time: "10m ago",
+    linkTo: "/applications",
+  },
+  {
+    id: "notif-002",
+    icon: "Sparkle",
+    unread: true,
+    title: "New internship matching your profile: Full Stack Developer Intern.",
+    source: "Nexus Systems Institute",
+    time: "2h ago",
+    linkTo: "/internships",
+  },
+  {
+    id: "notif-003",
+    icon: "CheckCircle",
+    unread: false,
+    title: "Your application has been shortlisted.",
+    source: "System",
+    time: "1d ago",
+    linkTo: "/applications",
+  },
+  {
+    id: "notif-004",
+    icon: "ChatCircleText",
+    unread: false,
+    title: "Dr. Aris Thorne sent you a new message.",
+    source: '"The preliminary data looks promising..."',
+    time: "2d ago",
+    linkTo: "/messages",
+  },
+  {
+    id: "notif-005",
+    icon: "CalendarBlank",
+    unread: false,
+    title: "Reminder: Take your skill assessment to unlock better matches.",
+    source: "AcademiaLink",
+    time: "3d ago",
+    linkTo: "/skill-assessment",
+  },
+  {
+    id: "notif-006",
+    icon: "GraduationCap",
+    unread: false,
+    title: "New course recommended based on your skill gaps: Advanced Data Structures.",
+    source: "AcademiaLink Learning",
+    time: "1w ago",
+    linkTo: "/courses",
+  },
+];

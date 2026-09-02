@@ -14,6 +14,11 @@ import {
   X,
   List,
   Bell,
+  Buildings,
+  PlusCircle,
+  Users,
+  UsersThree,
+  ChartBar,
 } from "@phosphor-icons/react";
 
 const ICONS = {
@@ -26,6 +31,11 @@ const ICONS = {
   mail: EnvelopeSimple,
   settings: Gear,
   notifications: Bell,
+  company_profile: Buildings,
+  post_opportunity: PlusCircle,
+  candidates: Users,
+  applications: UsersThree,
+  analytics: ChartBar,
 };
 
 function NavIcon({ name, ...props }) {

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
@@ -15,7 +15,6 @@ import DigitalPortfolioEdit from "./pages/student/DigitalPortfolioEdit.jsx";
 import SkillAssessment from "./pages/student/SkillAssessment.jsx";
 import SkillProfileGapReport from "./pages/student/SkillProfileGapReport.jsx";
 import SkillProfileGraph from "./pages/student/SkillProfileGraph.jsx";
-import SkillPassportTrustLevels from "./pages/student/SkillPassportTrustLevels.jsx";
 import RecommendedLearningPaths from "./pages/student/RecommendedLearningPaths.jsx";
 import InternshipJobListings from "./pages/student/InternshipJobListings.jsx";
 import InternshipJobDetail from "./pages/student/InternshipJobDetail.jsx";
@@ -25,8 +24,23 @@ import Notifications from "./pages/student/Notifications.jsx";
 import ProfileSettings from "./pages/student/ProfileSettings.jsx";
 import ProofOfSkillChallenge from "./pages/student/ProofOfSkillChallenge.jsx";
 import ExplainableMatchBreakdown from "./pages/student/ExplainableMatchBreakdown.jsx";
+import CareerDigitalTwin from "./pages/student/CareerDigitalTwin.jsx";
+import EmployerTrustLayer from "./pages/student/EmployerTrustLayer.jsx";
+
+import IndustryDashboard from "./pages/industry/IndustryDashboard.jsx";
+import CompanyProfile from "./pages/industry/CompanyProfile.jsx";
+import PostOpportunity from "./pages/industry/PostOpportunity.jsx";
+import ManageOpportunities from "./pages/industry/ManageOpportunities.jsx";
+import ApplicantPipeline from "./pages/industry/ApplicantPipeline.jsx";
+import CandidatesList from "./pages/industry/CandidatesList.jsx";
+import CandidateDetail from "./pages/industry/CandidateDetail.jsx";
+import IndustrySettings from "./pages/industry/IndustrySettings.jsx";
+
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 
 const STUDENT_ROLES = ["student"];
+const INDUSTRY_ROLES = ["industry"];
+const ADMIN_ROLES = ["admin"];
 
 function App() {
   return (
@@ -109,14 +123,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/skill-passport"
-            element={
-              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillPassportTrustLevels />
-              </ProtectedRoute>
-            }
-          />
+          {/* Skill Passport was merged into the portfolio view — trust levels and
+              evidence now live at /portfolio itself instead of a separate page. */}
+          <Route path="/skill-passport" element={<Navigate to="/portfolio" replace />} />
           <Route
             path="/learning-paths"
             element={
@@ -182,10 +191,102 @@ function App() {
             }
           />
           <Route
-            path="/match-breakdown"
+            path="/match-breakdown/:jobId"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
                 <ExplainableMatchBreakdown />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/career-twin"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <CareerDigitalTwin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employer-trust"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <EmployerTrustLayer />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Industry */}
+          <Route
+            path="/industry/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <IndustryDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/profile"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <CompanyProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/opportunities"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <ManageOpportunities />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/opportunities/create"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <PostOpportunity />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/applications"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <ApplicantPipeline />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/candidates"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <CandidatesList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/candidates/:candidateId"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <CandidateDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/industry/settings"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <IndustrySettings />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Institution Admin */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />

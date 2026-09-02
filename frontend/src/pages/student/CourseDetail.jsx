@@ -4,12 +4,15 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getCourseById } from "../../services/coursesService";
+import { enrollInCourse, isEnrolled } from "../../services/enrollmentsService";
 import { ArrowLeft, CaretRight, Clock, GraduationCap, Buildings, MagnifyingGlass, CheckCircle, DownloadSimple } from "@phosphor-icons/react";
 
 export default function CourseDetail() {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(undefined); // undefined = loading, null = not found
+  const [enrolled, setEnrolled] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -17,10 +20,23 @@ export default function CourseDetail() {
     getCourseById(courseId).then((data) => {
       if (active) setCourse(data);
     });
+    isEnrolled(courseId).then((value) => {
+      if (active) setEnrolled(value);
+    });
     return () => {
       active = false;
     };
   }, [courseId]);
+
+  const handleEnroll = async () => {
+    setEnrolling(true);
+    try {
+      await enrollInCourse(courseId);
+      setEnrolled(true);
+    } finally {
+      setEnrolling(false);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -124,9 +140,13 @@ export default function CourseDetail() {
                   <div className="text-sm font-medium text-ink mb-1">{course.enrollmentStatus || "Enrollment Open"}</div>
                   {course.cohortStart && <div className="text-xs text-muted">Cohort begins {course.cohortStart}</div>}
                 </div>
-                <button className="w-full bg-ink text-white text-sm py-2.5 px-4 rounded-md flex justify-center items-center gap-2 hover:bg-[#333333] active:scale-[0.98] transition-all">
+                <button
+                  onClick={handleEnroll}
+                  disabled={enrolled || enrolling}
+                  className="w-full bg-ink text-white text-sm py-2.5 px-4 rounded-md flex justify-center items-center gap-2 hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-60"
+                >
                   <CheckCircle size={16} />
-                  Enroll in Course
+                  {enrolled ? "Enrolled ✓" : enrolling ? "Enrolling…" : "Enroll in Course"}
                 </button>
                 <button className="w-full text-ink text-sm py-2.5 px-4 rounded-md border border-hairline flex justify-center items-center gap-2 hover:bg-bone transition-colors">
                   <DownloadSimple size={16} />

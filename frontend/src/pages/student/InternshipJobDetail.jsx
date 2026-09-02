@@ -1,32 +1,54 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
-import { getInternshipById } from "../../services/internshipsService";
+import { getMatchForOpportunity } from "../../services/matchService";
+import { applyToOpportunity, getApplications, hasAppliedTo } from "../../services/applicationsService";
 import { ArrowLeft, Buildings, CheckCircle, MapPin, CalendarBlank, Money, Clock, MagnifyingGlass } from "@phosphor-icons/react";
 
 export default function InternshipJobDetail() {
   const { jobId } = useParams();
   const navigate = useNavigate();
-  const [job, setJob] = useState(undefined); // undefined = loading, null = not found
+  const [data, setData] = useState(undefined); // undefined = loading, null = not found
+  const [applied, setApplied] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [applyError, setApplyError] = useState("");
 
   useEffect(() => {
     let active = true;
-    setJob(undefined);
-    getInternshipById(jobId).then((data) => {
-      if (active) setJob(data);
+    setData(undefined);
+    Promise.all([getMatchForOpportunity(jobId), getApplications()]).then(([result, applications]) => {
+      if (!active) return;
+      setData(result);
+      if (result) setApplied(hasAppliedTo(result.opportunity.id, applications));
     });
     return () => {
       active = false;
     };
   }, [jobId]);
 
+  const handleApply = async () => {
+    if (!data) return;
+    setApplying(true);
+    setApplyError("");
+    try {
+      await applyToOpportunity(data.opportunity);
+      setApplied(true);
+    } catch (err) {
+      setApplyError(err.message);
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const job = data?.opportunity;
+
   return (
     <DashboardLayout>
-      {job === undefined && <LoadingState label="Loading opportunity…" />}
+      {data === undefined && <LoadingState label="Loading opportunity…" />}
 
-      {job === null && (
+      {data === null && (
         <EmptyState
           icon={MagnifyingGlass}
           title="Opportunity not found"
@@ -36,7 +58,7 @@ export default function InternshipJobDetail() {
         />
       )}
 
-      {job && (
+      {data && (
         <div className="max-w-4xl mx-auto w-full">
           <button
             className="inline-flex items-center gap-2 text-muted hover:text-ink transition-colors text-sm mb-6"
@@ -59,10 +81,18 @@ export default function InternshipJobDetail() {
             <div className="flex flex-col items-end gap-3 w-full md:w-auto">
               <div className="flex items-center gap-2 text-sm text-pastel-green-ink">
                 <CheckCircle size={18} weight="fill" />
-                <span>{job.matchPercent}% Skill Match</span>
+                <span>{data.match.overallScore}% Skill Match</span>
               </div>
-              <button className="bg-ink text-white px-6 py-2.5 rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all w-full md:w-auto">
-                Apply Now
+              <Link to={`/match-breakdown/${job.id}`} className="text-xs text-ink hover:underline">
+                Why this match?
+              </Link>
+              {applyError && <p className="text-xs text-pastel-red-ink">{applyError}</p>}
+              <button
+                onClick={handleApply}
+                disabled={applied || applying}
+                className="bg-ink text-white px-6 py-2.5 rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all w-full md:w-auto disabled:opacity-60"
+              >
+                {applied ? "Applied ✓" : applying ? "Applying…" : "Apply Now"}
               </button>
             </div>
           </header>

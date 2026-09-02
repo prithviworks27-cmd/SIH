@@ -1,22 +1,88 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { Timer, Code, ArrowClockwise, PaperPlaneTilt, CheckCircle, Eye, Gauge, FileText } from "@phosphor-icons/react";
-
-const INITIAL_SECONDS = 24 * 60 + 15;
+import { Timer, Code, ArrowClockwise, PaperPlaneTilt, CheckCircle, Eye, Gauge, FileText, SealCheck } from "@phosphor-icons/react";
+import { DATA_CLEANING_CHALLENGE, runTests, submitChallenge } from "../../services/challengesService";
 
 export default function ProofOfSkillChallenge() {
-  const [timeRemaining, setTimeRemaining] = useState(INITIAL_SECONDS);
+  const [code, setCode] = useState(DATA_CLEANING_CHALLENGE.starterCode);
+  const [timeRemaining, setTimeRemaining] = useState(DATA_CLEANING_CHALLENGE.timeLimitSeconds);
+  const [testResult, setTestResult] = useState(null);
+  const [running, setRunning] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState(null);
 
   useEffect(() => {
+    if (result) return; // stop the clock once submitted
     const interval = setInterval(() => {
       setTimeRemaining((t) => (t > 0 ? t - 1 : t));
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [result]);
 
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
   const timerLabel = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+  const handleReset = () => {
+    setCode(DATA_CLEANING_CHALLENGE.starterCode);
+    setTestResult(null);
+  };
+
+  const handleRunTests = async () => {
+    setRunning(true);
+    try {
+      const res = await runTests(code);
+      setTestResult(res);
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const res = await submitChallenge(code);
+      setResult(res);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (result) {
+    return (
+      <DashboardLayout>
+        <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center gap-4 py-16">
+          <SealCheck size={40} className={result.passing ? "text-pastel-green-ink" : "text-pastel-red-ink"} weight="fill" />
+          <h1 className="font-editorial text-2xl text-ink tracking-tight">
+            {result.passing ? "Challenge Passed" : "Not Quite — Try Again"}
+          </h1>
+          <p className="text-muted max-w-md leading-relaxed">
+            You scored {result.score}% ({result.passed} of {result.total} tests passed) on {DATA_CLEANING_CHALLENGE.skill}.
+            {result.passing
+              ? " Your skill has been upgraded to Project-Verified on your Skill Passport."
+              : " A score of 75% or higher is required to verify this skill."}
+          </p>
+          <div className="flex gap-3 mt-4">
+            <Link to="/portfolio" className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all">
+              View Skill Passport
+            </Link>
+            {!result.passing && (
+              <button
+                onClick={() => {
+                  setResult(null);
+                  setTimeRemaining(DATA_CLEANING_CHALLENGE.timeLimitSeconds);
+                }}
+                className="border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors"
+              >
+                Try Again
+              </button>
+            )}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -24,11 +90,8 @@ export default function ProofOfSkillChallenge() {
         {/*Header Section*/}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-hairline pb-6">
           <div>
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Technical Challenge: Data Cleaning &amp; Analysis</h1>
-            <p className="text-muted max-w-2xl leading-relaxed">
-              Identify and resolve the anomalies in the provided dataset. Ensure robust handling of missing values and document your
-              optimization strategies for scalability.
-            </p>
+            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">{DATA_CLEANING_CHALLENGE.title}</h1>
+            <p className="text-muted max-w-2xl leading-relaxed">{DATA_CLEANING_CHALLENGE.description}</p>
           </div>
           <div className="mt-4 md:mt-0 flex items-center gap-2 bg-bone py-2 px-4 rounded-md">
             <Timer size={18} className="text-muted" />
@@ -43,50 +106,42 @@ export default function ProofOfSkillChallenge() {
               <Code size={14} /> main.py
             </span>
             <div className="flex gap-2">
-              <button className="text-muted hover:text-ink transition-colors" title="Reset Code">
+              <button onClick={handleReset} className="text-muted hover:text-ink transition-colors" title="Reset Code">
                 <ArrowClockwise size={16} />
               </button>
             </div>
           </div>
           <div className="relative w-full h-[500px] border border-hairline bg-white rounded-b-xl overflow-hidden">
-            {/*Line Numbers (Simulated)*/}
-            <div className="absolute left-0 top-0 bottom-0 w-12 bg-bone border-r border-hairline text-right pr-2 py-4 text-muted font-mono text-sm opacity-50 pointer-events-none select-none">
-              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14<br />15
-            </div>
-            {/*Editable Area*/}
             <textarea
-              className="w-full h-full pl-[60px] pr-4 py-4 font-mono text-sm text-charcoal bg-transparent border-none focus:ring-0 resize-none outline-none leading-relaxed"
+              className="w-full h-full px-4 py-4 font-mono text-sm text-charcoal bg-transparent border-none focus:ring-0 resize-none outline-none leading-relaxed"
               spellCheck="false"
-              defaultValue={`import pandas as pd
-import numpy as np
-
-def clean_experimental_data(df):
-    """
-    Cleans raw sensor data from the photovoltaic test rig.
-    TODO:
-    1. Handle NaN values in 'irradiance' column (interpolate).
-    2. Remove outliers where 'temperature' > 100C.
-    3. Normalize 'voltage' readings.
-    """
-
-    # Your code here
-
-    return df
-
-# Sample usage
-# raw_df = pd.read_csv('test_run_042.csv')
-# cleaned_df = clean_experimental_data(raw_df)`}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
             />
           </div>
         </div>
 
+        {testResult && (
+          <p className={`text-sm ${testResult.passed === testResult.total ? "text-pastel-green-ink" : "text-charcoal"}`}>
+            Tests: {testResult.passed} / {testResult.total} passed.
+          </p>
+        )}
+
         {/*Actions*/}
         <div className="flex justify-end gap-3 pt-2">
-          <button className="border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors">
-            Run Tests
+          <button
+            onClick={handleRunTests}
+            disabled={running}
+            className="border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors disabled:opacity-60"
+          >
+            {running ? "Running…" : "Run Tests"}
           </button>
-          <button className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2">
-            Submit for Review
+          <button
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+          >
+            {submitting ? "Submitting…" : "Submit for Review"}
             <PaperPlaneTilt size={16} />
           </button>
         </div>
