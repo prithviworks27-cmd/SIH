@@ -36,8 +36,8 @@ export default function Landing() {
       {/* Nav */}
       <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
-          <Link className="font-editorial italic text-xl flex items-center gap-2" to="/">
-            <img src={logo} alt="" className="w-12 h-12 rounded-full object-cover" />
+          <Link className="font-editorial italic text-2xl flex items-center gap-2" to="/">
+            <img src={logo} alt="" className="w-16 h-16 rounded-full object-cover" />
             <span
               className="bg-clip-text text-transparent"
               style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
@@ -65,7 +65,7 @@ export default function Landing() {
 
       <main className="flex-grow flex flex-col">
         {/* Hero */}
-        <section className="relative w-full px-4 md:px-6 border-b border-hairline overflow-hidden flex items-center justify-center min-h-[calc(100vh-71px)]">
+        <section className="relative w-full px-4 md:px-6 border-b border-hairline overflow-hidden flex items-center justify-center min-h-[calc(100vh-97px)]">
           <div
             aria-hidden="true"
             className="ambient-blob pointer-events-none absolute -top-1/3 right-0 w-[600px] h-[600px] rounded-full opacity-[0.04]"
