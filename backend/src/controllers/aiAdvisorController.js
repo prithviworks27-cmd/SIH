@@ -1,14 +1,5 @@
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-
-// Free-tier OpenRouter models, tried in order. OpenRouter's free models sit
-// behind a SHARED upstream rate-limit pool per provider — under load a model
-// can 429 for reasons that have nothing to do with this app's own usage —
-// so a single model name isn't reliable enough on its own. Kept as an
-// ordered list (not one constant) so a saturated/retired model degrades to
-// the next rather than failing the whole request. Verified working
-// 2026-09-03 — check GET https://openrouter.ai/api/v1/models for current
-// `:free`-suffixed entries if all of these start failing.
-const MODELS = ["z-ai/glm-5.2:free", "minimax/minimax-m3:free", "nvidia/nemotron-3-super-120b-a12b:free"];
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
 const SYSTEM_PROMPT = `You are the AI Career Advisor inside SkillBridge, a student skill-and-placement platform.
 
@@ -30,7 +21,7 @@ Ground rules:
 // requiring a second copy of that logic server-side.
 export const askCareerAdvisor = async (req, res) => {
   try {
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(503).json({ error: "AI Career Advisor is not configured on the server." });
     }
@@ -44,15 +35,10 @@ export const askCareerAdvisor = async (req, res) => {
     }
 
     const contextSummary = buildContextSummary(context);
-    const messages = [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "system", content: `Student's current data:\n${contextSummary}` },
-      { role: "user", content: message.trim() },
-    ];
-
-    const { reply, error: upstreamError } = await callOpenRouterWithFallback(apiKey, messages);
+    const prompt = `Student's current data:\n${contextSummary}\n\nStudent's question:\n${message.trim()}`;
+    const { reply, error: upstreamError } = await callGemini(apiKey, prompt);
     if (!reply) {
-      console.error("All OpenRouter models failed:", upstreamError);
+      console.error("Gemini request failed:", upstreamError);
       return res.status(502).json({ error: "AI Career Advisor is temporarily unavailable. Please try again in a moment." });
     }
 
@@ -63,43 +49,37 @@ export const askCareerAdvisor = async (req, res) => {
   }
 };
 
-// Tries each free model in order, moving to the next on a 429 (rate-limited)
-// or 404 (model retired) rather than failing the whole request — the point
-// of a fallback list instead of one hardcoded model.
-async function callOpenRouterWithFallback(apiKey, messages) {
-  let lastError = null;
-
-  for (const model of MODELS) {
-    try {
-      const response = await fetch(OPENROUTER_URL, {
+async function callGemini(apiKey, prompt) {
+  try {
+    const response = await fetch(
+      `${GEMINI_API_URL}/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": process.env.FRONTEND_URL || "http://localhost:5173",
-          "X-Title": "SkillBridge AI Career Advisor",
-        },
-        body: JSON.stringify({ model, messages, temperature: 0.4, max_tokens: 500 }),
-      });
-
-      if (!response.ok) {
-        const errText = await response.text().catch(() => "");
-        lastError = `${model} -> ${response.status}: ${errText.slice(0, 300)}`;
-        console.warn("OpenRouter model unavailable, trying next:", lastError);
-        continue;
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.4, maxOutputTokens: 500 },
+        }),
       }
+    );
 
-      const data = await response.json();
-      const reply = data?.choices?.[0]?.message?.content;
-      if (reply) return { reply };
-      lastError = `${model} -> empty response`;
-    } catch (err) {
-      lastError = `${model} -> ${err.message}`;
-      console.warn("OpenRouter request failed, trying next:", lastError);
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "");
+      return { reply: null, error: `${response.status}: ${errorText.slice(0, 300)}` };
     }
-  }
 
-  return { reply: null, error: lastError };
+    const data = await response.json();
+    const reply = data?.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text)
+      .filter(Boolean)
+      .join("\n")
+      .trim();
+
+    return reply ? { reply } : { reply: null, error: "Gemini returned an empty response" };
+  } catch (error) {
+    return { reply: null, error: error.message };
+  }
 }
 
 function buildContextSummary(context) {
