@@ -2,8 +2,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { supabase } from "../config/supabase.js";
 import { validateRegisterInput, validateLoginInput } from "../validators/authValidator.js";
+import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("Missing JWT_SECRET in backend environment");
+}
 
 export const register = async (req, res) => {
   try {
@@ -63,6 +68,7 @@ export const register = async (req, res) => {
       JWT_SECRET,
       { expiresIn: "7d" }
     );
+    setAuthCookie(res, token);
 
     res.status(201).json({
       message: "User registered successfully",
@@ -72,7 +78,6 @@ export const register = async (req, res) => {
         name: newUser.name,
         role: newUser.role,
       },
-      token,
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -120,6 +125,7 @@ export const login = async (req, res) => {
       JWT_SECRET,
       { expiresIn: "7d" }
     );
+    setAuthCookie(res, token);
 
     // Update last login
     await supabase
@@ -135,7 +141,6 @@ export const login = async (req, res) => {
         name: user.name,
         role: user.role,
       },
-      token,
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -147,10 +152,11 @@ export const getCurrentUser = async (req, res) => {
   try {
     const userId = req.user.id;
 
+    const userIdColumn = req.supabaseUser ? "auth_user_id" : "id";
     const { data: user, error } = await supabase
       .from("users")
       .select("id, email, name, role, created_at, last_login")
-      .eq("id", userId)
+      .eq(userIdColumn, userId)
       .single();
 
     if (error) {
@@ -162,4 +168,91 @@ export const getCurrentUser = async (req, res) => {
     console.error("Get user error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+};
+
+export const syncSupabaseUser = async (req, res) => {
+  try {
+    if (!req.supabaseUser) {
+      return res.status(401).json({ error: "A Supabase access token is required" });
+    }
+
+    const { name, role } = req.body;
+    const email = req.supabaseUser.email?.toLowerCase();
+    const userId = req.supabaseUser.id;
+    const validRoles = ["student", "academician", "industry"];
+
+    if (!email) {
+      return res.status(400).json({ error: "Google account has no email" });
+    }
+
+    if (role && !validRoles.includes(role.toLowerCase())) {
+      return res.status(400).json({ error: "Invalid role" });
+    }
+
+    const { data: existingUser, error: lookupError } = await supabase
+      .from("users")
+      .select("id, auth_user_id, email, name, role, created_at, last_login")
+      .eq("auth_user_id", userId)
+      .maybeSingle();
+
+    if (lookupError) {
+      console.error("Profile lookup error:", lookupError);
+      return res.status(500).json({ error: "Failed to load user profile" });
+    }
+
+    let profile = existingUser;
+    const normalizedRole = role?.toLowerCase() || null;
+
+    if (!profile) {
+      const { data: newUser, error: insertError } = await supabase
+        .from("users")
+        .insert({
+          auth_user_id: userId,
+          email,
+          name: name?.trim() || email,
+          role: normalizedRole,
+          last_login: new Date().toISOString(),
+        })
+        .select("id, email, name, role, created_at, last_login")
+        .single();
+
+      if (insertError) {
+        console.error("Profile creation error:", insertError);
+        return res.status(500).json({
+          error: "Failed to create user profile",
+          ...(process.env.NODE_ENV !== "production" && { details: insertError.message }),
+        });
+      }
+      profile = newUser;
+    } else if (!profile.role && normalizedRole) {
+      const { data: updatedUser, error: updateError } = await supabase
+        .from("users")
+        .update({ role: normalizedRole, last_login: new Date().toISOString() })
+        .eq("auth_user_id", userId)
+        .select("id, email, name, role, created_at, last_login")
+        .single();
+
+      if (updateError) {
+        console.error("Profile update error:", updateError);
+        return res.status(500).json({ error: "Failed to update user profile" });
+      }
+      profile = updatedUser;
+    }
+
+    const token = jwt.sign(
+      { id: profile.id, email: profile.email, role: profile.role },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    setAuthCookie(res, token);
+    res.status(200).json({ user: profile });
+  } catch (error) {
+    console.error("Sync profile error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const logout = (req, res) => {
+  clearAuthCookie(res);
+  res.status(204).send();
 };

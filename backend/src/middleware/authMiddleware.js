@@ -1,18 +1,35 @@
 import jwt from "jsonwebtoken";
+import { supabase } from "../config/supabase.js";
+import { getAuthToken } from "../utils/authCookie.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET;
 
-export const authMiddleware = (req, res, next) => {
+if (!JWT_SECRET) {
+  throw new Error("Missing JWT_SECRET in backend environment");
+}
+
+export const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1] || getAuthToken(req);
 
     if (!token) {
       return res.status(401).json({ error: "No token provided" });
     }
 
+    const {
+      data: { user: supabaseUser },
+      error: supabaseError,
+    } = await supabase.auth.getUser(token);
+
+    if (!supabaseError && supabaseUser) {
+      req.supabaseUser = supabaseUser;
+      req.user = { id: supabaseUser.id, email: supabaseUser.email };
+      return next();
+    }
+
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    next();
+    return next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({ error: "Token expired" });

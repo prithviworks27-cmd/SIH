@@ -3,10 +3,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api"
 
 // Create headers with auth token if available
 const getHeaders = () => {
-  const token = localStorage.getItem("authToken");
   return {
     "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
   };
 };
 
@@ -17,6 +15,7 @@ export const authAPI = {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ email, password, name, role }),
     });
 
@@ -34,6 +33,7 @@ export const authAPI = {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
 
@@ -51,6 +51,7 @@ export const authAPI = {
     const response = await fetch(`${API_BASE_URL}/auth/me`, {
       method: "GET",
       headers: getHeaders(),
+      credentials: "include",
     });
 
     const data = await response.json();
@@ -62,9 +63,34 @@ export const authAPI = {
     return data;
   },
 
-  // Logout (client-side only, removes token)
-  logout: () => {
-    localStorage.removeItem("authToken");
+  syncSupabaseUser: async (accessToken, profile = {}) => {
+    const response = await fetch(`${API_BASE_URL}/auth/sync`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(profile),
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to sync user profile");
+    }
+
+    return data;
+  },
+
+  logout: async () => {
+    await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  },
+
+  clearLocalUser: () => {
     localStorage.removeItem("user");
   },
 };

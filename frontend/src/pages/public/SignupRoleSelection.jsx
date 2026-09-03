@@ -12,7 +12,7 @@ const ROLES = [
 
 export default function SignupRoleSelection() {
   const navigate = useNavigate();
-  const { register, loading, error: authError } = useAuth();
+  const { register, loginWithGoogle, loading, error: authError } = useAuth();
 
   const [selectedRole, setSelectedRole] = useState("");
   const [formData, setFormData] = useState({
@@ -106,6 +106,20 @@ export default function SignupRoleSelection() {
   };
 
   const errorMessage = localError || authError;
+
+  const handleGoogleSignup = async () => {
+    setLocalError("");
+    if (!selectedRole) {
+      setLocalError("Please select a role before continuing with Google");
+      return;
+    }
+
+    try {
+      await loginWithGoogle(selectedRole);
+    } catch (err) {
+      setLocalError(err.message || "Google sign up failed. Please try again.");
+    }
+  };
 
   return (
     <div className="bg-canvas text-charcoal min-h-screen flex flex-col antialiased">
@@ -203,6 +217,15 @@ export default function SignupRoleSelection() {
             </div>
 
             {/*Submit*/}
+            <button
+              className="w-full flex items-center justify-center gap-2 border border-hairline bg-white text-charcoal text-sm font-medium rounded-md py-2.5 px-4 hover:border-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              type="button"
+              onClick={handleGoogleSignup}
+              disabled={isSubmitting || loading}
+            >
+              Continue with Google
+            </button>
+
             <button
               className="w-full flex items-center justify-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-4 hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"

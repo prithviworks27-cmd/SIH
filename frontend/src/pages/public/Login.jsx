@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getPostLoginRedirect } from "../../utils/roleRedirect";
@@ -6,7 +6,7 @@ import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phos
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, loading, error: authError } = useAuth();
+  const { login, loginWithGoogle, loading, user, error: authError } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -16,6 +16,12 @@ export default function Login() {
 
   const [localError, setLocalError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate(getPostLoginRedirect(user.role), { replace: true });
+    }
+  }, [loading, navigate, user]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -59,6 +65,15 @@ export default function Login() {
 
   const errorMessage = localError || authError;
 
+  const handleGoogleLogin = async () => {
+    setLocalError("");
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setLocalError(err.message || "Google login failed. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4">
       <main className="w-full max-w-sm">
@@ -81,6 +96,21 @@ export default function Login() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            <button
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium border border-hairline bg-white text-charcoal hover:border-ink transition-colors disabled:opacity-50"
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isSubmitting || loading}
+            >
+              Continue with Google
+            </button>
+
+            <div className="relative flex items-center gap-3 text-xs text-muted">
+              <div className="flex-1 border-t border-hairline" />
+              <span>or use email</span>
+              <div className="flex-1 border-t border-hairline" />
+            </div>
+
             {/* Email */}
             <div>
               <label className="block text-xs uppercase tracking-wide text-muted mb-1.5" htmlFor="email">
