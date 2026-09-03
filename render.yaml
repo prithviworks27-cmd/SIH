@@ -26,7 +26,3 @@ services:
         value: gemini-3.8-flash
       - key: FRONTEND_URL
         value: https://skill-bridge-nine-phi.vercel.app,https://skill-bridge-delta-six.vercel.app,https://sih-one-amber.vercel.app
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: GEMINI_MODEL
-        sync: false
