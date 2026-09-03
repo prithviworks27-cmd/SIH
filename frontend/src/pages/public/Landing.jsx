@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ChartLineUp, Handshake, RocketLaunch } from "@phosphor-icons/react";
 import useScrollReveal from "../../hooks/useScrollReveal";
+import logo from "../../assets/logo.png";
 
 const STEPS = [
   {
@@ -35,8 +36,14 @@ export default function Landing() {
       {/* Nav */}
       <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
-          <Link className="font-editorial italic text-xl text-ink flex items-center gap-2" to="/">
-            SKILLbridge
+          <Link className="font-editorial italic text-2xl flex items-center gap-2" to="/">
+            <img src={logo} alt="" className="w-16 h-16 rounded-full object-cover" />
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
+            >
+              SkillBridge
+            </span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -58,7 +65,7 @@ export default function Landing() {
 
       <main className="flex-grow flex flex-col">
         {/* Hero */}
-        <section className="relative w-full px-4 md:px-6 border-b border-hairline overflow-hidden flex items-center justify-center min-h-[calc(100vh-71px)]">
+        <section className="relative w-full px-4 md:px-6 border-b border-hairline overflow-hidden flex items-center justify-center min-h-[calc(100vh-97px)]">
           <div
             aria-hidden="true"
             className="ambient-blob pointer-events-none absolute -top-1/3 right-0 w-[600px] h-[600px] rounded-full opacity-[0.04]"
@@ -107,8 +114,8 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-canvas border-t border-hairline mt-auto">
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col items-center gap-1">
-          <span className="font-editorial italic text-base text-ink">SKILLbridge</span>
-          <span className="text-xs text-muted">© 2024 SKILLbridge Collaboration Portal.</span>
+          <span className="font-editorial italic text-base text-ink">SkillBridge</span>
+          <span className="text-xs text-muted">© 2024 SkillBridge Collaboration Portal.</span>
         </div>
       </footer>
     </div>

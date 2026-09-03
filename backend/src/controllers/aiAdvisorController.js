@@ -1,7 +1,7 @@
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models";
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
-const SYSTEM_PROMPT = `You are the AI Career Advisor inside SKILLbridge, a student skill-and-placement platform.
+const SYSTEM_PROMPT = `You are the AI Career Advisor inside SkillBridge, a student skill-and-placement platform.
 
 You are given the student's REAL current data: their verified skill profile, their selected target role and its readiness breakdown, and the specific skills they have vs. still need for that role. Never invent skills, scores, or roles that aren't in the provided data.
 

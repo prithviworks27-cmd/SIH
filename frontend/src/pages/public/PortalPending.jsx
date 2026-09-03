@@ -24,7 +24,7 @@ export default function PortalPending() {
         <Wrench size={32} className="text-ink mb-4 inline-block" />
         <h1 className="font-editorial text-2xl text-ink mb-3 tracking-tight">Your {roleLabel} portal is coming soon</h1>
         <p className="text-sm text-muted mb-8 leading-relaxed">
-          We're still building the {roleLabel.toLowerCase()} experience for SKILLbridge. You're signed in as{" "}
+          We're still building the {roleLabel.toLowerCase()} experience for SkillBridge. You're signed in as{" "}
           <span className="text-charcoal">{user?.email}</span>, and we'll let you know as soon as your dashboard is ready.
         </p>
         <button

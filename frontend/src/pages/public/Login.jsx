@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getPostLoginRedirect } from "../../utils/roleRedirect";
 import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
+import logo from "../../assets/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -79,8 +80,14 @@ export default function Login() {
       <main className="w-full max-w-sm">
         {/* Wordmark */}
         <div className="text-center mb-10">
-          <h1 className="font-editorial italic text-3xl text-ink tracking-tight">
-            SKILLbridge
+          <h1 className="font-editorial italic text-3xl tracking-tight flex items-center justify-center gap-2">
+            <img src={logo} alt="" className="w-14 h-14 rounded-full object-cover" />
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
+            >
+              SkillBridge
+            </span>
           </h1>
         </div>
 
@@ -218,7 +225,7 @@ export default function Login() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-muted">© 2024 SKILLbridge Collaboration Portal.</p>
+          <p className="text-xs text-muted">© 2024 SkillBridge Collaboration Portal.</p>
         </div>
       </main>
     </div>
