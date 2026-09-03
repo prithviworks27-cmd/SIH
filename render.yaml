@@ -20,6 +20,10 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
       - key: FRONTEND_URL
         value: https://skill-bridge-nine-phi.vercel.app,https://skill-bridge-delta-six.vercel.app,https://sih-one-amber.vercel.app
       - key: GEMINI_API_KEY
