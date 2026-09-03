@@ -1,7 +1,10 @@
 // API base URL
-const API_BASE_URL = (
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+const configuredApiUrl = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000"
 ).replace(/\/+$/, "");
+const API_BASE_URL = configuredApiUrl.endsWith("/api")
+  ? configuredApiUrl
+  : `${configuredApiUrl}/api`;
 
 // Create headers with auth token if available
 const getHeaders = () => {
