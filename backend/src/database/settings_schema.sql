@@ -13,10 +13,10 @@
 ALTER TABLE notification_preferences
   ADD COLUMN IF NOT EXISTS phone VARCHAR(30),
   ADD COLUMN IF NOT EXISTS course VARCHAR(255),
-  ADD COLUMN IF NOT EXISTS profile_visibility VARCHAR(20) NOT NULL DEFAULT 'Institution Only'
+  ADD COLUMN IF NOT EXISTS profile_visibility VARCHAR(30) NOT NULL DEFAULT 'Institution Only'
     CHECK (profile_visibility IN ('Public', 'Institution Only', 'Private')),
-  ADD COLUMN IF NOT EXISTS portfolio_visibility VARCHAR(20) NOT NULL DEFAULT 'Public'
+  ADD COLUMN IF NOT EXISTS portfolio_visibility VARCHAR(30) NOT NULL DEFAULT 'Public'
     CHECK (portfolio_visibility IN ('Public', 'Institution Only', 'Private')),
-  ADD COLUMN IF NOT EXISTS opportunity_visibility VARCHAR(20) NOT NULL DEFAULT 'Visible to Recruiters'
+  ADD COLUMN IF NOT EXISTS opportunity_visibility VARCHAR(30) NOT NULL DEFAULT 'Visible to Recruiters'
     CHECK (opportunity_visibility IN ('Visible to Recruiters', 'Hidden')),
   ADD COLUMN IF NOT EXISTS data_sharing_consent BOOLEAN NOT NULL DEFAULT true;
