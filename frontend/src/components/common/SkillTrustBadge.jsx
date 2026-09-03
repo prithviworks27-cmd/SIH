@@ -4,8 +4,10 @@
 const TONE_BY_LEVEL = {
   "Self-Declared": "bg-bone text-muted",
   Assessed: "bg-pastel-blue text-pastel-blue-ink",
+  "Assessment Verified": "bg-pastel-green text-pastel-green-ink",
   "Project-Verified": "bg-pastel-green text-pastel-green-ink",
   Certified: "bg-pastel-green text-pastel-green-ink",
+  "Institution-Verified": "bg-pastel-green text-pastel-green-ink",
   "Industry-Verified": "bg-pastel-green text-pastel-green-ink",
 };
 

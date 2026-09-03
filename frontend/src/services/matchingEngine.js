@@ -1,15 +1,25 @@
 // Single shared matching engine. Every page that shows a match percentage —
 // job listings, job detail, the "Why This Match?" breakdown, the dashboard,
-// and later the industry candidate view — calls calculateMatch() instead of
-// carrying its own hardcoded percentage. Keeping this in one place means a
-// change to the scoring model changes it everywhere at once.
+// career-role readiness, and the industry candidate view — calls
+// calculateMatch() instead of carrying its own hardcoded percentage. Keeping
+// this in one place means a change to the scoring model changes it everywhere
+// at once.
 
+// Matches the weighting model from the Step 6 spec exactly: Skill Match 40 /
+// Education 15 / Projects 10 / Certifications 10 / Experience 10 / Location 5
+// / Other 10 = 100. "Education" absorbs what used to be a generic
+// "eligibility" bucket (degree/year/program requirements — still opportunity.eligibility
+// in mock data) since that's what education-stage eligibility actually means
+// here; "Location" and "Other" are new dimensions the earlier weights didn't
+// score at all.
 export const DEFAULT_WEIGHTS = {
-  skillMatch: 50,
-  eligibility: 20,
-  projects: 15,
+  skillMatch: 40,
+  education: 15,
+  projects: 10,
   certifications: 10,
-  experience: 5,
+  experience: 10,
+  location: 5,
+  other: 10,
 };
 
 function normalizeSkillName(name) {
@@ -20,7 +30,7 @@ function normalizeSkillName(name) {
 // in the opportunity's eligibility list is flagged as unmet — real
 // eligibility rules (degree, year, location preference) aren't modeled yet,
 // so unless mock data says otherwise every opportunity is treated as eligible.
-function evaluateEligibility(opportunity) {
+function evaluateEducation(opportunity) {
   const criteria = opportunity.eligibility ?? [
     { label: "Open to all eligible students", met: true },
   ];
@@ -66,12 +76,32 @@ function evaluateExperience(student) {
   return { hasPriorInternship: hasInternship, score: hasInternship ? 100 : 40 };
 }
 
-function bestNextAction(missingSkills, eligibility) {
+// Full score when the opportunity is Remote or the student has no stated
+// location preference (nothing to conflict with yet — no real preferences
+// service exists); a lower baseline otherwise since we can't confirm a real
+// match without that data. Structured the same way projects/certifications
+// are, so a real preferencesService can slot in later.
+function evaluateLocation(student, opportunity) {
+  const isRemote = opportunity.location?.toLowerCase().includes("remote");
+  const preferredLocation = student.preferredLocation;
+  if (isRemote || !preferredLocation) return { score: 100 };
+  const matches = opportunity.location?.toLowerCase().includes(preferredLocation.toLowerCase());
+  return { score: matches ? 100 : 50 };
+}
+
+// Catch-all for signals not modeled as their own dimension yet (portfolio
+// completeness, response rate, profile freshness, etc.) — kept as a neutral
+// baseline so it doesn't silently swing the score until real data backs it.
+function evaluateOther() {
+  return { score: 70 };
+}
+
+function bestNextAction(missingSkills, education) {
   if (missingSkills.length > 0) {
     const target = missingSkills[0];
     return `Improve ${target.name} — it's the top missing skill for this match.`;
   }
-  const unmet = eligibility.criteria.find((c) => !c.met);
+  const unmet = education.criteria.find((c) => !c.met);
   if (unmet) {
     return `Review eligibility: ${unmet.label}.`;
   }
@@ -81,29 +111,39 @@ function bestNextAction(missingSkills, eligibility) {
 /**
  * calculateMatch(student, opportunity, weights)
  *
- * student: { skills: SkillProfile[], projects?, certifications?, hasPriorInternship? }
- * opportunity: { skills: string[], eligibility?: [{label, met}] }
- * weights: { skillMatch, eligibility, projects, certifications, experience } — percentages summing to 100
+ * student: { skills: SkillProfile[], projects?, certifications?, hasPriorInternship?, preferredLocation? }
+ * opportunity: { skills: string[], eligibility?: [{label, met}], location? }
+ * weights: { skillMatch, education, projects, certifications, experience, location, other } — percentages summing to 100
  *
- * Returns { overallScore, matchedSkills, missingSkills, eligibility, projectMatch,
- *           certificationMatch, experienceMatch, bestNextAction, weights }
+ * Returns { overallScore, matchedSkills, missingSkills, education, projectMatch,
+ *           certificationMatch, experienceMatch, locationMatch, otherMatch, bestNextAction, weights }
  */
 export function calculateMatch(student, opportunity, weights = DEFAULT_WEIGHTS) {
   const skills = evaluateSkills(student.skills ?? [], opportunity.skills ?? []);
-  const eligibility = evaluateEligibility(opportunity);
+  const education = evaluateEducation(opportunity);
   const projects = evaluateProjects(student);
   const certifications = evaluateCertifications(student);
   const experience = evaluateExperience(student);
+  const location = evaluateLocation(student, opportunity);
+  const other = evaluateOther();
 
   const totalWeight =
-    weights.skillMatch + weights.eligibility + weights.projects + weights.certifications + weights.experience;
+    weights.skillMatch +
+    weights.education +
+    weights.projects +
+    weights.certifications +
+    weights.experience +
+    weights.location +
+    weights.other;
 
   const weightedSum =
     skills.score * weights.skillMatch +
-    eligibility.score * weights.eligibility +
+    education.score * weights.education +
     projects.score * weights.projects +
     certifications.score * weights.certifications +
-    experience.score * weights.experience;
+    experience.score * weights.experience +
+    location.score * weights.location +
+    other.score * weights.other;
 
   const overallScore = totalWeight === 0 ? 0 : Math.round(weightedSum / totalWeight);
 
@@ -111,11 +151,16 @@ export function calculateMatch(student, opportunity, weights = DEFAULT_WEIGHTS) 
     overallScore,
     matchedSkills: skills.matched,
     missingSkills: skills.missing,
-    eligibility,
+    education,
+    // Kept as an alias so existing callers reading match.eligibility (the
+    // pre-Step-6 field name) don't break — same object, both names.
+    eligibility: education,
     projectMatch: projects,
     certificationMatch: certifications,
     experienceMatch: experience,
-    bestNextAction: bestNextAction(skills.missing, eligibility),
+    locationMatch: location,
+    otherMatch: other,
+    bestNextAction: bestNextAction(skills.missing, education),
     weights,
   };
 }

@@ -1,6 +1,7 @@
 import { resolveMock } from "./mockClient";
 import { ASSESSMENT_QUESTIONS } from "./mockData/assessmentQuestions";
 import { SKILL_CATALOG, TRUST_LEVELS, buildDemoSkillProfile } from "./mockData/skills";
+import { assessmentAPI } from "./api";
 
 const STORAGE_KEY = "skillProfile";
 
@@ -47,7 +48,27 @@ export function scoreAssessment(answers, previousProfile = []) {
 export async function submitAssessment(answers) {
   const previous = loadStoredProfile();
   const result = scoreAssessment(answers, previous?.profile ?? []);
-  persistProfile(result);
+  persistProfileLocally(result);
+
+  // Push every answered skill to Supabase too — the self-rating assessment
+  // touches many skills at once, so this is a batch of upserts rather than
+  // the single-skill call verifySkillViaChallenge/reassessSkillOnPathComplete
+  // make. Best-effort: a failed sync here doesn't block the result the
+  // student sees, same resilience pattern as skillTestService.js.
+  const answeredSkillNames = new Set();
+  for (const q of ASSESSMENT_QUESTIONS) {
+    if (answers[q.id]) answeredSkillNames.add(q.skill);
+  }
+  await Promise.all(
+    result.profile
+      .filter((s) => answeredSkillNames.has(s.name))
+      .map((s) =>
+        assessmentAPI
+          .upsertSkillProfileEntry({ skillName: s.name, currentScore: s.currentScore, trustLevel: s.trustLevel })
+          .catch((err) => console.warn(`Could not sync ${s.name} to backend:`, err.message))
+      )
+  );
+
   return resolveMock(result, { delay: 600 });
 }
 
@@ -60,7 +81,7 @@ function loadStoredProfile() {
   }
 }
 
-function persistProfile(result) {
+function persistProfileLocally(result) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
   } catch {
@@ -69,12 +90,48 @@ function persistProfile(result) {
 }
 
 // The single source every page (dashboard, skill profile, gap report, portfolio)
-// reads from. Returns a previously-submitted assessment if one exists, otherwise
-// a realistic demo profile so the UI never looks empty before the student's first attempt.
+// reads from. Merges three layers, weakest first: the demo/self-rating base
+// (buildDemoSkillProfile, or whatever's in localStorage from a self-rating
+// assessment) is overridden per-skill by whatever Supabase's skill_profile
+// table has — that table is written by skill tests (Step 2, always
+// authoritative), the self-rating assessment (now also synced, see
+// submitAssessment above), and learning-path re-assessment. This is the
+// reconciliation flagged as the trickiest part of the full migration: two
+// write paths used to target the same localStorage key independently, now
+// Supabase is the cross-device source of truth and localStorage is only the
+// same-tab cache / offline fallback for the self-rating base layer.
 export async function getStoredSkillProfileOrDemo() {
-  const stored = loadStoredProfile();
-  if (stored) return resolveMock(stored);
-  return resolveMock({ profile: buildDemoSkillProfile(), overallMatchPercent: 79, completedAt: null });
+  const localBase = loadStoredProfile() ?? { profile: buildDemoSkillProfile(), overallMatchPercent: 79, completedAt: null };
+
+  let backendEntries = [];
+  try {
+    const { profile } = await assessmentAPI.getSkillProfile();
+    backendEntries = profile;
+  } catch (err) {
+    console.warn("Could not load skill profile from backend, using local cache only:", err.message);
+    return resolveMock(localBase);
+  }
+
+  if (backendEntries.length === 0) return resolveMock(localBase);
+
+  const backendByName = new Map(backendEntries.map((e) => [e.skill_name, e]));
+  const profile = localBase.profile.map((s) => {
+    const backendEntry = backendByName.get(s.name);
+    if (!backendEntry) return s;
+    return {
+      ...s,
+      currentScore: backendEntry.current_score,
+      trustLevel: backendEntry.trust_level,
+      lastUpdated: backendEntry.last_updated,
+    };
+  });
+
+  const overallMatchPercent = Math.round(
+    (profile.reduce((sum, s) => sum + Math.min(s.currentScore / s.requiredScore, 1), 0) / profile.length) * 100
+  );
+
+  const merged = { profile, overallMatchPercent, completedAt: localBase.completedAt };
+  return resolveMock(merged);
 }
 
 // Proof-of-Skill Challenge completion feeds back into the SAME skill profile
@@ -101,6 +158,18 @@ export async function verifySkillViaChallenge(skillName, challengeScore) {
   );
 
   const result = { profile, overallMatchPercent, completedAt: current.completedAt ?? now };
-  persistProfile(result);
+  persistProfileLocally(result);
+
+  const updated = profile.find((s) => s.name === skillName);
+  try {
+    await assessmentAPI.upsertSkillProfileEntry({
+      skillName,
+      currentScore: updated.currentScore,
+      trustLevel: updated.trustLevel,
+    });
+  } catch (err) {
+    console.warn(`Could not sync ${skillName} to backend:`, err.message);
+  }
+
   return resolveMock(result, { delay: 300 });
 }

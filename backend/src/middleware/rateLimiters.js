@@ -23,3 +23,10 @@ export const syncLimiter = createAuthLimiter(
   20,
   "Too many profile sync requests. Please try again later."
 );
+
+// Tighter window for the AI advisor — each request is a real OpenRouter API
+// call, unlike the other limiters which just guard local DB writes.
+export const aiAdvisorLimiter = createAuthLimiter(
+  15,
+  "Too many AI advisor requests. Please wait a moment and try again."
+);

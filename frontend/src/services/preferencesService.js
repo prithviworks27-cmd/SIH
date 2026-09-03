@@ -1,4 +1,5 @@
 import { resolveMock } from "./mockClient";
+import { studentStateAPI } from "./api";
 
 const STORAGE_KEY = "notificationPreferences";
 
@@ -8,7 +9,7 @@ const DEFAULTS = {
   applicationUpdates: true,
 };
 
-function loadStored() {
+function loadStoredLocally() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? { ...DEFAULTS, ...JSON.parse(raw) } : DEFAULTS;
@@ -17,7 +18,7 @@ function loadStored() {
   }
 }
 
-function persist(prefs) {
+function persistLocally(prefs) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
   } catch {
@@ -26,11 +27,25 @@ function persist(prefs) {
 }
 
 export async function getPreferences() {
-  return resolveMock(loadStored());
+  try {
+    const { preferences } = await studentStateAPI.getNotificationPreferences();
+    persistLocally(preferences);
+    return resolveMock(preferences);
+  } catch (err) {
+    console.warn("Could not load preferences from backend, using local cache only:", err.message);
+    return resolveMock(loadStoredLocally());
+  }
 }
 
 export async function savePreferences(prefs) {
-  const next = { ...loadStored(), ...prefs };
-  persist(next);
+  const next = { ...loadStoredLocally(), ...prefs };
+  persistLocally(next);
+
+  try {
+    await studentStateAPI.saveNotificationPreferences(next);
+  } catch (err) {
+    console.warn("Could not sync preferences to backend, kept in local cache only:", err.message);
+  }
+
   return resolveMock(next, { delay: 300 });
 }

@@ -15,18 +15,45 @@ export const SKILL_CATALOG = [
   { name: "Teamwork", category: "Soft Skills", requiredScore: 75 },
   { name: "Problem Solving", category: "Soft Skills", requiredScore: 80 },
   { name: "Time Management", category: "Soft Skills", requiredScore: 70 },
+  // Added for Step 3 (target-role skill gaps) — required by roles like Data
+  // Analyst in careerRoles.js but not covered by any skill test yet, so they
+  // stay untested (currentScore 0) until a real assessment exists for them.
+  { name: "Power BI", category: "Technical", requiredScore: 70 },
+  { name: "Statistics", category: "Technical", requiredScore: 70 },
+  { name: "Excel", category: "Technical", requiredScore: 70 },
 ];
 
-// Trust levels the assessment alone can produce are capped at ASSESSED —
-// higher levels (PROJECT_VERIFIED, CERTIFIED, INDUSTRY_VERIFIED) require
-// evidence beyond a self-assessment and are set elsewhere (portfolio/passport).
+// Trust levels the self-rating assessment alone can produce are capped at
+// ASSESSED — higher levels (TEST_VERIFIED, PROJECT_VERIFIED, CERTIFIED,
+// INDUSTRY_VERIFIED) require evidence beyond a self-assessment and are set
+// elsewhere (skill tests, portfolio/passport).
 export const TRUST_LEVELS = {
   SELF_DECLARED: "Self-Declared",
   ASSESSED: "Assessed",
+  TEST_VERIFIED: "Assessment Verified",
   PROJECT_VERIFIED: "Project-Verified",
   CERTIFIED: "Certified",
+  INSTITUTION_VERIFIED: "Institution-Verified",
   INDUSTRY_VERIFIED: "Industry-Verified",
 };
+
+// The verification ladder, weakest evidence first. Used to rank/compare trust
+// levels (e.g. "is this skill at least Assessment Verified?") instead of
+// scattering string comparisons — see portfolioService.getVerificationSummary.
+export const TRUST_LEVEL_ORDER = [
+  TRUST_LEVELS.SELF_DECLARED,
+  TRUST_LEVELS.ASSESSED,
+  TRUST_LEVELS.TEST_VERIFIED,
+  TRUST_LEVELS.PROJECT_VERIFIED,
+  TRUST_LEVELS.CERTIFIED,
+  TRUST_LEVELS.INSTITUTION_VERIFIED,
+  TRUST_LEVELS.INDUSTRY_VERIFIED,
+];
+
+export function trustLevelRank(level) {
+  const i = TRUST_LEVEL_ORDER.indexOf(level);
+  return i === -1 ? 0 : i;
+}
 
 function trustLevelForScore(score) {
   return score === 0 ? TRUST_LEVELS.SELF_DECLARED : TRUST_LEVELS.ASSESSED;

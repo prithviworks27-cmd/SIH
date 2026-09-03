@@ -6,6 +6,8 @@ export function getPostLoginRedirect(role) {
       return "/industry/dashboard";
     case "admin":
       return "/admin/dashboard";
+    case "academician":
+      return "/academician/dashboard";
     default:
       return "/portal-pending";
   }

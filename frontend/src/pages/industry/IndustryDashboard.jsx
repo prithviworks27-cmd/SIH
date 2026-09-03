@@ -7,22 +7,25 @@ import { useAuth } from "../../hooks/useAuth";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getMyOpportunities } from "../../services/opportunitiesService";
 import { getPipeline, PIPELINE_STAGES } from "../../services/pipelineService";
-import { Briefcase, Users, Target, CheckCircle } from "@phosphor-icons/react";
+import { getMySkillPrograms } from "../../services/skillProgramsService";
+import { Briefcase, Users, Target, GraduationCap } from "@phosphor-icons/react";
 
 export default function IndustryDashboard() {
   const { user } = useAuth();
   const [opportunities, setOpportunities] = useState(undefined);
   const [pipeline, setPipeline] = useState(undefined);
+  const [programs, setPrograms] = useState(undefined);
 
   useEffect(() => {
     getMyOpportunities().then(setOpportunities);
     getPipeline().then(setPipeline);
+    getMySkillPrograms().then(setPrograms);
   }, []);
 
   const activeOpportunities = opportunities?.filter((o) => (o.status ?? "Active") === "Active").length ?? "—";
   const totalApplications = pipeline?.length ?? "—";
-  const shortlisted = pipeline?.filter((p) => PIPELINE_STAGES.indexOf(p.stage) >= PIPELINE_STAGES.indexOf("Shortlisted")).length ?? "—";
-  const selected = pipeline?.filter((p) => p.stage === "Selected").length ?? "—";
+  const matchedCandidates = pipeline?.filter((p) => PIPELINE_STAGES.indexOf(p.stage) >= PIPELINE_STAGES.indexOf("Shortlisted")).length ?? "—";
+  const skillPrograms = programs?.length ?? "—";
 
   const recentApplications = pipeline?.slice(0, 5) ?? [];
   const topCandidates = pipeline
@@ -43,9 +46,9 @@ export default function IndustryDashboard() {
 
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
         <StatCard label="Active Opportunities" value={activeOpportunities} icon={Briefcase} />
-        <StatCard label="Total Applications" value={totalApplications} icon={Users} />
-        <StatCard label="Shortlisted" value={shortlisted} icon={Target} valueColorClass="text-pastel-blue-ink" />
-        <StatCard label="Selected" value={selected} icon={CheckCircle} valueColorClass="text-pastel-green-ink" />
+        <StatCard label="Applications" value={totalApplications} icon={Users} />
+        <StatCard label="Matched Candidates" value={matchedCandidates} icon={Target} valueColorClass="text-pastel-blue-ink" />
+        <StatCard label="Skill Programs" value={skillPrograms} icon={GraduationCap} valueColorClass="text-pastel-green-ink" />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

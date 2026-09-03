@@ -1,9 +1,10 @@
 import { resolveMock } from "./mockClient";
 import { DEFAULT_COMPANY_PROFILE } from "./mockData/companyProfile";
+import { industryAPI } from "./api";
 
 const STORAGE_KEY = "companyProfile";
 
-function loadStored() {
+function loadStoredLocally() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
@@ -12,7 +13,7 @@ function loadStored() {
   }
 }
 
-function persist(profile) {
+function persistLocally(profile) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
   } catch {
@@ -21,12 +22,27 @@ function persist(profile) {
 }
 
 export async function getCompanyProfile() {
-  return resolveMock(loadStored() ?? DEFAULT_COMPANY_PROFILE);
+  try {
+    const { profile } = await industryAPI.getCompanyProfile();
+    const resolved = profile ?? DEFAULT_COMPANY_PROFILE;
+    persistLocally(resolved);
+    return resolveMock(resolved);
+  } catch (err) {
+    console.warn("Could not load company profile from backend, using local cache only:", err.message);
+    return resolveMock(loadStoredLocally() ?? DEFAULT_COMPANY_PROFILE);
+  }
 }
 
 export async function saveCompanyProfile(fields) {
-  const current = loadStored() ?? DEFAULT_COMPANY_PROFILE;
+  const current = loadStoredLocally() ?? DEFAULT_COMPANY_PROFILE;
   const next = { ...current, ...fields };
-  persist(next);
+  persistLocally(next);
+
+  try {
+    await industryAPI.saveCompanyProfile(next);
+  } catch (err) {
+    console.warn("Could not sync company profile to backend, kept in local cache only:", err.message);
+  }
+
   return resolveMock(next, { delay: 500 });
 }

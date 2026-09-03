@@ -16,6 +16,13 @@ import CourseDetail from "./pages/student/CourseDetail.jsx";
 import DigitalPortfolio from "./pages/student/DigitalPortfolio.jsx";
 import DigitalPortfolioEdit from "./pages/student/DigitalPortfolioEdit.jsx";
 import SkillAssessment from "./pages/student/SkillAssessment.jsx";
+import SkillTests from "./pages/student/SkillTests.jsx";
+import SkillTestStart from "./pages/student/SkillTestStart.jsx";
+import SkillTestResult from "./pages/student/SkillTestResult.jsx";
+import MySkills from "./pages/student/MySkills.jsx";
+import SkillGap from "./pages/student/SkillGap.jsx";
+import CareerPath from "./pages/student/CareerPath.jsx";
+import AICareerAdvisor from "./pages/student/AICareerAdvisor.jsx";
 import SkillProfileGapReport from "./pages/student/SkillProfileGapReport.jsx";
 import SkillProfileGraph from "./pages/student/SkillProfileGraph.jsx";
 import RecommendedLearningPaths from "./pages/student/RecommendedLearningPaths.jsx";
@@ -38,12 +45,19 @@ import ApplicantPipeline from "./pages/industry/ApplicantPipeline.jsx";
 import CandidatesList from "./pages/industry/CandidatesList.jsx";
 import CandidateDetail from "./pages/industry/CandidateDetail.jsx";
 import IndustrySettings from "./pages/industry/IndustrySettings.jsx";
+import SkillPrograms from "./pages/industry/SkillPrograms.jsx";
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import StudentManagement from "./pages/admin/StudentManagement.jsx";
+import SkillAnalytics from "./pages/admin/SkillAnalytics.jsx";
+
+import FacultyDashboard from "./pages/academician/FacultyDashboard.jsx";
+import StudentDetail from "./pages/academician/StudentDetail.jsx";
 
 const STUDENT_ROLES = ["student"];
 const INDUSTRY_ROLES = ["industry"];
 const ADMIN_ROLES = ["admin"];
+const ACADEMICIAN_ROLES = ["academician"];
 
 function RootRoute() {
   const { isAuthenticated, loading, user } = useAuth();
@@ -121,6 +135,62 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
                 <SkillAssessment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-tests"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillTests />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-tests/:testId"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillTestStart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-tests/:testId/result"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillTestResult />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <MySkills />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-gap"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <SkillGap />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/career-path"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <CareerPath />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-advisor"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <AICareerAdvisor />
               </ProtectedRoute>
             }
           />
@@ -290,6 +360,14 @@ function App() {
             }
           />
           <Route
+            path="/industry/skill-programs"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <SkillPrograms />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/industry/settings"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
@@ -304,6 +382,40 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/students"
+            element={
+              <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                <StudentManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/skill-analytics"
+            element={
+              <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                <SkillAnalytics />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Faculty */}
+          <Route
+            path="/academician/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={ACADEMICIAN_ROLES}>
+                <FacultyDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/academician/students/:studentId"
+            element={
+              <ProtectedRoute allowedRoles={ACADEMICIAN_ROLES}>
+                <StudentDetail />
               </ProtectedRoute>
             }
           />

@@ -19,6 +19,7 @@ import {
   Users,
   UsersThree,
   ChartBar,
+  Sparkle,
 } from "@phosphor-icons/react";
 
 const ICONS = {
@@ -36,6 +37,7 @@ const ICONS = {
   candidates: Users,
   applications: UsersThree,
   analytics: ChartBar,
+  sparkle: Sparkle,
 };
 
 function NavIcon({ name, ...props }) {

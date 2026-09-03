@@ -4,7 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getInternshipsWithMatch } from "../../services/matchService";
-import { Briefcase } from "@phosphor-icons/react";
+import { Briefcase, Check, Circle } from "@phosphor-icons/react";
 
 const SKILL_FILTERS = ["Python Programming", "React", "SQL / Databases", "Cloud Computing (AWS)"];
 const LOCATION_FILTERS = ["Remote", "Bangalore (Hybrid)", "Mumbai"];
@@ -120,16 +120,36 @@ export default function InternshipJobListings() {
                       <h3 className="text-base font-medium text-ink">{job.title}</h3>
                       <span className="bg-bone px-2 py-0.5 rounded text-xs text-charcoal">{job.type}</span>
                     </div>
-                    <p className="text-sm text-muted mb-2">
+                    <p className="text-sm text-muted mb-3">
                       {job.company} • {job.location}
+                      {job.duration && ` • ${job.duration}`}
+                      {job.stipend && ` • ${job.stipend}`}
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {job.skills.map((skill) => (
-                        <span key={skill} className="bg-bone px-2 py-0.5 rounded text-xs text-muted">
-                          {skill}
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {job.match.matchedSkills.map((skill) => (
+                        <span
+                          key={skill.name}
+                          className="inline-flex items-center gap-1 bg-pastel-green text-pastel-green-ink px-2 py-0.5 rounded text-xs"
+                        >
+                          <Check size={11} weight="bold" />
+                          {skill.name}
+                        </span>
+                      ))}
+                      {job.match.missingSkills.map((skill) => (
+                        <span
+                          key={skill.name}
+                          className="inline-flex items-center gap-1 bg-bone text-muted px-2 py-0.5 rounded text-xs"
+                        >
+                          <Circle size={11} />
+                          {skill.name}
                         </span>
                       ))}
                     </div>
+                    {job.match.missingSkills.length > 0 && (
+                      <p className="text-xs text-muted">
+                        Missing {job.match.missingSkills.length} of {job.skills.length} required skills
+                      </p>
+                    )}
                   </div>
                   <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 border-t md:border-t-0 border-hairline pt-4 md:pt-0 mt-4 md:mt-0">
                     <div className="text-right">

@@ -4,6 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import WhyThisMatch from "../../components/common/WhyThisMatch";
+import SkillTrustBadge from "../../components/common/SkillTrustBadge";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getCandidateById } from "../../services/candidatesService";
 import { getMyOpportunities } from "../../services/opportunitiesService";
@@ -90,6 +91,23 @@ export default function CandidateDetail() {
               </p>
             </div>
           </header>
+
+          {/* Verified skill profile — what an employer sees behind the match score,
+              not just a bare percentage. */}
+          <section className="bg-white border border-hairline rounded-xl p-6 mb-6">
+            <h2 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Verified Skill Profile</h2>
+            <ul className="flex flex-col gap-1">
+              {candidate.skills.map((skill) => (
+                <li key={skill.name} className="flex items-center justify-between gap-3 py-2.5 border-b border-hairline last:border-b-0">
+                  <span className="text-sm text-charcoal">{skill.name}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-muted w-10 text-right">{skill.currentScore}%</span>
+                    <SkillTrustBadge trustLevel={skill.trustLevel ?? "Self-Declared"} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
 
           <section className="bg-white border border-hairline rounded-xl p-6 mb-6">
             <label className="block text-xs uppercase tracking-wide text-muted mb-2" htmlFor="opp-select">

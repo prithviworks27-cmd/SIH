@@ -5,7 +5,7 @@ import { industryNavItems, industryFooterNavItems } from "../../config/industryN
 import { createOpportunity } from "../../services/opportunitiesService";
 import { getCompanyProfile } from "../../services/companyProfileService";
 import { SKILL_CATALOG } from "../../services/mockData/skills";
-import { PaperPlaneTilt } from "@phosphor-icons/react";
+import { PaperPlaneTilt, Plus, X } from "@phosphor-icons/react";
 
 const inputClass =
   "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
@@ -21,11 +21,21 @@ const initialForm = {
   commitment: "",
   description: "",
   skills: [],
+  eligibility: [],
 };
+
+const ELIGIBILITY_SUGGESTIONS = [
+  "3rd year or above",
+  "Final year or recent graduate",
+  "Remote-friendly",
+  "Willing to relocate",
+  "Minimum CGPA 7.0",
+];
 
 export default function PostOpportunity() {
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
+  const [customEligibility, setCustomEligibility] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -39,6 +49,21 @@ export default function PostOpportunity() {
       ...prev,
       skills: prev.skills.includes(skillName) ? prev.skills.filter((s) => s !== skillName) : [...prev.skills, skillName],
     }));
+  };
+
+  // Eligibility criteria are stored as {label, met:true} — "met" always true
+  // here because the recruiter is defining a *requirement* to check students
+  // against, not evaluating a specific student (that's what calculateMatch's
+  // evaluateEducation does downstream, per-candidate).
+  const addEligibility = (label) => {
+    const trimmed = label.trim();
+    if (!trimmed || form.eligibility.some((c) => c.label === trimmed)) return;
+    setForm((prev) => ({ ...prev, eligibility: [...prev.eligibility, { label: trimmed, met: true }] }));
+    setCustomEligibility("");
+  };
+
+  const removeEligibility = (label) => {
+    setForm((prev) => ({ ...prev, eligibility: prev.eligibility.filter((c) => c.label !== label) }));
   };
 
   const handleSubmit = async (e) => {
@@ -61,6 +86,7 @@ export default function PostOpportunity() {
         commitment: form.commitment || undefined,
         overview: form.description ? [form.description] : undefined,
         skills: form.skills,
+        eligibility: form.eligibility,
       });
       navigate("/industry/opportunities");
     } catch {
@@ -134,6 +160,62 @@ export default function PostOpportunity() {
               );
             })}
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase tracking-wide text-muted mb-2">Eligibility Requirements</label>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {ELIGIBILITY_SUGGESTIONS.map((label) => {
+              const selected = form.eligibility.some((c) => c.label === label);
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => (selected ? removeEligibility(label) : addEligibility(label))}
+                  className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
+                    selected ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex gap-2 mb-3">
+            <input
+              className={inputClass}
+              type="text"
+              value={customEligibility}
+              onChange={(e) => setCustomEligibility(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addEligibility(customEligibility);
+                }
+              }}
+              placeholder="Add a custom requirement…"
+            />
+            <button
+              type="button"
+              onClick={() => addEligibility(customEligibility)}
+              className="shrink-0 px-3 border border-hairline rounded-md text-charcoal hover:bg-bone transition-colors flex items-center gap-1.5 text-sm"
+            >
+              <Plus size={16} />
+              Add
+            </button>
+          </div>
+          {form.eligibility.length > 0 && (
+            <ul className="flex flex-col gap-2">
+              {form.eligibility.map((c) => (
+                <li key={c.label} className="flex items-center justify-between gap-2 bg-bone px-3 py-2 rounded-md text-sm text-charcoal">
+                  {c.label}
+                  <button type="button" onClick={() => removeEligibility(c.label)} className="text-muted hover:text-ink">
+                    <X size={14} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {error && <p className="text-sm text-pastel-red-ink">{error}</p>}

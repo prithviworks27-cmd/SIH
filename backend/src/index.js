@@ -2,6 +2,13 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import assessmentRoutes from "./routes/assessmentRoutes.js";
+import aiAdvisorRoutes from "./routes/aiAdvisorRoutes.js";
+import studentStateRoutes from "./routes/studentStateRoutes.js";
+import portfolioRoutes from "./routes/portfolioRoutes.js";
+import applicationsRoutes from "./routes/applicationsRoutes.js";
+import messagesRoutes from "./routes/messagesRoutes.js";
+import industryRoutes from "./routes/industryRoutes.js";
 
 dotenv.config();
 
@@ -30,6 +37,20 @@ app.get("/api/health", (req, res) => {
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+
+// Assessment routes (skill tests + skill profile)
+app.use("/api/assessments", assessmentRoutes);
+
+// AI Career Advisor (OpenRouter-backed)
+app.use("/api/ai-advisor", aiAdvisorRoutes);
+
+// Full migration: remaining student/industry state (Steps 3-9's localStorage
+// pieces, moved to Supabase)
+app.use("/api/student", studentStateRoutes);
+app.use("/api/portfolio", portfolioRoutes);
+app.use("/api/applications", applicationsRoutes);
+app.use("/api/messages", messagesRoutes);
+app.use("/api/industry", industryRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -6,19 +6,21 @@ import SkillTrustBadge from "../../components/common/SkillTrustBadge";
 import SkillEvidencePanel from "../../components/common/SkillEvidencePanel";
 import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
-import { getPortfolio } from "../../services/portfolioService";
-import { ShareNetwork, X } from "@phosphor-icons/react";
+import { getPortfolio, getAssessmentResults } from "../../services/portfolioService";
+import { ShareNetwork, X, SealCheck, DownloadSimple } from "@phosphor-icons/react";
 
 export default function DigitalPortfolio() {
   const { user } = useAuth();
   const [skillProfile, setSkillProfile] = useState(undefined);
   const [portfolio, setPortfolio] = useState(undefined);
+  const [assessments, setAssessments] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     getSkillProfile().then(setSkillProfile);
     getPortfolio().then(setPortfolio);
+    getAssessmentResults().then(setAssessments);
   }, []);
 
   if (!skillProfile || !portfolio) {
@@ -102,6 +104,31 @@ export default function DigitalPortfolio() {
               ))}
             </ul>
           </section>
+          {/*Assessment Results — the scores behind the verified badges*/}
+          <section className="bg-white border border-hairline rounded-xl p-6">
+            <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Assessment Results</h3>
+            {assessments.length === 0 ? (
+              <p className="text-sm text-muted">
+                No assessments passed yet.{" "}
+                <Link to="/skill-tests" className="text-ink hover:underline">
+                  Take an assessment
+                </Link>{" "}
+                to add verified evidence here.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {assessments.map((a) => (
+                  <li key={a.testId} className="flex items-center justify-between gap-3 border-b border-hairline pb-3 last:border-b-0 last:pb-0">
+                    <span className="flex items-center gap-2 text-sm text-charcoal">
+                      <SealCheck size={16} weight="fill" className="text-pastel-green-ink shrink-0" />
+                      {a.title}
+                    </span>
+                    <span className="text-sm text-ink font-medium">{a.scorePercent}%</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </div>
         {/*Right Column: Projects, Internships, Achievements*/}
         <div className="lg:col-span-2 flex flex-col gap-6">
@@ -156,6 +183,24 @@ export default function DigitalPortfolio() {
               </ul>
             </section>
           </div>
+
+          {/*Resume — generated from the portfolio itself rather than uploaded,
+             so it can never drift out of sync with the verified evidence above.*/}
+          <section className="bg-white border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-base font-medium text-ink mb-1">Resume</h3>
+              <p className="text-sm text-muted">
+                Generated from your verified skills, projects, certifications and experience above.
+              </p>
+            </div>
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center justify-center gap-2 border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors whitespace-nowrap"
+            >
+              <DownloadSimple size={16} />
+              Download Resume
+            </button>
+          </section>
         </div>
       </div>
 

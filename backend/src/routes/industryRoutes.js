@@ -1,0 +1,35 @@
+import express from "express";
+import {
+  getCompanyProfile,
+  saveCompanyProfile,
+  getPostedOpportunities,
+  createOpportunity,
+  updateOpportunityStatus,
+  getPipelineOverrides,
+  setPipelineStage,
+  getAllSkillPrograms,
+  createSkillProgram,
+} from "../controllers/industryController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
+
+const router = express.Router();
+
+router.get("/company-profile", authMiddleware, getCompanyProfile);
+router.post("/company-profile", authMiddleware, saveCompanyProfile);
+
+// Opportunities are readable by any authenticated user (students need the
+// posted list alongside the seed catalog) — only creating/updating is
+// restricted to the posting company via posted_by in the controller.
+router.get("/opportunities", authMiddleware, getPostedOpportunities);
+router.post("/opportunities", authMiddleware, createOpportunity);
+router.patch("/opportunities/:id/status", authMiddleware, updateOpportunityStatus);
+
+router.get("/pipeline-overrides", authMiddleware, getPipelineOverrides);
+router.post("/pipeline-overrides", authMiddleware, setPipelineStage);
+
+// Skill programs are readable by any authenticated user (students' Learning
+// page needs the full list) — only creating is restricted to the company.
+router.get("/skill-programs", authMiddleware, getAllSkillPrograms);
+router.post("/skill-programs", authMiddleware, createSkillProgram);
+
+export default router;

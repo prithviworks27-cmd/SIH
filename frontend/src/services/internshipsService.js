@@ -1,15 +1,18 @@
 import { resolveMock } from "./mockClient";
 import { internships as seedInternships } from "./mockData/internships";
+import { industryAPI } from "./api";
 
 // Shared opportunity store for BOTH sides of the platform: internships.js
 // seeds the initial catalog, and anything an industry user posts (see
-// opportunitiesService.createOpportunity) is layered on top via localStorage.
-// Students browsing /internships and industry managing /industry/opportunities
-// read the exact same underlying list — a posted opportunity really does
-// show up for students, it isn't two disconnected mock datasets.
+// opportunitiesService.createOpportunity) is layered on top — now from
+// Supabase's opportunities table (readable by any authenticated user) with
+// localStorage as a same-tab cache/offline fallback. Students browsing
+// /internships and industry managing /industry/opportunities read the exact
+// same underlying list — a posted opportunity really does show up for
+// students, it isn't two disconnected datasets.
 const STORAGE_KEY = "postedOpportunities";
 
-function loadPosted() {
+function loadPostedLocally() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -18,7 +21,7 @@ function loadPosted() {
   }
 }
 
-export function persistPosted(list) {
+export function persistPostedLocally(list) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   } catch {
@@ -26,23 +29,36 @@ export function persistPosted(list) {
   }
 }
 
-function allOpportunities() {
-  const posted = loadPosted();
+async function loadPosted() {
+  try {
+    const { opportunities } = await industryAPI.getPostedOpportunities();
+    persistPostedLocally(opportunities);
+    return opportunities;
+  } catch (err) {
+    console.warn("Could not load posted opportunities from backend, using local cache only:", err.message);
+    return loadPostedLocally();
+  }
+}
+
+async function allOpportunities() {
+  const posted = await loadPosted();
   // Posted opportunities are shown first (newest activity), seed data after.
   return [...posted, ...seedInternships];
 }
 
 export async function getInternships() {
-  return resolveMock(allOpportunities().filter((o) => (o.status ?? "Active") === "Active"));
+  const all = await allOpportunities();
+  return resolveMock(all.filter((o) => (o.status ?? "Active") === "Active"));
 }
 
 export async function getInternshipById(jobId) {
-  const internship = allOpportunities().find((j) => j.id === jobId);
+  const all = await allOpportunities();
+  const internship = all.find((j) => j.id === jobId);
   return resolveMock(internship ?? null);
 }
 
 // Industry-side reads: unlike getInternships(), this returns every status
 // (Active/Draft/Closed) since the manage-opportunities view needs all of them.
 export async function getAllOpportunitiesIncludingInactive() {
-  return resolveMock(allOpportunities());
+  return resolveMock(await allOpportunities());
 }

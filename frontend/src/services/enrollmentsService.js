@@ -1,8 +1,9 @@
 import { resolveMock } from "./mockClient";
+import { studentStateAPI } from "./api";
 
 const STORAGE_KEY = "courseEnrollments";
 
-function loadEnrolled() {
+function loadEnrolledLocally() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -11,7 +12,7 @@ function loadEnrolled() {
   }
 }
 
-function persist(list) {
+function persistLocally(list) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   } catch {
@@ -20,13 +21,27 @@ function persist(list) {
 }
 
 export async function isEnrolled(courseId) {
-  return resolveMock(loadEnrolled().includes(courseId), { delay: 0 });
+  try {
+    const { courseIds } = await studentStateAPI.getEnrolledCourseIds();
+    persistLocally(courseIds);
+    return resolveMock(courseIds.includes(courseId), { delay: 0 });
+  } catch (err) {
+    console.warn("Could not load enrollments from backend, using local cache only:", err.message);
+    return resolveMock(loadEnrolledLocally().includes(courseId), { delay: 0 });
+  }
 }
 
 export async function enrollInCourse(courseId) {
-  const enrolled = loadEnrolled();
+  const enrolled = loadEnrolledLocally();
   if (!enrolled.includes(courseId)) {
-    persist([...enrolled, courseId]);
+    persistLocally([...enrolled, courseId]);
   }
+
+  try {
+    await studentStateAPI.enrollInCourse(courseId);
+  } catch (err) {
+    console.warn(`Could not sync enrollment in ${courseId} to backend:`, err.message);
+  }
+
   return resolveMock(true, { delay: 400 });
 }
