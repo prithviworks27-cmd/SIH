@@ -82,7 +82,12 @@ export default function Login() {
         <div className="text-center mb-10">
           <h1 className="font-editorial italic text-3xl tracking-tight flex items-center justify-center gap-2">
             <img src={logo} alt="" className="w-14 h-14 rounded-full object-cover" />
-            <span><span className="text-[#02b0b1]">Skill</span><span className="text-[#fe7f03]">Bridge</span></span>
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
+            >
+              SkillBridge
+            </span>
           </h1>
         </div>
 

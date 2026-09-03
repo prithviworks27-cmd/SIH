@@ -38,7 +38,12 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
           <Link className="font-editorial italic text-xl flex items-center gap-2" to="/">
             <img src={logo} alt="" className="w-12 h-12 rounded-full object-cover" />
-            <span><span className="text-[#02b0b1]">Skill</span><span className="text-[#fe7f03]">Bridge</span></span>
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
+            >
+              SkillBridge
+            </span>
           </Link>
 
           <div className="flex items-center gap-3">
