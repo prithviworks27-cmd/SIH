@@ -1,5 +1,7 @@
 // API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+).replace(/\/+$/, "");
 
 // Create headers with auth token if available
 const getHeaders = () => {
@@ -144,7 +146,7 @@ export const assessmentAPI = {
   },
 };
 
-// AI Career Advisor — real LLM call (OpenRouter, via the backend so the API
+// AI Career Advisor — real LLM call (Gemini, via the backend so the API
 // key never reaches the browser). context carries the student's real
 // readiness/matched/missing skills so the model answers grounded in actual
 // data instead of guessing.
