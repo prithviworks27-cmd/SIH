@@ -32,7 +32,7 @@ export default function DigitalPortfolio() {
   }
 
   const displayedSkills = skillProfile.strongSkills.length > 0 ? skillProfile.strongSkills : skillProfile.profile.slice(0, 6);
-  const shareUrl = `https://academialink.edu/passport/${(user?.email || "student").split("@")[0]}`;
+  const shareUrl = `https://skillbridge.edu/passport/${(user?.email || "student").split("@")[0]}`;
 
   return (
     <DashboardLayout>

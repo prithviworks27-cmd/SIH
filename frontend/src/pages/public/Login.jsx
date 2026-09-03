@@ -80,7 +80,7 @@ export default function Login() {
         {/* Wordmark */}
         <div className="text-center mb-10">
           <h1 className="font-editorial italic text-3xl text-ink tracking-tight">
-            AcademiaLink
+            SKILLbridge
           </h1>
         </div>
 
@@ -218,7 +218,7 @@ export default function Login() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-muted">© 2024 AcademiaLink Collaboration Portal.</p>
+          <p className="text-xs text-muted">© 2024 SKILLbridge Collaboration Portal.</p>
         </div>
       </main>
     </div>

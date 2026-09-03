@@ -36,7 +36,7 @@ export default function Landing() {
       <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
           <Link className="font-editorial italic text-xl text-ink flex items-center gap-2" to="/">
-            AcademiaLink
+            SKILLbridge
           </Link>
 
           <div className="flex items-center gap-3">
@@ -107,8 +107,8 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-canvas border-t border-hairline mt-auto">
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col items-center gap-1">
-          <span className="font-editorial italic text-base text-ink">AcademiaLink</span>
-          <span className="text-xs text-muted">© 2024 AcademiaLink Collaboration Portal.</span>
+          <span className="font-editorial italic text-base text-ink">SKILLbridge</span>
+          <span className="text-xs text-muted">© 2024 SKILLbridge Collaboration Portal.</span>
         </div>
       </footer>
     </div>
