@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ChartLineUp, Handshake, RocketLaunch } from "@phosphor-icons/react";
 import useScrollReveal from "../../hooks/useScrollReveal";
+import logo from "../../assets/logo.png";
 
 const STEPS = [
   {
@@ -36,6 +37,7 @@ export default function Landing() {
       <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
           <Link className="font-editorial italic text-xl text-ink flex items-center gap-2" to="/">
+            <img src={logo} alt="" className="w-8 h-8 rounded-full object-cover" />
             SKILLbridge
           </Link>
 

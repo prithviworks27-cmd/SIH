@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getPostLoginRedirect } from "../../utils/roleRedirect";
 import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
+import logo from "../../assets/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -79,7 +80,8 @@ export default function Login() {
       <main className="w-full max-w-sm">
         {/* Wordmark */}
         <div className="text-center mb-10">
-          <h1 className="font-editorial italic text-3xl text-ink tracking-tight">
+          <h1 className="font-editorial italic text-3xl text-ink tracking-tight flex items-center justify-center gap-2">
+            <img src={logo} alt="" className="w-9 h-9 rounded-full object-cover" />
             SKILLbridge
           </h1>
         </div>
