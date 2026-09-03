@@ -127,7 +127,7 @@ export default function SignupRoleSelection() {
         <div className="max-w-[560px] w-full">
           <div className="text-center mb-10">
             <h1 className="font-editorial text-3xl text-ink tracking-tight mb-2">Create your account</h1>
-            <p className="text-muted">Join SKILLbridge to collaborate and innovate.</p>
+            <p className="text-muted">Join SkillBridge to collaborate and innovate.</p>
           </div>
 
           {/* Error Message */}
@@ -253,7 +253,7 @@ export default function SignupRoleSelection() {
 
       {/*Footer*/}
       <footer className="w-full py-8 px-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-canvas border-t border-hairline text-xs text-muted">
-        <div>© 2024 SKILLbridge Collaboration Portal. All rights reserved.</div>
+        <div>© 2024 SkillBridge Collaboration Portal. All rights reserved.</div>
         <div className="flex gap-6">
           <a className="hover:text-ink transition-colors" href="#">
             Privacy Policy

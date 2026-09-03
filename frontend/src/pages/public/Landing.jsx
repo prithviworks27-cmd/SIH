@@ -36,9 +36,9 @@ export default function Landing() {
       {/* Nav */}
       <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
-          <Link className="font-editorial italic text-xl text-ink flex items-center gap-2" to="/">
-            <img src={logo} alt="" className="w-8 h-8 rounded-full object-cover" />
-            SKILLbridge
+          <Link className="font-editorial italic text-xl flex items-center gap-2" to="/">
+            <img src={logo} alt="" className="w-12 h-12 rounded-full object-cover" />
+            <span><span className="text-[#02b0b1]">Skill</span><span className="text-[#fe7f03]">Bridge</span></span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -109,8 +109,8 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-canvas border-t border-hairline mt-auto">
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col items-center gap-1">
-          <span className="font-editorial italic text-base text-ink">SKILLbridge</span>
-          <span className="text-xs text-muted">© 2024 SKILLbridge Collaboration Portal.</span>
+          <span className="font-editorial italic text-base text-ink">SkillBridge</span>
+          <span className="text-xs text-muted">© 2024 SkillBridge Collaboration Portal.</span>
         </div>
       </footer>
     </div>
