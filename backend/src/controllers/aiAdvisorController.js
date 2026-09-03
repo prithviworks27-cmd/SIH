@@ -10,7 +10,7 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 // `:free`-suffixed entries if all of these start failing.
 const MODELS = ["z-ai/glm-5.2:free", "minimax/minimax-m3:free", "nvidia/nemotron-3-super-120b-a12b:free"];
 
-const SYSTEM_PROMPT = `You are the AI Career Advisor inside SKILLbridge, a student skill-and-placement platform.
+const SYSTEM_PROMPT = `You are the AI Career Advisor inside SkillBridge, a student skill-and-placement platform.
 
 You are given the student's REAL current data: their verified skill profile, their selected target role and its readiness breakdown, and the specific skills they have vs. still need for that role. Never invent skills, scores, or roles that aren't in the provided data.
 
@@ -77,7 +77,7 @@ async function callOpenRouterWithFallback(apiKey, messages) {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
           "HTTP-Referer": process.env.FRONTEND_URL || "http://localhost:5173",
-          "X-Title": "SKILLbridge AI Career Advisor",
+          "X-Title": "SkillBridge AI Career Advisor",
         },
         body: JSON.stringify({ model, messages, temperature: 0.4, max_tokens: 500 }),
       });
