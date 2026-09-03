@@ -58,7 +58,7 @@ export default function Landing() {
 
       <main className="flex-grow flex flex-col">
         {/* Hero */}
-        <section className="relative w-full px-4 md:px-6 py-24 md:py-36 border-b border-hairline overflow-hidden">
+        <section className="relative w-full px-4 md:px-6 border-b border-hairline overflow-hidden flex items-center justify-center min-h-[calc(100vh-71px)]">
           <div
             aria-hidden="true"
             className="ambient-blob pointer-events-none absolute -top-1/3 right-0 w-[600px] h-[600px] rounded-full opacity-[0.04]"
