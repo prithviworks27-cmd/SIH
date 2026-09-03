@@ -46,7 +46,7 @@ function NavIcon({ name, ...props }) {
 }
 
 function navLinkClass({ isActive }) {
-  return `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+  return `group flex items-center gap-3 px-3 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 ${
     isActive ? "text-ink font-medium bg-bone" : "text-muted hover:bg-bone hover:text-ink"
   }`;
 }
@@ -66,7 +66,7 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
       {/* Mobile top bar */}
       <header className="md:hidden flex items-center justify-between p-4 border-b border-hairline bg-canvas sticky top-0 z-20">
         <h1 className="font-editorial italic text-lg text-ink">{title}</h1>
-        <button onClick={() => setMobileOpen(true)} className="text-ink p-1">
+        <button onClick={() => setMobileOpen(true)} className="icon-btn p-2" aria-label="Open menu" title="Open menu">
           <List size={20} />
         </button>
       </header>
@@ -81,7 +81,7 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
             <h2 className="font-editorial italic text-lg text-ink leading-tight">{title}</h2>
             <p className="text-xs text-muted mt-0.5">{subtitle}</p>
           </div>
-          <button onClick={() => setMobileOpen(false)} className="md:hidden text-muted p-1">
+          <button onClick={() => setMobileOpen(false)} className="icon-btn md:hidden p-1.5" aria-label="Close menu" title="Close menu">
             <X size={18} />
           </button>
         </div>
@@ -89,7 +89,7 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
         <nav className="flex-1 space-y-0.5">
           {navItems.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
-              <NavIcon name={item.icon} size={18} weight="regular" />
+              <NavIcon name={item.icon} size={18} weight="regular" className="transition-transform duration-150 group-hover:scale-110" />
               <span>{item.label}</span>
             </NavLink>
           ))}
@@ -98,15 +98,16 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
         <div className="mt-auto border-t border-hairline pt-4 space-y-0.5">
           {footerNavItems.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
-              <NavIcon name={item.icon} size={18} weight="regular" />
+              <NavIcon name={item.icon} size={18} weight="regular" className="transition-transform duration-150 group-hover:scale-110" />
               <span>{item.label}</span>
             </NavLink>
           ))}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink transition-colors"
+            className="group w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink cursor-pointer transition-colors duration-150"
+            title="Log out"
           >
-            <SignOut size={18} />
+            <SignOut size={18} className="transition-transform duration-150 group-hover:scale-110" />
             <span>Logout</span>
           </button>
         </div>

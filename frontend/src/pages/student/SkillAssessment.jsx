@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
-import { ArrowLeft, ArrowRight, CheckCircle } from "@phosphor-icons/react";
-import { getAssessmentQuestions, submitAssessment } from "../../services/assessmentService";
+import { ArrowLeft, ArrowRight, CheckCircle, ClockCounterClockwise } from "@phosphor-icons/react";
+import { getAssessmentQuestions, submitAssessment, getStoredSkillProfileOrDemo } from "../../services/assessmentService";
 
 const STORAGE_DRAFT_KEY = "skillAssessmentDraft";
 
@@ -31,18 +31,58 @@ export default function SkillAssessment() {
   const [answers, setAnswers] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // undefined = still checking, null = never completed, string = last completion date.
+  // If the student already completed this self-rating once, don't force them
+  // through the whole form again on every visit — show a summary with an
+  // explicit "Retake" choice instead (Issue 6).
+  const [previousCompletedAt, setPreviousCompletedAt] = useState(undefined);
+  const [forceRetake, setForceRetake] = useState(false);
 
   useEffect(() => {
-    getAssessmentQuestions().then((qs) => {
-      setQuestions(qs);
-      setAnswers(loadDraft());
-    });
+    getAssessmentQuestions().then(setQuestions);
+    getStoredSkillProfileOrDemo().then((profile) => setPreviousCompletedAt(profile?.completedAt ?? null));
   }, []);
 
-  if (!questions) {
+  useEffect(() => {
+    if (forceRetake) setAnswers(loadDraft());
+  }, [forceRetake]);
+
+  if (!questions || previousCompletedAt === undefined) {
     return (
       <DashboardLayout>
         <LoadingState fullScreen={false} label="Loading assessment…" />
+      </DashboardLayout>
+    );
+  }
+
+  if (previousCompletedAt && !forceRetake) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center">
+          <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
+            <ClockCounterClockwise size={32} className="text-ink mx-auto mb-4" />
+            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">You've already completed this assessment</h1>
+            <p className="text-muted mb-8">
+              Last completed on{" "}
+              {new Date(previousCompletedAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}. Your skill
+              profile is already up to date — no need to fill it in again.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => navigate("/skill-profile/gap-report")}
+                className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all cursor-pointer"
+              >
+                View My Skill Profile
+              </button>
+              <button
+                onClick={() => setForceRetake(true)}
+                className="w-full border border-hairline text-charcoal text-sm px-4 py-2.5 rounded-md hover:bg-bone transition-colors cursor-pointer"
+              >
+                Retake Self-Assessment
+              </button>
+            </div>
+          </div>
+        </div>
       </DashboardLayout>
     );
   }

@@ -4,10 +4,10 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getInternshipsWithMatch } from "../../services/matchService";
-import { Briefcase, Check, Circle } from "@phosphor-icons/react";
+import { parseLocation, getDistinctCities, WORK_MODES } from "../../utils/locationUtils";
+import { Briefcase, Check, Circle, MapPin } from "@phosphor-icons/react";
 
 const SKILL_FILTERS = ["Python Programming", "React", "SQL / Databases", "Cloud Computing (AWS)"];
-const LOCATION_FILTERS = ["Remote", "Bangalore (Hybrid)", "Mumbai"];
 const TYPE_FILTERS = ["Full-time", "Internship"];
 
 function toggle(set, value) {
@@ -19,22 +19,30 @@ function toggle(set, value) {
 export default function InternshipJobListings() {
   const [jobs, setJobs] = useState(undefined);
   const [skillFilters, setSkillFilters] = useState(new Set());
-  const [locationFilters, setLocationFilters] = useState(new Set());
+  const [cityFilters, setCityFilters] = useState(new Set());
+  const [modeFilters, setModeFilters] = useState(new Set());
   const [typeFilters, setTypeFilters] = useState(new Set(TYPE_FILTERS));
 
   useEffect(() => {
     getInternshipsWithMatch().then(setJobs);
   }, []);
 
+  // Built from the real opportunity list (seed + posted) rather than a
+  // hardcoded list, so every city that actually appears is filterable —
+  // including cities added later by industry-posted opportunities.
+  const cityOptions = useMemo(() => (jobs ? getDistinctCities(jobs) : []), [jobs]);
+
   const filteredJobs = useMemo(() => {
     if (!jobs) return jobs;
     return jobs.filter((job) => {
+      const { city, mode } = parseLocation(job.location);
       const matchesSkill = skillFilters.size === 0 || job.skills.some((s) => skillFilters.has(s));
-      const matchesLocation = locationFilters.size === 0 || locationFilters.has(job.location);
+      const matchesCity = cityFilters.size === 0 || cityFilters.has(city) || (cityFilters.has("Remote") && city === "Remote");
+      const matchesMode = modeFilters.size === 0 || modeFilters.has(mode);
       const matchesType = typeFilters.size === 0 || typeFilters.has(job.type);
-      return matchesSkill && matchesLocation && matchesType;
+      return matchesSkill && matchesCity && matchesMode && matchesType;
     });
-  }, [jobs, skillFilters, locationFilters, typeFilters]);
+  }, [jobs, skillFilters, cityFilters, modeFilters, typeFilters]);
 
   return (
     <DashboardLayout>
@@ -60,17 +68,42 @@ export default function InternshipJobListings() {
               </div>
             </div>
             <div className="mb-6 border-b border-hairline pb-4">
-              <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Location</h3>
+              <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Work Mode</h3>
               <div className="space-y-2">
-                {LOCATION_FILTERS.map((loc) => (
-                  <label key={loc} className="flex items-center gap-2 cursor-pointer">
+                {WORK_MODES.map((mode) => (
+                  <label key={mode} className="flex items-center gap-2 cursor-pointer">
                     <input
                       className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
                       type="checkbox"
-                      checked={locationFilters.has(loc)}
-                      onChange={() => setLocationFilters((prev) => toggle(prev, loc))}
+                      checked={modeFilters.has(mode)}
+                      onChange={() => setModeFilters((prev) => toggle(prev, mode))}
                     />
-                    <span className="text-sm text-charcoal">{loc}</span>
+                    <span className="text-sm text-charcoal">{mode}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="mb-6 border-b border-hairline pb-4">
+              <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Location</h3>
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
+                    type="checkbox"
+                    checked={cityFilters.has("Remote")}
+                    onChange={() => setCityFilters((prev) => toggle(prev, "Remote"))}
+                  />
+                  <span className="text-sm text-charcoal">Remote</span>
+                </label>
+                {cityOptions.map((city) => (
+                  <label key={city} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
+                      type="checkbox"
+                      checked={cityFilters.has(city)}
+                      onChange={() => setCityFilters((prev) => toggle(prev, city))}
+                    />
+                    <span className="text-sm text-charcoal">{city}</span>
                   </label>
                 ))}
               </div>
@@ -109,21 +142,43 @@ export default function InternshipJobListings() {
 
           {filteredJobs && filteredJobs.length > 0 && (
             <div className="space-y-3">
-              {filteredJobs.map((job) => (
+              {filteredJobs.map((job) => {
+                const { city, mode } = parseLocation(job.location);
+                return (
                 <Link
                   key={job.id}
                   to={`/internships/${job.id}`}
                   className="bg-white border border-hairline rounded-xl p-5 flex flex-col md:flex-row gap-4 items-start md:items-center hover:shadow-lift transition-shadow cursor-pointer"
                 >
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="text-base font-medium text-ink">{job.title}</h3>
                       <span className="bg-bone px-2 py-0.5 rounded text-xs text-charcoal">{job.type}</span>
+                      {mode && (
+                        <span className="inline-flex items-center gap-1 bg-pastel-blue text-pastel-blue-ink px-2 py-0.5 rounded text-xs">
+                          {mode}
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm text-muted mb-3">
-                      {job.company} • {job.location}
-                      {job.duration && ` • ${job.duration}`}
-                      {job.stipend && ` • ${job.stipend}`}
+                    <p className="text-sm text-muted mb-3 flex items-center gap-1 flex-wrap">
+                      <span>{job.company}</span>
+                      <span>•</span>
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin size={13} />
+                        {city}
+                      </span>
+                      {job.duration && (
+                        <>
+                          <span>•</span>
+                          <span>{job.duration}</span>
+                        </>
+                      )}
+                      {job.stipend && (
+                        <>
+                          <span>•</span>
+                          <span>{job.stipend}</span>
+                        </>
+                      )}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       {job.match.matchedSkills.map((skill) => (
@@ -159,7 +214,8 @@ export default function InternshipJobListings() {
                     <span className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-[#333333] transition-colors">View Details</span>
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

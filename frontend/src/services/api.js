@@ -95,6 +95,23 @@ export const authAPI = {
   clearLocalUser: () => {
     localStorage.removeItem("user");
   },
+
+  changePassword: async (currentPassword, newPassword) => {
+    const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to change password");
+    }
+
+    return data;
+  },
 };
 
 // Assessment API calls (skill tests + skill profile persisted in Supabase)
@@ -159,10 +176,12 @@ export const aiAdvisorAPI = {
       body: JSON.stringify({ message, context }),
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(data.error || "AI Career Advisor request failed");
+      const err = new Error(data.error || "AI Career Advisor request failed");
+      err.status = response.status;
+      throw err;
     }
 
     return data;

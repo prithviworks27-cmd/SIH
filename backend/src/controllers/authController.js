@@ -256,3 +256,58 @@ export const logout = (req, res) => {
   clearAuthCookie(res);
   res.status(204).send();
 };
+
+// POST /api/auth/change-password — Settings > Security. Only applies to
+// legacy email/password accounts (users.password is set); a Google/Supabase
+// account has no local password to change, so it's rejected with a clear
+// message rather than silently no-op'ing.
+export const changePassword = async (req, res) => {
+  try {
+    if (req.supabaseUser) {
+      return res.status(400).json({ error: "This account signs in with Google — change your password from your Google Account settings." });
+    }
+
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: "Current and new password are required" });
+    }
+    if (typeof newPassword !== "string" || newPassword.length < 8) {
+      return res.status(400).json({ error: "New password must be at least 8 characters" });
+    }
+
+    const { data: user, error: fetchError } = await supabase
+      .from("users")
+      .select("id, password")
+      .eq("id", userId)
+      .single();
+
+    if (fetchError || !user?.password) {
+      return res.status(400).json({ error: "This account doesn't support password changes." });
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ password: hashedPassword, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+
+    if (updateError) {
+      console.error("Change password error:", updateError);
+      return res.status(500).json({ error: "Failed to update password" });
+    }
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Change password error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

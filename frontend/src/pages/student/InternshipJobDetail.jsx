@@ -5,7 +5,8 @@ import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getMatchForOpportunity } from "../../services/matchService";
 import { applyToOpportunity, getApplications, hasAppliedTo } from "../../services/applicationsService";
-import { ArrowLeft, Buildings, CheckCircle, MapPin, CalendarBlank, Money, Clock, MagnifyingGlass } from "@phosphor-icons/react";
+import { parseLocation } from "../../utils/locationUtils";
+import { ArrowLeft, Buildings, CheckCircle, MapPin, CalendarBlank, Money, Clock, MagnifyingGlass, Globe } from "@phosphor-icons/react";
 
 export default function InternshipJobDetail() {
   const { jobId } = useParams();
@@ -43,6 +44,7 @@ export default function InternshipJobDetail() {
   };
 
   const job = data?.opportunity;
+  const { city, mode } = job ? parseLocation(job.location) : {};
 
   return (
     <DashboardLayout>
@@ -140,9 +142,18 @@ export default function InternshipJobDetail() {
                     <MapPin size={18} className="text-muted" />
                     <div>
                       <span className="block text-xs uppercase tracking-wide text-muted mb-0.5">Location</span>
-                      <span className="text-charcoal">{job.location}</span>
+                      <span className="text-charcoal">{city}</span>
                     </div>
                   </li>
+                  {mode && (
+                    <li className="flex items-start gap-3">
+                      <Globe size={18} className="text-muted" />
+                      <div>
+                        <span className="block text-xs uppercase tracking-wide text-muted mb-0.5">Mode</span>
+                        <span className="text-charcoal">{mode}</span>
+                      </div>
+                    </li>
+                  )}
                   {job.duration && (
                     <li className="flex items-start gap-3">
                       <CalendarBlank size={18} className="text-muted" />

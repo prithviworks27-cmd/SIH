@@ -8,7 +8,7 @@ import { getSkillProfile } from "../../services/skillsService";
 import { getApplications } from "../../services/applicationsService";
 import { getInternshipsWithMatch } from "../../services/matchService";
 import { getCourses } from "../../services/coursesService";
-import { Target, Briefcase, CalendarBlank, Sparkle, Clock, Code, ShieldCheck, TrendUp } from "@phosphor-icons/react";
+import { Target, Briefcase, CalendarBlank, Sparkle, Clock, Code, ShieldCheck, TrendUp, UserCircle } from "@phosphor-icons/react";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -132,7 +132,12 @@ export default function StudentDashboard() {
       {/*Career Tools*/}
       <section className="mt-6">
         <h3 className="text-lg font-medium text-ink mb-4">Career Tools</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link to="/portfolio" className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
+            <UserCircle size={20} className="text-ink" />
+            <span className="text-sm font-medium text-ink">Preview Portfolio</span>
+            <span className="text-xs text-muted">See your professional profile the way employers do.</span>
+          </Link>
           <Link to="/proof-of-skill" className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
             <Code size={20} className="text-ink" />
             <span className="text-sm font-medium text-ink">Proof-of-Skill Challenge</span>

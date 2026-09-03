@@ -116,7 +116,39 @@ export const setLearningProgress = async (req, res) => {
 
 // --- Notification preferences (preferencesService.js) ---
 
-const DEFAULT_PREFS = { emailNotifications: true, smsAlerts: false, applicationUpdates: true };
+// Also doubles as the "account settings" row (Issue 4: Settings page) —
+// phone + privacy/visibility + data-sharing consent live in the same
+// one-row-per-user table as the notification toggles (see settings_schema.sql)
+// rather than a parallel table for a handful of extra columns.
+const DEFAULT_PREFS = {
+  emailNotifications: true,
+  smsAlerts: false,
+  applicationUpdates: true,
+  phone: "",
+  course: "",
+  profileVisibility: "Institution Only",
+  portfolioVisibility: "Public",
+  opportunityVisibility: "Visible to Recruiters",
+  dataSharingConsent: true,
+};
+
+const PREFS_COLUMNS =
+  "email_notifications, sms_alerts, application_updates, phone, course, profile_visibility, portfolio_visibility, opportunity_visibility, data_sharing_consent";
+
+function prefsRowToDto(data) {
+  if (!data) return DEFAULT_PREFS;
+  return {
+    emailNotifications: data.email_notifications,
+    smsAlerts: data.sms_alerts,
+    applicationUpdates: data.application_updates,
+    phone: data.phone ?? "",
+    course: data.course ?? "",
+    profileVisibility: data.profile_visibility ?? DEFAULT_PREFS.profileVisibility,
+    portfolioVisibility: data.portfolio_visibility ?? DEFAULT_PREFS.portfolioVisibility,
+    opportunityVisibility: data.opportunity_visibility ?? DEFAULT_PREFS.opportunityVisibility,
+    dataSharingConsent: data.data_sharing_consent ?? DEFAULT_PREFS.dataSharingConsent,
+  };
+}
 
 export const getNotificationPreferences = async (req, res) => {
   try {
@@ -125,7 +157,7 @@ export const getNotificationPreferences = async (req, res) => {
 
     const { data, error } = await supabase
       .from("notification_preferences")
-      .select("email_notifications, sms_alerts, application_updates")
+      .select(PREFS_COLUMNS)
       .eq("user_id", userId)
       .maybeSingle();
 
@@ -134,15 +166,7 @@ export const getNotificationPreferences = async (req, res) => {
       return res.status(500).json({ error: "Failed to load preferences" });
     }
 
-    const prefs = data
-      ? {
-          emailNotifications: data.email_notifications,
-          smsAlerts: data.sms_alerts,
-          applicationUpdates: data.application_updates,
-        }
-      : DEFAULT_PREFS;
-
-    res.status(200).json({ preferences: prefs });
+    res.status(200).json({ preferences: prefsRowToDto(data) });
   } catch (error) {
     console.error("Get notification preferences error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -154,7 +178,17 @@ export const saveNotificationPreferences = async (req, res) => {
     const userId = await resolveUserId(req);
     if (!userId) return res.status(404).json({ error: "User not found" });
 
-    const { emailNotifications, smsAlerts, applicationUpdates } = req.body;
+    const {
+      emailNotifications,
+      smsAlerts,
+      applicationUpdates,
+      phone,
+      course,
+      profileVisibility,
+      portfolioVisibility,
+      opportunityVisibility,
+      dataSharingConsent,
+    } = req.body;
 
     const { error } = await supabase.from("notification_preferences").upsert(
       {
@@ -162,6 +196,12 @@ export const saveNotificationPreferences = async (req, res) => {
         email_notifications: emailNotifications,
         sms_alerts: smsAlerts,
         application_updates: applicationUpdates,
+        phone: phone ?? null,
+        course: course ?? null,
+        profile_visibility: profileVisibility,
+        portfolio_visibility: portfolioVisibility,
+        opportunity_visibility: opportunityVisibility,
+        data_sharing_consent: dataSharingConsent,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_id" }
@@ -172,7 +212,19 @@ export const saveNotificationPreferences = async (req, res) => {
       return res.status(500).json({ error: "Failed to save preferences" });
     }
 
-    res.status(200).json({ preferences: { emailNotifications, smsAlerts, applicationUpdates } });
+    res.status(200).json({
+      preferences: {
+        emailNotifications,
+        smsAlerts,
+        applicationUpdates,
+        phone,
+        course,
+        profileVisibility,
+        portfolioVisibility,
+        opportunityVisibility,
+        dataSharingConsent,
+      },
+    });
   } catch (error) {
     console.error("Save notification preferences error:", error);
     res.status(500).json({ error: "Internal server error" });

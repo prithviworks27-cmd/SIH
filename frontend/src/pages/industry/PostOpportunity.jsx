@@ -5,6 +5,7 @@ import { industryNavItems, industryFooterNavItems } from "../../config/industryN
 import { createOpportunity } from "../../services/opportunitiesService";
 import { getCompanyProfile } from "../../services/companyProfileService";
 import { SKILL_CATALOG } from "../../services/mockData/skills";
+import { WORK_MODES } from "../../utils/locationUtils";
 import { PaperPlaneTilt, Plus, X } from "@phosphor-icons/react";
 
 const inputClass =
@@ -15,7 +16,8 @@ const TYPES = ["Internship", "Full-time", "Part-time"];
 const initialForm = {
   title: "",
   type: "Internship",
-  location: "",
+  city: "",
+  mode: "On-site",
   duration: "",
   stipend: "",
   commitment: "",
@@ -69,18 +71,22 @@ export default function PostOpportunity() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) return setError("Title is required.");
-    if (!form.location.trim()) return setError("Location is required.");
+    if (form.mode !== "Remote" && !form.city.trim()) return setError("City is required for non-remote opportunities.");
     if (form.skills.length === 0) return setError("Select at least one required skill.");
 
     setSubmitting(true);
     setError("");
     try {
       const company = await getCompanyProfile();
+      // Stored as a single "location" string for compatibility with existing
+      // data/services (e.g. "Bangalore (Hybrid)") — utils/locationUtils.js
+      // parses it back into { city, mode } everywhere it's displayed/filtered.
+      const location = form.mode === "Remote" ? "Remote" : `${form.city.trim()} (${form.mode})`;
       await createOpportunity({
         title: form.title,
         company: company.name,
         type: form.type,
-        location: form.location,
+        location,
         duration: form.duration || undefined,
         stipend: form.stipend || undefined,
         commitment: form.commitment || undefined,
@@ -119,8 +125,25 @@ export default function PostOpportunity() {
             </select>
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Location</label>
-            <input className={inputClass} type="text" value={form.location} onChange={handleChange("location")} placeholder="e.g. Remote, Bangalore" />
+            <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Work Mode</label>
+            <select className={inputClass} value={form.mode} onChange={handleChange("mode")}>
+              {WORK_MODES.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={form.mode === "Remote" ? "opacity-50" : ""}>
+            <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">City</label>
+            <input
+              className={inputClass}
+              type="text"
+              value={form.city}
+              onChange={handleChange("city")}
+              placeholder="e.g. Bangalore, Noida"
+              disabled={form.mode === "Remote"}
+            />
           </div>
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Duration</label>

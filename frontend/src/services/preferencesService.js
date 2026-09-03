@@ -7,6 +7,12 @@ const DEFAULTS = {
   emailNotifications: true,
   smsAlerts: false,
   applicationUpdates: true,
+  phone: "",
+  course: "",
+  profileVisibility: "Institution Only",
+  portfolioVisibility: "Public",
+  opportunityVisibility: "Visible to Recruiters",
+  dataSharingConsent: true,
 };
 
 function loadStoredLocally() {

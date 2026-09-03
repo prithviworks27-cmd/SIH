@@ -202,3 +202,58 @@ export async function getSkillTestResult(testId) {
   const all = await loadResults();
   return all[testId] ?? null;
 }
+
+// Full assessment history (Issue 6) — every past attempt across every
+// domain, not just the last result per test. The backend already stores
+// every attempt (skill_test_results keeps both passed and failed rows,
+// never overwrites), this just exposes that instead of collapsing it to
+// "latest only" the way getSkillTests()/loadResults() do for the domain grid.
+// Grouped per test so the UI can show "3 attempts, best 92%, latest 82%"
+// without every page re-deriving that from a flat list.
+export async function getAssessmentHistory() {
+  let rows = [];
+  try {
+    const { results } = await assessmentAPI.getSkillTestResults();
+    rows = results.map((r) => ({
+      id: r.id,
+      testId: r.test_id,
+      skillName: r.skill_name,
+      total: r.total_questions,
+      correct: r.correct_answers,
+      scorePercent: r.score_percent,
+      passingScore: r.passing_score,
+      passed: r.passed,
+      completedAt: r.completed_at,
+    }));
+  } catch (err) {
+    console.warn("Could not load assessment history from backend, falling back to last-known result per test:", err.message);
+    // Offline/unauthenticated fallback — only the last attempt per test is
+    // available locally (localStorage never kept full history), so history
+    // degrades to one row per test rather than being empty.
+    rows = Object.values(loadResultsLocally());
+  }
+
+  const byTest = new Map();
+  for (const attempt of rows) {
+    if (!byTest.has(attempt.testId)) {
+      byTest.set(attempt.testId, { testId: attempt.testId, skillName: attempt.skillName, attempts: [] });
+    }
+    byTest.get(attempt.testId).attempts.push(attempt);
+  }
+
+  return Array.from(byTest.values())
+    .map((group) => {
+      const attempts = [...group.attempts].sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+      const bestScore = Math.max(...attempts.map((a) => a.scorePercent));
+      return {
+        testId: group.testId,
+        skillName: group.skillName,
+        title: getSkillTestById(group.testId)?.title ?? group.skillName,
+        latest: attempts[0],
+        bestScore,
+        attemptCount: attempts.length,
+        attempts,
+      };
+    })
+    .sort((a, b) => new Date(b.latest.completedAt) - new Date(a.latest.completedAt));
+}

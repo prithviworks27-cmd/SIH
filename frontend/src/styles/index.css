@@ -21,6 +21,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Reusable icon-only button hover treatment — subtle background + color
+   shift, no size/padding change on hover so nothing around it shifts.
+   Used for sidebar nav icons, dashboard/opportunity/assessment action
+   icons, and message/notification icon buttons across the portal. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #787774; /* text-muted */
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.icon-btn:hover {
+  background-color: #f7f6f3; /* bg-bone */
+  color: #1a1a1a; /* text-ink */
+}
+.icon-btn:active {
+  transform: scale(0.94);
+}
+
 /* Editorial minimalism: scroll-entry reveal */
 .reveal {
   opacity: 0;

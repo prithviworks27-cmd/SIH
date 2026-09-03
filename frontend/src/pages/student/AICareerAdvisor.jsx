@@ -12,6 +12,25 @@ const SUGGESTED_PROMPTS = [
   "Which skill gap matters most right now?",
 ];
 
+// Maps raw backend/network errors to a calm, actionable message — never
+// surface internals like "No token provided" (an expired/missing session)
+// directly to the student.
+function friendlyAdvisorError(err) {
+  if (err?.status === 401) {
+    return "Your session has expired. Please log in again to keep using the AI Career Advisor.";
+  }
+  if (err?.status === 429) {
+    return "You've sent a lot of messages in a short time. Please wait a moment and try again.";
+  }
+  if (err?.status === 503 || err?.status === 502) {
+    return "AI Advisor is temporarily unavailable. Please check your connection or try again.";
+  }
+  if (!err?.status) {
+    return "AI Advisor is temporarily unavailable. Please check your connection or try again.";
+  }
+  return "AI Advisor is temporarily unavailable. Please check your connection or try again.";
+}
+
 function Bubble({ role, content }) {
   const isUser = role === "user";
   return (
@@ -76,7 +95,7 @@ export default function AICareerAdvisor() {
       const { reply } = await aiAdvisorAPI.ask(trimmed, buildContext());
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
-      setError(err.message);
+      setError(friendlyAdvisorError(err));
     } finally {
       setSending(false);
     }

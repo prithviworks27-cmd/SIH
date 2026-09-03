@@ -5,6 +5,7 @@ import {
   getCurrentUser,
   syncSupabaseUser,
   logout,
+  changePassword,
 } from "../controllers/authController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import {
@@ -23,5 +24,6 @@ router.post("/logout", logout);
 
 // Protected routes
 router.get("/me", authMiddleware, getCurrentUser);
+router.post("/change-password", authMiddleware, changePassword);
 
 export default router;
