@@ -26,6 +26,7 @@ import AICareerAdvisor from "./pages/student/AICareerAdvisor.jsx";
 import SkillProfileGapReport from "./pages/student/SkillProfileGapReport.jsx";
 import SkillProfileGraph from "./pages/student/SkillProfileGraph.jsx";
 import RecommendedLearningPaths from "./pages/student/RecommendedLearningPaths.jsx";
+import LearningPathStudy from "./pages/student/LearningPathStudy.jsx";
 import InternshipJobListings from "./pages/student/InternshipJobListings.jsx";
 import InternshipJobDetail from "./pages/student/InternshipJobDetail.jsx";
 import MyApplications from "./pages/student/MyApplications.jsx";
@@ -218,6 +219,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
                 <RecommendedLearningPaths />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/learning-paths/study"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <LearningPathStudy />
               </ProtectedRoute>
             }
           />

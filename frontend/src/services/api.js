@@ -190,6 +190,22 @@ export const aiAdvisorAPI = {
 
     return data;
   },
+
+  generateRoadmap: async (skill, currentLevel, format) => {
+    const response = await fetch(`${API_BASE_URL}/ai-advisor/roadmap`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ skill, currentLevel, format }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.error || "Failed to generate roadmap");
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  },
 };
 
 // Generic authenticated JSON request helper for the full-migration endpoints

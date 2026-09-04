@@ -22,15 +22,17 @@ export function scoreAssessment(answers, previousProfile = []) {
     const chosenValue = answers[q.id];
     if (!chosenValue) continue;
     const option = q.options.find((o) => o.value === chosenValue);
-    if (option) bySkillScore[q.skill] = option.score;
+    if (option) bySkillScore[q.skill] = option;
   }
 
   const profile = SKILL_CATALOG.map((s) => {
     if (s.name in bySkillScore) {
+      const option = bySkillScore[s.name];
       return {
         ...s,
-        currentScore: bySkillScore[s.name],
-        trustLevel: TRUST_LEVELS.ASSESSED,
+        currentScore: option.score,
+        proficiencyLevel: option.label,
+        trustLevel: option.score === 0 ? TRUST_LEVELS.SELF_DECLARED : TRUST_LEVELS.ASSESSED,
         lastUpdated: now,
       };
     }
@@ -64,7 +66,12 @@ export async function submitAssessment(answers) {
       .filter((s) => answeredSkillNames.has(s.name))
       .map((s) =>
         assessmentAPI
-          .upsertSkillProfileEntry({ skillName: s.name, currentScore: s.currentScore, trustLevel: s.trustLevel })
+          .upsertSkillProfileEntry({
+            skillName: s.name,
+            currentScore: s.currentScore,
+            trustLevel: s.trustLevel,
+            proficiencyLevel: s.proficiencyLevel,
+          })
           .catch((err) => console.warn(`Could not sync ${s.name} to backend:`, err.message))
       )
   );
@@ -122,6 +129,7 @@ export async function getStoredSkillProfileOrDemo() {
       ...s,
       currentScore: backendEntry.current_score,
       trustLevel: backendEntry.trust_level,
+      proficiencyLevel: backendEntry.proficiency_level,
       lastUpdated: backendEntry.last_updated,
     };
   });

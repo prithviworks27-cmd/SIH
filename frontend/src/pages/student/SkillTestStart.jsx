@@ -71,7 +71,7 @@ export default function SkillTestStart() {
     setSubmitting(true);
     try {
       const result = await submitSkillTest(testId, answers);
-      navigate(`/skill-tests/${testId}/result`, { state: { result } });
+      navigate(result.passed ? "/skill-profile/gap-report" : `/skill-tests/${testId}/result`, { state: { result } });
     } catch {
       setError("Something went wrong submitting your assessment. Please try again.");
       setSubmitting(false);

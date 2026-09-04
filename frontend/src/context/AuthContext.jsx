@@ -43,12 +43,17 @@ export function AuthProvider({ children }) {
     const restoreLegacySession = () => {
       const storedUser = localStorage.getItem("user");
 
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch {
-          localStorage.removeItem("user");
-        }
+      if (!storedUser) {
+        if (mounted) setLoading(false);
+        return;
+      }
+
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem("user");
+        if (mounted) setLoading(false);
+        return;
       }
 
       authAPI

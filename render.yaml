@@ -24,5 +24,9 @@ services:
         sync: false
       - key: GEMINI_MODEL
         value: gemini-3.8-flash
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: nvidia/nemotron-3-super-120b-a12b:free
       - key: FRONTEND_URL
         value: https://skill-bridge-nine-phi.vercel.app,https://skill-bridge-delta-six.vercel.app,https://sih-one-amber.vercel.app

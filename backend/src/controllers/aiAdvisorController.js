@@ -1,5 +1,7 @@
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models";
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "nvidia/nemotron-3-super-120b-a12b:free";
 
 const SYSTEM_PROMPT = `You are the AI Career Advisor inside SkillBridge, a student skill-and-placement platform.
 
@@ -48,6 +50,111 @@ export const askCareerAdvisor = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const generateSkillRoadmap = async (req, res) => {
+  try {
+    const { skill, currentLevel, format = "roadmap" } = req.body;
+    if (!skill || typeof skill !== "string" || skill.length > 150) {
+      return res.status(400).json({ error: "A valid skill is required." });
+    }
+    if (!["module", "roadmap"].includes(format)) {
+      return res.status(400).json({ error: "Format must be module or roadmap." });
+    }
+
+    const skillName = skill.trim();
+    const prompt = buildRoadmapPrompt(skillName, currentLevel, format);
+    const openRouterKey = process.env.OPENROUTER_API_KEY;
+    const geminiKey = process.env.GEMINI_API_KEY;
+    let roadmap = null;
+    let upstreamError = null;
+
+    if (openRouterKey) {
+      ({ roadmap, error: upstreamError } = await callOpenRouter(openRouterKey, prompt));
+    }
+    if (!roadmap && geminiKey) {
+      ({ roadmap, error: upstreamError } = await callGeminiRoadmap(geminiKey, prompt));
+    }
+    if (!roadmap) {
+      console.error("Roadmap generation failed:", upstreamError);
+      return res.status(503).json({ error: "Roadmap generation is temporarily unavailable." });
+    }
+
+    const provider = openRouterKey ? "openrouter" : "gemini";
+    const model = openRouterKey ? OPENROUTER_MODEL : GEMINI_MODEL;
+    res.status(200).json({ roadmap, provider, model, cached: false });
+  } catch (error) {
+    console.error("Roadmap generation error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+function buildRoadmapPrompt(skill, currentLevel, format) {
+  return `Create a practical ${format} learning roadmap for the specific skill "${skill}"${currentLevel ? `, considering the student's current level "${currentLevel}"` : ""}.
+The roadmap must take a complete beginner to advanced/expert capability in a logical sequence. Cover these progression stages in order: Beginner fundamentals, Core foundations, Intermediate application, Advanced engineering or analysis, and Expert-level production practice. Do not skip foundations or assume prior knowledge. Every step must focus only on "${skill}" and must contain concrete topics, a learning activity, a practice exercise, and an applied task.
+Return valid JSON only with this shape:
+{"title":"...","summary":"...","steps":[{"title":"...","topics":["..."],"learn":"...","practice":"...","apply":"..."}],"project":{"title":"...","description":"..."},"resources":[{"type":"documentation","label":"...","url":"https://..."},{"type":"free-course","label":"...","url":"https://..."}]}
+Use official documentation and genuinely free learning resources. Include exactly 5 ordered steps, one for each progression stage, and finish with a practical production-style project. Keep URLs direct and relevant to "${skill}". Do not include markdown or commentary outside the JSON.`;
+}
+
+async function callOpenRouter(apiKey, prompt) {
+  try {
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": process.env.FRONTEND_URL?.split(",")[0] || "http://localhost:5173",
+        "X-Title": "SIH Student Portal",
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_MODEL,
+        messages: [
+          { role: "system", content: "You create accurate, structured learning roadmaps. Return valid JSON only." },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.3,
+        max_tokens: 1800,
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!response.ok) return { roadmap: null, error: `${response.status}: ${(await response.text()).slice(0, 300)}` };
+    const data = await response.json();
+    return parseRoadmap(data?.choices?.[0]?.message?.content);
+  } catch (error) {
+    return { roadmap: null, error: error.message };
+  }
+}
+
+async function callGeminiRoadmap(apiKey, prompt) {
+  try {
+    const response = await fetch(`${GEMINI_API_URL}/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: "Return valid JSON only for the requested learning roadmap." }] },
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1800, responseMimeType: "application/json" },
+      }),
+    });
+    if (!response.ok) return { roadmap: null, error: `${response.status}: ${(await response.text()).slice(0, 300)}` };
+    const data = await response.json();
+    return parseRoadmap(data?.candidates?.[0]?.content?.parts?.map((part) => part.text).filter(Boolean).join("\n"));
+  } catch (error) {
+    return { roadmap: null, error: error.message };
+  }
+}
+
+function parseRoadmap(content) {
+  try {
+    const roadmap = JSON.parse(content);
+    if (!roadmap?.title || !Array.isArray(roadmap.steps) || roadmap.steps.length === 0) {
+      return { roadmap: null, error: "The model returned an incomplete roadmap" };
+    }
+    return { roadmap, error: null };
+  } catch {
+    return { roadmap: null, error: "The model returned invalid JSON" };
+  }
+}
 
 async function callGemini(apiKey, prompt) {
   try {

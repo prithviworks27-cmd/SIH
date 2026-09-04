@@ -1,7 +1,6 @@
 export const studentNavItems = [
   { to: "/dashboard", icon: "dashboard", label: "Dashboard" },
   { to: "/courses", icon: "courses", label: "Course Catalog" },
-  { to: "/skill-assessment", icon: "quiz", label: "Skill Assessment" },
   { to: "/skill-tests", icon: "quiz", label: "Assessments" },
   { to: "/skills", icon: "school", label: "My Skills" },
   { to: "/skill-gap", icon: "quiz", label: "Skill Gap" },

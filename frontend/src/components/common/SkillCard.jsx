@@ -1,6 +1,6 @@
 import SkillTrustBadge from "./SkillTrustBadge";
 
-// Beginner/Intermediate/Advanced/Expert — the same score bands used across
+// Not yet started/Beginner/Intermediate/Advanced/Expert — the same score bands used across
 // the assessment flow (skillTestService.js's levelForScore) and the gap
 // report, kept in one place here since "My Skills" is the canonical place
 // a skill's level is shown to the student.
@@ -9,7 +9,7 @@ function levelForScore(score) {
   if (score >= 70) return "Advanced";
   if (score >= 40) return "Intermediate";
   if (score > 0) return "Beginner";
-  return "Untested";
+  return "Not yet started";
 }
 
 export default function SkillCard({ name, category, currentScore, trustLevel }) {
