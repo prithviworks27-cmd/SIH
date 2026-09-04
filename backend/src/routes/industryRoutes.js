@@ -7,6 +7,8 @@ import {
   createOpportunity,
   updateOpportunityStatus,
   getApplicationsForMyOpportunities,
+  getMyCandidates,
+  getCandidateProfile,
   getPipelineOverrides,
   setPipelineStage,
   getAllSkillPrograms,
@@ -32,6 +34,11 @@ router.patch("/opportunities/:id/status", authMiddleware, updateOpportunityStatu
 // Real applications against opportunities this recruiter posted — the
 // counterpart to /api/applications (the student's own view of the same rows).
 router.get("/applications", authMiddleware, getApplicationsForMyOpportunities);
+
+// Real applicants only — replaces the old fake candidate pool. Scoped to
+// "has this student applied to one of my opportunities" in the controller.
+router.get("/candidates", authMiddleware, getMyCandidates);
+router.get("/candidates/:candidateId", authMiddleware, getCandidateProfile);
 
 router.get("/pipeline-overrides", authMiddleware, getPipelineOverrides);
 router.post("/pipeline-overrides", authMiddleware, setPipelineStage);

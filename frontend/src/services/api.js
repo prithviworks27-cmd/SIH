@@ -355,6 +355,11 @@ export const industryAPI = {
   // the join the Applicant Pipeline was missing.
   getApplicationsForMyOpportunities: () => request("/industry/applications"),
 
+  // Real applicants only (every student who applied to one of my
+  // opportunities) — replaces the old fake candidate mock pool.
+  getMyCandidates: () => request("/industry/candidates"),
+  getCandidateProfile: (candidateId) => request(`/industry/candidates/${candidateId}`),
+
   getPipelineOverrides: () => request("/industry/pipeline-overrides"),
   setPipelineStage: (entryId, stage) => request("/industry/pipeline-overrides", { method: "POST", body: { entryId, stage } }),
 
