@@ -5,11 +5,14 @@ import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { useAuth } from "../../hooks/useAuth";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
-import { getPipeline, moveStage, rejectCandidate, PIPELINE_STAGES, REJECTED_STAGE } from "../../services/pipelineService";
+import { getPipeline, moveStage, rejectCandidate, PIPELINE_STAGES } from "../../services/pipelineService";
 import { startConversation } from "../../services/messagesService";
 import { UsersThree, ArrowRight, XCircle, EnvelopeSimple, CaretDown } from "@phosphor-icons/react";
 
-const STAGES = [...PIPELINE_STAGES, REJECTED_STAGE];
+// Rejected candidates are dropped off the board entirely rather than shown
+// as their own pill — the Reject action (below) still works exactly as
+// before, it just stops surfacing that candidate here once rejected.
+const STAGES = PIPELINE_STAGES;
 
 export default function ApplicantPipeline() {
   const { user } = useAuth();
@@ -91,7 +94,6 @@ export default function ApplicantPipeline() {
         <div className="flex flex-wrap items-start gap-3">
           {STAGES.map((stage) => {
             const stageEntries = entries.filter((e) => e.stage === stage);
-            const isRejectedStage = stage === REJECTED_STAGE;
             const isCollapsed = collapsedStages.has(stage);
 
             return (
@@ -142,36 +144,34 @@ export default function ApplicantPipeline() {
                                   <p className="text-sm text-muted mt-0.5">{entry.opportunity?.title}</p>
                                 </Link>
 
-                                {!isRejectedStage && (
-                                  <div className="flex flex-wrap items-center gap-2 mt-1">
-                                    {!isLastStage && (
-                                      <button
-                                        onClick={() => handleAdvance(entry)}
-                                        disabled={movingId === entry.id}
-                                        className="flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
-                                      >
-                                        {movingId === entry.id ? "Moving…" : `Move to ${PIPELINE_STAGES[PIPELINE_STAGES.indexOf(entry.stage) + 1]}`}
-                                        {movingId !== entry.id && <ArrowRight size={12} />}
-                                      </button>
-                                    )}
+                                <div className="flex flex-wrap items-center gap-2 mt-1">
+                                  {!isLastStage && (
                                     <button
-                                      onClick={() => handleContact(entry)}
-                                      disabled={contactingId === entry.id}
+                                      onClick={() => handleAdvance(entry)}
+                                      disabled={movingId === entry.id}
                                       className="flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
                                     >
-                                      <EnvelopeSimple size={12} />
-                                      {contactingId === entry.id ? "Opening…" : "Contact"}
+                                      {movingId === entry.id ? "Moving…" : `Move to ${PIPELINE_STAGES[PIPELINE_STAGES.indexOf(entry.stage) + 1]}`}
+                                      {movingId !== entry.id && <ArrowRight size={12} />}
                                     </button>
-                                    <button
-                                      onClick={() => handleReject(entry)}
-                                      disabled={movingId === entry.id}
-                                      className="flex items-center justify-center gap-1.5 border border-hairline text-pastel-red-ink text-xs px-3 py-1.5 rounded-md hover:bg-pastel-red transition-colors disabled:opacity-50"
-                                    >
-                                      <XCircle size={12} />
-                                      Reject
-                                    </button>
-                                  </div>
-                                )}
+                                  )}
+                                  <button
+                                    onClick={() => handleContact(entry)}
+                                    disabled={contactingId === entry.id}
+                                    className="flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
+                                  >
+                                    <EnvelopeSimple size={12} />
+                                    {contactingId === entry.id ? "Opening…" : "Contact"}
+                                  </button>
+                                  <button
+                                    onClick={() => handleReject(entry)}
+                                    disabled={movingId === entry.id}
+                                    className="flex items-center justify-center gap-1.5 border border-hairline text-pastel-red-ink text-xs px-3 py-1.5 rounded-md hover:bg-pastel-red transition-colors disabled:opacity-50"
+                                  >
+                                    <XCircle size={12} />
+                                    Reject
+                                  </button>
+                                </div>
                               </div>
                             );
                           })}
