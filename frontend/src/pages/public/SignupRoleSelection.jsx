@@ -253,7 +253,7 @@ export default function SignupRoleSelection() {
 
       {/*Footer*/}
       <footer className="w-full py-8 px-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-canvas border-t border-hairline text-xs text-muted">
-        <div>© 2024 SkillBridge Collaboration Portal. All rights reserved.</div>
+        <div>© 2026 SkillBridge Collaboration Portal. All rights reserved.</div>
         <div className="flex gap-6">
           <a className="hover:text-ink transition-colors" href="#">
             Privacy Policy

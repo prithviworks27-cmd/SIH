@@ -225,7 +225,7 @@ export default function Login() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-muted">© 2024 SkillBridge Collaboration Portal.</p>
+          <p className="text-xs text-muted">© 2026 SkillBridge Collaboration Portal.</p>
         </div>
       </main>
     </div>
