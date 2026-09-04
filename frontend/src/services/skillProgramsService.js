@@ -48,8 +48,9 @@ export async function getAllSkillPrograms() {
 // only to the company that made them.
 export async function getMySkillPrograms() {
   const [company, created] = await Promise.all([getCompanyProfile(), loadCreated()]);
-  const seedForCompany = INDUSTRY_PROGRAMS.filter((p) => p.company === company.name);
-  return resolveMock([...seedForCompany, ...created.filter((p) => p.company === company.name)]);
+  const companyName = company?.name ?? "";
+  const seedForCompany = INDUSTRY_PROGRAMS.filter((p) => p.company === companyName);
+  return resolveMock([...seedForCompany, ...created.filter((p) => p.company === companyName)]);
 }
 
 // The "killer feature": a company defines a week-by-week program (each week
@@ -63,6 +64,7 @@ export async function createSkillProgram({ title, skills, weeks }) {
   if (!weeks?.length) throw new Error("Add at least one week.");
 
   const company = await getCompanyProfile();
+  if (!company?.name) throw new Error("Complete your company profile before creating a skill program.");
 
   try {
     const { program } = await industryAPI.createSkillProgram({ title: title.trim(), company: company.name, skills, weeks });

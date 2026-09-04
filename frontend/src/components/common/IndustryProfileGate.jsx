@@ -17,8 +17,8 @@ export default function IndustryProfileGate({ children }) {
         if (mounted) setStatus(isCompanyProfileComplete(profile) ? "complete" : "incomplete");
       })
       .catch(() => {
-        // If the check fails, don't block the recruiter out of their dashboard.
-        if (mounted) setStatus("complete");
+        // Do not allow an unverified profile check to bypass onboarding.
+        if (mounted) setStatus("incomplete");
       });
     return () => {
       mounted = false;

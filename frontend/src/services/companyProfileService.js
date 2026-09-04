@@ -24,9 +24,8 @@ function persistLocally(profile) {
 export async function getCompanyProfile() {
   try {
     const { profile } = await industryAPI.getCompanyProfile();
-    const resolved = profile ?? DEFAULT_COMPANY_PROFILE;
-    persistLocally(resolved);
-    return resolveMock(resolved);
+    if (profile) persistLocally(profile);
+    return resolveMock(profile);
   } catch (err) {
     console.warn("Could not load company profile from backend, using local cache only:", err.message);
     return resolveMock(loadStoredLocally() ?? DEFAULT_COMPANY_PROFILE);
@@ -39,16 +38,25 @@ export function isCompanyProfileComplete(profile) {
   return Boolean(profile?.name?.trim());
 }
 
-export async function saveCompanyProfile(fields) {
+export async function saveCompanyProfile(fields, { requireBackend = false } = {}) {
   const current = loadStoredLocally() ?? DEFAULT_COMPANY_PROFILE;
   const next = { ...current, ...fields };
-  persistLocally(next);
 
   try {
-    await industryAPI.saveCompanyProfile(next);
+    const { profile } = await industryAPI.saveCompanyProfile(next);
+    const saved = profile ?? next;
+    persistLocally(saved);
+    return resolveMock(saved, { delay: 500 });
   } catch (err) {
-    console.warn("Could not sync company profile to backend, kept in local cache only:", err.message);
+    if (requireBackend) throw err;
+    console.warn("Could not sync company profile to backend:", err.message);
+    persistLocally(next);
+    return resolveMock(next, { delay: 500 });
   }
 
-  return resolveMock(next, { delay: 500 });
+}
+
+export async function uploadCompanyLogo(file) {
+  const { logoUrl } = await industryAPI.uploadCompanyLogo(file);
+  return logoUrl;
 }

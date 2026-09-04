@@ -1,6 +1,8 @@
 import { supabase } from "../config/supabase.js";
 import { resolveUserId } from "../utils/resolveUserId.js";
 
+const COMPANY_LOGO_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "company-logos";
+
 // --- Company profile (companyProfileService.js) ---
 
 export const getCompanyProfile = async (req, res) => {
@@ -8,7 +10,11 @@ export const getCompanyProfile = async (req, res) => {
     const userId = await resolveUserId(req);
     if (!userId) return res.status(404).json({ error: "User not found" });
 
-    const { data, error } = await supabase.from("company_profiles").select("*").eq("user_id", userId).maybeSingle();
+    const { data, error } = await supabase
+      .from("company_profiles")
+      .select("user_id,name,industry,website,description,logo_url,updated_at")
+      .eq("user_id", userId)
+      .maybeSingle();
 
     if (error) {
       console.error("Fetch company profile error:", error);
@@ -40,19 +46,71 @@ export const saveCompanyProfile = async (req, res) => {
 
     const { name, industry, website, size, about, logoUrl } = req.body;
 
-    const { error } = await supabase.from("company_profiles").upsert(
-      { user_id: userId, name, industry, website, size, description: about, logo_url: logoUrl, updated_at: new Date().toISOString() },
+    const profileRow = {
+      user_id: userId,
+      name,
+      industry,
+      website,
+      size,
+      description: about,
+      logo_url: logoUrl,
+      updated_at: new Date().toISOString(),
+    };
+    let { error } = await supabase.from("company_profiles").upsert(
+      profileRow,
       { onConflict: "user_id" }
     );
+
+    if (error?.code === "42703" && error.message.includes("company_profiles.size")) {
+      const { size: _unusedSize, ...legacyProfileRow } = profileRow;
+      ({ error } = await supabase.from("company_profiles").upsert(
+        legacyProfileRow,
+        { onConflict: "user_id" }
+      ));
+    }
 
     if (error) {
       console.error("Save company profile error:", error);
       return res.status(500).json({ error: "Failed to save company profile" });
     }
 
-    res.status(200).json({ profile: { name, industry, website, size, about, logoUrl } });
+    res.status(200).json({
+      profile: {
+        name,
+        industry,
+        website,
+        size,
+        about,
+        logoUrl,
+      },
+    });
   } catch (error) {
     console.error("Save company profile error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const uploadCompanyLogo = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+    if (!req.file) return res.status(400).json({ error: "Company logo is required" });
+
+    const extension = req.file.originalname.split(".").pop()?.toLowerCase() || "png";
+    const path = `${userId}/logo-${Date.now()}.${extension}`;
+    const { error } = await supabase.storage.from(COMPANY_LOGO_BUCKET).upload(path, req.file.buffer, {
+      contentType: req.file.mimetype,
+      upsert: true,
+    });
+    if (error) {
+      console.error("Upload company logo error:", error);
+      return res.status(500).json({ error: "Failed to upload company logo" });
+    }
+
+    const { data } = supabase.storage.from(COMPANY_LOGO_BUCKET).getPublicUrl(path);
+    res.status(200).json({ logoUrl: data.publicUrl });
+  } catch (error) {
+    console.error("Upload company logo error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

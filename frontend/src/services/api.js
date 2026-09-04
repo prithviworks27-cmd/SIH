@@ -342,6 +342,18 @@ export const messagesAPI = {
 export const industryAPI = {
   getCompanyProfile: () => request("/industry/company-profile"),
   saveCompanyProfile: (fields) => request("/industry/company-profile", { method: "POST", body: fields }),
+  uploadCompanyLogo: async (file) => {
+    const formData = new FormData();
+    formData.append("logo", file);
+    const response = await fetch(`${API_BASE_URL}/industry/company-profile/logo`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || "Failed to upload company logo");
+    return data;
+  },
 
   getPostedOpportunities: () => request("/industry/opportunities"),
   // Scoped to the logged-in recruiter's own postings — used by Manage
