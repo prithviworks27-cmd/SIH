@@ -9,9 +9,16 @@ const API_BASE_URL = normalizedApiUrl.endsWith("/api")
 
 // Create headers with auth token if available
 const getHeaders = () => {
+  const token = localStorage.getItem("authToken");
   return {
     "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
+};
+
+const getMultipartHeaders = () => {
+  const token = localStorage.getItem("authToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 // Auth API calls
@@ -20,7 +27,7 @@ export const authAPI = {
   register: async (email, password, name, role) => {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getHeaders(),
       credentials: "include",
       body: JSON.stringify({ email, password, name, role }),
     });
@@ -38,7 +45,7 @@ export const authAPI = {
   login: async (email, password, rememberMe = false) => {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getHeaders(),
       credentials: "include",
       body: JSON.stringify({ email, password, rememberMe }),
     });
@@ -98,6 +105,7 @@ export const authAPI = {
 
   clearLocalUser: () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("authToken");
   },
 
   changePassword: async (currentPassword, newPassword) => {
@@ -172,6 +180,7 @@ export const assessmentAPI = {
 // readiness/matched/missing skills so the model answers grounded in actual
 // data instead of guessing.
 export const aiAdvisorAPI = {
+  getHistory: () => request("/ai-advisor/history"),
   ask: async (message, context) => {
     const response = await fetch(`${API_BASE_URL}/ai-advisor/ask`, {
       method: "POST",
@@ -214,7 +223,7 @@ export const aiAdvisorAPI = {
 async function request(path, { method = "GET", body } = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: getHeaders(),
     credentials: "include",
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
@@ -273,6 +282,7 @@ export const portfolioAPI = {
     formData.append("file", file);
     const response = await fetch(`${API_BASE_URL}/portfolio/certifications/${id}/file`, {
       method: "POST",
+      headers: getMultipartHeaders(),
       credentials: "include",
       body: formData,
     });
@@ -347,6 +357,7 @@ export const industryAPI = {
     formData.append("logo", file);
     const response = await fetch(`${API_BASE_URL}/industry/company-profile/logo`, {
       method: "POST",
+      headers: getMultipartHeaders(),
       credentials: "include",
       body: formData,
     });

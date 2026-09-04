@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
         );
         localStorage.removeItem("pendingGoogleRole");
         localStorage.setItem("user", JSON.stringify(currentUser));
+        localStorage.setItem("authToken", session.access_token);
         if (mounted) setUser(currentUser);
       } catch (err) {
         if (mounted) setError(err.message);
@@ -104,6 +105,7 @@ export function AuthProvider({ children }) {
       const response = await authAPI.login(email, password, rememberMe);
 
       localStorage.setItem("user", JSON.stringify(response.user));
+      if (response.token) localStorage.setItem("authToken", response.token);
 
       setUser(response.user);
       return response;
@@ -124,6 +126,7 @@ export function AuthProvider({ children }) {
       const response = await authAPI.register(email, password, name, role);
 
       localStorage.setItem("user", JSON.stringify(response.user));
+      if (response.token) localStorage.setItem("authToken", response.token);
 
       setUser(response.user);
       return response;
