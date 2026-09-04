@@ -132,8 +132,8 @@ function StepCard({ step }) {
         </span>
         <span className="font-mono text-xs text-muted">{step.number}</span>
       </div>
-      <h3 className="text-lg font-medium text-ink">{step.title}</h3>
-      <p className="text-sm text-muted leading-relaxed">{step.body}</p>
+      <h3 className="text-lg font-bold text-ink">{step.title}</h3>
+      <p className="text-sm font-medium text-charcoal/80 leading-relaxed">{step.body}</p>
     </div>
   );
 }
