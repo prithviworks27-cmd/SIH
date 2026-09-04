@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Sidebar from "../layout/Sidebar";
+import AmbientBrandGlow from "../ui/ambient-brand-glow";
 import LoadingState from "../common/LoadingState";
 import { getConversations, sendMessage, markConversationRead } from "../../services/messagesService";
 import { initialsOf, avatarGradientFor } from "../../utils/avatarColor";
@@ -34,6 +36,7 @@ function ConversationAvatar({ conversation, size = 48 }) {
 // emptyStateLabel lets each caller phrase "no conversations yet" for its
 // own audience ("Apply to opportunities..." vs "Message an applicant...").
 export default function ConversationInbox({ navItems, footerNavItems, emptyStateLabel }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [conversations, setConversations] = useState(undefined);
   const [activeId, setActiveId] = useState(null);
   const [search, setSearch] = useState("");
@@ -43,10 +46,24 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    getConversations().then((list) => {
-      setConversations(list);
-      setActiveId(list[0]?.id ?? null);
+    getConversations().then(async (list) => {
+      // A direct link (e.g. "Message" on an application row) can request a
+      // specific conversation via ?conversation=<id> — fall back to the
+      // first conversation if it's absent or doesn't match anything.
+      const requestedId = searchParams.get("conversation");
+      const requested = requestedId && list.find((c) => c.id === requestedId);
+      if (requested) {
+        setActiveId(requested.id);
+        setMobileShowThread(true);
+        setSearchParams({}, { replace: true });
+        await markConversationRead(requested.id);
+        setConversations(await getConversations());
+      } else {
+        setConversations(list);
+        setActiveId(list[0]?.id ?? null);
+      }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const active = conversations?.find((c) => c.id === activeId);
@@ -80,7 +97,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
   const unreadCount = conversations?.filter((c) => c.unread).length ?? 0;
 
   return (
-    <div className="bg-canvas text-charcoal min-h-screen">
+    <AmbientBrandGlow className="text-charcoal min-h-screen">
       <Sidebar navItems={navItems} footerNavItems={footerNavItems} />
       <main className="md:ml-56 flex-1 flex flex-col h-screen overflow-hidden">
         <div className="flex-1 flex w-full bg-white h-full border-t md:border-t-0 border-hairline">
@@ -100,7 +117,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
               <div className="relative">
                 <MagnifyingGlass size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
                 <input
-                  className="w-full pl-10 pr-4 py-2.5 border border-hairline bg-white rounded-2xl text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
+                  className="w-full pl-10 pr-4 py-2.5 border border-hairline bg-white rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
                   placeholder="Search conversations..."
                   type="text"
                   value={search}
@@ -279,6 +296,6 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
           </div>
         </div>
       </main>
-    </div>
+    </AmbientBrandGlow>
   );
 }

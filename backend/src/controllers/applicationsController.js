@@ -17,17 +17,38 @@ export const getApplications = async (req, res) => {
       return res.status(500).json({ error: "Failed to load applications" });
     }
 
+    // Every real application auto-creates a student<->recruiter conversation
+    // (see applyToOpportunity), so "Message this company" just needs to know
+    // which conversation belongs to which application — resolved here via
+    // opportunity -> recruiter (posted_by) -> conversation, in two batched
+    // lookups rather than one join per application.
+    const opportunityIds = [...new Set(data.map((a) => a.opportunity_id).filter(Boolean))];
+    const { data: opportunities } = opportunityIds.length
+      ? await supabase.from("opportunities").select("id, posted_by").in("id", opportunityIds)
+      : { data: [] };
+    const industryIdByOpportunity = new Map((opportunities ?? []).map((o) => [o.id, o.posted_by]));
+
+    const industryIds = [...new Set([...industryIdByOpportunity.values()].filter(Boolean))];
+    const { data: conversations } = industryIds.length
+      ? await supabase.from("conversations").select("id, industry_id").eq("student_id", userId).in("industry_id", industryIds)
+      : { data: [] };
+    const conversationIdByIndustry = new Map((conversations ?? []).map((c) => [c.industry_id, c.id]));
+
     res.status(200).json({
-      applications: data.map((a) => ({
-        id: a.id,
-        opportunityId: a.opportunity_id,
-        companyName: a.company_name,
-        department: a.department,
-        role: a.role,
-        roleSubtext: a.role_subtext,
-        status: a.status,
-        dateApplied: a.applied_at,
-      })),
+      applications: data.map((a) => {
+        const industryId = industryIdByOpportunity.get(a.opportunity_id) ?? null;
+        return {
+          id: a.id,
+          opportunityId: a.opportunity_id,
+          companyName: a.company_name,
+          department: a.department,
+          role: a.role,
+          roleSubtext: a.role_subtext,
+          status: a.status,
+          dateApplied: a.applied_at,
+          conversationId: industryId ? conversationIdByIndustry.get(industryId) ?? null : null,
+        };
+      }),
     });
   } catch (error) {
     console.error("Get applications error:", error);
