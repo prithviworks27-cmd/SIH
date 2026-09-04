@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ChartLineUp, Handshake, RocketLaunch } from "@phosphor-icons/react";
+import { ChartLineUp, Handshake, RocketLaunch, ArrowUpRight } from "@phosphor-icons/react";
 import useScrollReveal from "../../hooks/useScrollReveal";
 import logo from "../../assets/logo.png";
 
@@ -32,69 +32,63 @@ export default function Landing() {
   const stepsHeaderRef = useScrollReveal();
 
   return (
-    <div className="min-h-screen flex flex-col bg-canvas text-charcoal antialiased">
-      {/* Nav */}
-      <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
-        <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
-          <Link className="font-editorial italic text-2xl flex items-center gap-2" to="/">
-            <img src={logo} alt="SkillBridge" className="w-16 h-16 rounded-full object-cover" />
-            <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
-            >
-              SkillBridge
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <Link
-              className="text-sm text-ink border border-hairline px-4 py-2 rounded-md hover:bg-bone transition-colors"
-              to="/login"
-            >
-              Login
+    <div
+      className="min-h-screen p-2.5 md:p-4"
+      style={{ background: "linear-gradient(135deg, #060B24 0%, #0B1C6B 35%, #1E3FE0 62%, #050814 100%)" }}
+    >
+      <div className="bg-white rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] flex flex-col overflow-hidden text-charcoal antialiased">
+        {/* Nav */}
+        <header className="w-full">
+          <div className="flex justify-between items-center px-6 md:px-10 py-6">
+            <Link to="/" className="flex items-center">
+              <img src={logo} alt="SkillBridge" className="w-10 h-10 rounded-full object-cover" />
             </Link>
-            <Link
-              className="text-sm text-white bg-ink px-4 py-2 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all"
-              to="/signup"
-            >
-              Sign up
-            </Link>
-          </div>
-        </div>
-      </header>
 
-      <main className="flex-grow flex flex-col">
-        {/* Hero */}
-        <section className="relative w-full px-4 md:px-6 border-b border-hairline overflow-hidden flex items-center justify-center min-h-[calc(100vh-97px)]">
-          <div
-            aria-hidden="true"
-            className="ambient-blob pointer-events-none absolute -top-1/3 right-0 w-[600px] h-[600px] rounded-full opacity-[0.04]"
-            style={{ background: "radial-gradient(circle, #1F6C9F 0%, transparent 70%)" }}
-          />
-
-          <div ref={heroRef} className="reveal relative max-w-3xl mx-auto text-center space-y-7">
-            <h1 className="font-editorial text-4xl md:text-6xl leading-[1.1] tracking-tight text-ink">
-              Bridge the gap between <em className="not-italic text-pastel-blue-ink">academia</em> and{" "}
-              <em className="not-italic text-pastel-green-ink">industry</em>
-            </h1>
-            <p className="text-base md:text-lg text-muted max-w-xl mx-auto leading-relaxed">
-              A unified platform for skill mapping, internships, and placements — built to streamline
-              institutional partnerships and career trajectories with data-driven precision.
-            </p>
-            <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <nav className="flex items-center gap-8">
               <Link
-                className="text-sm font-medium text-white bg-ink px-6 py-3 rounded-md w-full sm:w-auto hover:bg-[#333333] active:scale-[0.98] transition-all"
-                to="/signup"
+                to="/login"
+                className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70 hover:text-ink transition-colors"
               >
-                Get started
+                Login
               </Link>
-            </div>
+              <Link
+                to="/signup"
+                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] bg-ink text-white pl-5 pr-4 py-2.5 rounded-full hover:bg-[#222222] active:scale-[0.97] transition-all"
+              >
+                Sign Up
+                <ArrowUpRight size={13} weight="bold" />
+              </Link>
+            </nav>
           </div>
+        </header>
+
+        {/* Hero */}
+        <section className="flex-1 flex flex-col items-center justify-center px-6 md:px-10 py-10 md:py-16 text-center">
+          <h1
+            ref={heroRef}
+            className="reveal font-sans font-black leading-[0.9] tracking-tight bg-clip-text text-transparent"
+            style={{
+              fontSize: "clamp(3.4rem, 11vw, 9.5rem)",
+              backgroundImage: "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)",
+            }}
+          >
+            SKILLBRIDGE
+          </h1>
+          <p className="mt-8 max-w-md text-[15px] md:text-base font-medium text-charcoal/80 leading-relaxed">
+            A skill-first platform for students, institutions, and employers — verified assessments,
+            real matches, and career guidance grounded in data.
+          </p>
+          <Link
+            to="/signup"
+            className="mt-9 inline-flex items-center bg-ink text-white text-xs font-bold uppercase tracking-[0.12em] px-8 py-4 rounded-full hover:bg-[#222222] active:scale-[0.97] transition-all"
+          >
+            Get Started
+          </Link>
         </section>
 
         {/* How it works — bento grid */}
-        <section className="w-full py-24 px-4 md:px-6 max-w-5xl mx-auto" id="how-it-works">
-          <div ref={stepsHeaderRef} className="reveal text-center mb-16 space-y-3">
+        <section className="w-full py-20 px-6 md:px-10 border-t border-hairline" id="how-it-works">
+          <div ref={stepsHeaderRef} className="reveal text-center mb-16 space-y-3 max-w-5xl mx-auto">
             <h2 className="font-editorial text-3xl md:text-4xl text-ink tracking-tight">
               A structured pathway
             </h2>
@@ -103,21 +97,21 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {STEPS.map((step) => (
               <StepCard key={step.number} step={step} />
             ))}
           </div>
         </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-canvas border-t border-hairline mt-auto">
-        <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 flex flex-col items-center gap-1">
-          <span className="font-editorial italic text-base text-ink">SkillBridge</span>
-          <span className="text-xs text-muted">© 2024 SkillBridge Collaboration Portal.</span>
-        </div>
-      </footer>
+        {/* Footer */}
+        <footer className="border-t border-hairline mt-auto">
+          <div className="px-6 md:px-10 py-8 flex flex-col items-center gap-1">
+            <span className="font-editorial italic text-base text-ink">SkillBridge</span>
+            <span className="text-xs text-muted">© 2024 SkillBridge Collaboration Portal.</span>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
