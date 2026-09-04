@@ -37,7 +37,7 @@ export default function Landing() {
       <header className="w-full sticky top-0 z-50 bg-canvas/90 backdrop-blur border-b border-hairline">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
           <Link className="font-editorial italic text-2xl flex items-center gap-2" to="/">
-            <img src={logo} alt="" className="w-16 h-16 rounded-full object-cover" />
+            <img src={logo} alt="SkillBridge" className="w-16 h-16 rounded-full object-cover" />
             <span
               className="bg-clip-text text-transparent"
               style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
