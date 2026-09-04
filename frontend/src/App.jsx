@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import IndustryProfileGate from "./components/common/IndustryProfileGate";
 import { useAuth } from "./hooks/useAuth";
 import { getPostLoginRedirect } from "./utils/roleRedirect";
 import LoadingState from "./components/common/LoadingState";
@@ -41,6 +42,7 @@ import CareerDigitalTwin from "./pages/student/CareerDigitalTwin.jsx";
 import EmployerTrustLayer from "./pages/student/EmployerTrustLayer.jsx";
 
 import IndustryDashboard from "./pages/industry/IndustryDashboard.jsx";
+import CompanyOnboarding from "./pages/industry/CompanyOnboarding.jsx";
 import CompanyProfile from "./pages/industry/CompanyProfile.jsx";
 import PostOpportunity from "./pages/industry/PostOpportunity.jsx";
 import ManageOpportunities from "./pages/industry/ManageOpportunities.jsx";
@@ -326,13 +328,25 @@ function App() {
 
           {/* Industry */}
           <Route
-            path="/industry/dashboard"
+            path="/industry/onboarding"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryDashboard />
+                <CompanyOnboarding />
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/industry/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <IndustryProfileGate>
+                  <IndustryDashboard />
+                </IndustryProfileGate>
+              </ProtectedRoute>
+            }
+          />
+          {/* Not gated — this is the page a recruiter uses to complete their
+              profile if they land here via nav instead of the onboarding flow. */}
           <Route
             path="/industry/profile"
             element={
@@ -345,7 +359,9 @@ function App() {
             path="/industry/opportunities"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <ManageOpportunities />
+                <IndustryProfileGate>
+                  <ManageOpportunities />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -353,7 +369,9 @@ function App() {
             path="/industry/opportunities/create"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <PostOpportunity />
+                <IndustryProfileGate>
+                  <PostOpportunity />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -361,7 +379,9 @@ function App() {
             path="/industry/applications"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <ApplicantPipeline />
+                <IndustryProfileGate>
+                  <ApplicantPipeline />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -369,7 +389,9 @@ function App() {
             path="/industry/candidates"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <CandidatesList />
+                <IndustryProfileGate>
+                  <CandidatesList />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -377,7 +399,9 @@ function App() {
             path="/industry/candidates/:candidateId"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <CandidateDetail />
+                <IndustryProfileGate>
+                  <CandidateDetail />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -385,7 +409,9 @@ function App() {
             path="/industry/messages"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryMessages />
+                <IndustryProfileGate>
+                  <IndustryMessages />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -393,7 +419,9 @@ function App() {
             path="/industry/skill-programs"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <SkillPrograms />
+                <IndustryProfileGate>
+                  <SkillPrograms />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />
@@ -401,7 +429,9 @@ function App() {
             path="/industry/settings"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustrySettings />
+                <IndustryProfileGate>
+                  <IndustrySettings />
+                </IndustryProfileGate>
               </ProtectedRoute>
             }
           />

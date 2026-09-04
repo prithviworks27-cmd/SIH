@@ -17,7 +17,14 @@ export const getCompanyProfile = async (req, res) => {
 
     res.status(200).json({
       profile: data
-        ? { name: data.name, industry: data.industry, website: data.website, description: data.description, logoUrl: data.logo_url }
+        ? {
+            name: data.name,
+            industry: data.industry,
+            website: data.website,
+            size: data.size,
+            about: data.description,
+            logoUrl: data.logo_url,
+          }
         : null,
     });
   } catch (error) {
@@ -31,10 +38,10 @@ export const saveCompanyProfile = async (req, res) => {
     const userId = await resolveUserId(req);
     if (!userId) return res.status(404).json({ error: "User not found" });
 
-    const { name, industry, website, description, logoUrl } = req.body;
+    const { name, industry, website, size, about, logoUrl } = req.body;
 
     const { error } = await supabase.from("company_profiles").upsert(
-      { user_id: userId, name, industry, website, description, logo_url: logoUrl, updated_at: new Date().toISOString() },
+      { user_id: userId, name, industry, website, size, description: about, logo_url: logoUrl, updated_at: new Date().toISOString() },
       { onConflict: "user_id" }
     );
 
@@ -43,7 +50,7 @@ export const saveCompanyProfile = async (req, res) => {
       return res.status(500).json({ error: "Failed to save company profile" });
     }
 
-    res.status(200).json({ profile: { name, industry, website, description, logoUrl } });
+    res.status(200).json({ profile: { name, industry, website, size, about, logoUrl } });
   } catch (error) {
     console.error("Save company profile error:", error);
     res.status(500).json({ error: "Internal server error" });

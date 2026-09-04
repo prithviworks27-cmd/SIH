@@ -186,6 +186,7 @@ CREATE TABLE IF NOT EXISTS company_profiles (
   name VARCHAR(255),
   industry VARCHAR(255),
   website VARCHAR(255),
+  size VARCHAR(255),
   description TEXT,
   logo_url TEXT,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
