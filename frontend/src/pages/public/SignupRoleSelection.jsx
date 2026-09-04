@@ -124,11 +124,7 @@ export default function SignupRoleSelection() {
   };
 
   return (
-    <div
-      className="min-h-screen p-2.5 md:p-4"
-      style={{ background: "linear-gradient(135deg, #060B24 0%, #0B1C6B 35%, #1E3FE0 62%, #050814 100%)" }}
-    >
-    <div className="bg-white rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] text-charcoal flex flex-col antialiased overflow-hidden">
+    <div className="min-h-screen bg-white text-charcoal flex flex-col antialiased">
       <main className="flex-grow flex items-center justify-center py-16 px-4">
         <div className="max-w-[560px] w-full">
           <div className="text-center mb-10">
@@ -275,7 +271,6 @@ export default function SignupRoleSelection() {
           </a>
         </div>
       </footer>
-    </div>
     </div>
   );
 }

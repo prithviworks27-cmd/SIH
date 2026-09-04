@@ -36,11 +36,7 @@ export default function Landing() {
   const [pathwayOpen, setPathwayOpen] = useState(false);
 
   return (
-    <div
-      className="min-h-screen p-2.5 md:p-4"
-      style={{ background: "linear-gradient(135deg, #060B24 0%, #0B1C6B 35%, #1E3FE0 62%, #050814 100%)" }}
-    >
-      <div className="bg-white rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] flex flex-col overflow-hidden text-charcoal antialiased">
+    <div className="min-h-screen bg-white flex flex-col text-charcoal antialiased">
         {/* Nav */}
         <header className="w-full">
           <div className="flex justify-between items-center px-6 md:px-10 py-6">
@@ -121,7 +117,6 @@ export default function Landing() {
             <span className="text-xs text-muted">© 2026 SkillBridge Collaboration Portal.</span>
           </div>
         </footer>
-      </div>
     </div>
   );
 }
