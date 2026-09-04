@@ -273,6 +273,140 @@ export const getApplicationsForMyOpportunities = async (req, res) => {
   }
 };
 
+// --- Candidates (candidatesService.js) ---
+// Real applicants only — every student who has applied to at least one
+// opportunity this recruiter posted. Replaces the old fake 6-person mock
+// pool (mockData/candidates.js), which had no connection to real users and
+// made Candidate Detail 404 for any real applicant.
+
+async function getMyApplicantIds(userId) {
+  const { data: myOpportunities, error: oppError } = await supabase
+    .from("opportunities")
+    .select("id")
+    .eq("posted_by", userId);
+  if (oppError) throw oppError;
+
+  const opportunityIds = myOpportunities.map((o) => o.id);
+  if (opportunityIds.length === 0) return [];
+
+  const { data: applications, error: appError } = await supabase
+    .from("applications")
+    .select("user_id")
+    .in("opportunity_id", opportunityIds);
+  if (appError) throw appError;
+
+  return [...new Set(applications.map((a) => a.user_id))];
+}
+
+function levelForScore(score) {
+  if (score >= 90) return "Expert";
+  if (score >= 75) return "Advanced";
+  if (score >= 50) return "Intermediate";
+  if (score === 0) return "Not yet started";
+  return "Beginner";
+}
+
+// Builds the same shape the old mock candidates carried (name, institution,
+// year, avatarInitial, skills[], projects[], certifications[]) so
+// matchingEngine.calculateMatch() keeps scoring candidates exactly as before,
+// just against real data instead of a fake pool.
+async function buildCandidateProfiles(userIds) {
+  if (userIds.length === 0) return [];
+
+  const [usersRes, basicsRes, skillsRes, projectsRes, certsRes] = await Promise.all([
+    supabase.from("users").select("id, name").in("id", userIds),
+    supabase.from("portfolio_basics").select("*").in("user_id", userIds),
+    supabase.from("skill_profile").select("*").in("user_id", userIds),
+    supabase.from("portfolio_projects").select("*").in("user_id", userIds),
+    supabase.from("portfolio_certifications").select("*").in("user_id", userIds),
+  ]);
+
+  for (const result of [usersRes, basicsRes, skillsRes, projectsRes, certsRes]) {
+    if (result.error) throw result.error;
+  }
+
+  const basicsByUser = new Map(basicsRes.data.map((b) => [b.user_id, b]));
+  const skillsByUser = new Map();
+  for (const s of skillsRes.data) {
+    if (!skillsByUser.has(s.user_id)) skillsByUser.set(s.user_id, []);
+    skillsByUser.get(s.user_id).push(s);
+  }
+  const projectsByUser = new Map();
+  for (const p of projectsRes.data) {
+    if (!projectsByUser.has(p.user_id)) projectsByUser.set(p.user_id, []);
+    projectsByUser.get(p.user_id).push(p);
+  }
+  const certsByUser = new Map();
+  for (const c of certsRes.data) {
+    if (!certsByUser.has(c.user_id)) certsByUser.set(c.user_id, []);
+    certsByUser.get(c.user_id).push(c);
+  }
+
+  return usersRes.data.map((u) => {
+    const basics = basicsByUser.get(u.id);
+    const skills = skillsByUser.get(u.id) ?? [];
+    return {
+      id: u.id,
+      name: u.name,
+      institution: basics?.institution ?? null,
+      year: basics?.expected_graduation ? `Class of ${basics.expected_graduation}` : null,
+      avatarInitial: u.name?.[0]?.toUpperCase() ?? "?",
+      hasPriorInternship: (projectsByUser.get(u.id)?.length ?? 0) > 0,
+      projects: (projectsByUser.get(u.id) ?? []).map((p) => ({ title: p.title })),
+      certifications: (certsByUser.get(u.id) ?? []).map((c) => ({ title: c.title })),
+      skills: skills.map((s) => ({
+        name: s.skill_name,
+        currentScore: s.current_score,
+        // No opportunity-specific requirement for a candidate viewed on its
+        // own — matchingEngine only needs requiredScore when scored against
+        // a specific opportunity's skill list, which callers merge in.
+        requiredScore: s.current_score,
+        trustLevel: s.trust_level ?? "Self-Declared",
+        proficiencyLevel: s.proficiency_level ?? levelForScore(s.current_score),
+      })),
+    };
+  });
+}
+
+// GET /api/industry/candidates — every real applicant across this
+// recruiter's opportunities, for the Candidates list.
+export const getMyCandidates = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const applicantIds = await getMyApplicantIds(userId);
+    const candidates = await buildCandidateProfiles(applicantIds);
+    res.status(200).json({ candidates });
+  } catch (error) {
+    console.error("Get my candidates error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/industry/candidates/:candidateId — a single real applicant's
+// profile for Candidate Detail. Scoped the same way as the list: only
+// visible to a recruiter this candidate has actually applied to, so a
+// recruiter can't browse arbitrary students by guessing user ids.
+export const getCandidateProfile = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { candidateId } = req.params;
+    const applicantIds = await getMyApplicantIds(userId);
+    if (!applicantIds.includes(candidateId)) {
+      return res.status(404).json({ error: "Candidate not found" });
+    }
+
+    const [candidate] = await buildCandidateProfiles([candidateId]);
+    res.status(200).json({ candidate: candidate ?? null });
+  } catch (error) {
+    console.error("Get candidate profile error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 // --- Pipeline stage overrides (pipelineService.js) ---
 
 export const getPipelineOverrides = async (req, res) => {

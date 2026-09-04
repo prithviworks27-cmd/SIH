@@ -1,11 +1,16 @@
-// Mock candidate pool for the industry side. Each candidate carries a full
-// skill profile in the same shape skillsService produces for a real student
+// Mock candidate pool — NO LONGER used by the industry side (Candidates
+// list / Candidate Detail now read real applicants via
+// candidatesService.js -> GET /api/industry/candidates, since a recruiter
+// clicking a real applicant's name has to resolve to that real person, not
+// one of these 6 fake profiles). Still used as placeholder data by
+// admin/SkillAnalytics.jsx, facultyService.js, and institutionService.js,
+// which don't yet have a real backend-backed student roster of their own.
+// Each candidate carries a full skill profile in the same shape
+// skillsService produces for a real student
 // (name/category/currentScore/requiredScore/trustLevel), so the SAME
 // calculateMatch() engine from matchingEngine.js scores these exactly the
 // way it scores the logged-in student against an opportunity. trustLevel
-// values mirror TRUST_LEVELS in mockData/skills.js — the industry Candidate
-// Detail view reads these directly to show recruiters what's actually
-// verified vs. self-declared, not just a bare score.
+// values mirror TRUST_LEVELS in mockData/skills.js.
 export const candidates = [
   {
     id: "cand-001",
