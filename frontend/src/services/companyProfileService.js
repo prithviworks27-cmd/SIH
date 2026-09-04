@@ -33,6 +33,12 @@ export async function getCompanyProfile() {
   }
 }
 
+// Used to decide whether an industry user still needs the post-signup
+// onboarding step — true once they've saved at least a company name.
+export function isCompanyProfileComplete(profile) {
+  return Boolean(profile?.name?.trim());
+}
+
 export async function saveCompanyProfile(fields) {
   const current = loadStoredLocally() ?? DEFAULT_COMPANY_PROFILE;
   const next = { ...current, ...fields };
