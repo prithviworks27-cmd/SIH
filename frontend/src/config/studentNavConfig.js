@@ -4,7 +4,6 @@ export const studentNavItems = [
   { to: "/skill-tests", icon: "quiz", label: "Assessments" },
   { to: "/skills", icon: "school", label: "My Skills" },
   { to: "/skill-gap", icon: "quiz", label: "Skill Gap" },
-  { to: "/skill-profile/gap-report", icon: "gap_report", label: "Skill Gap Report" },
   { to: "/skill-profile/graph", icon: "skill_graph", label: "Living Skill Graph" },
   { to: "/career-path", icon: "work", label: "Career Path" },
   { to: "/ai-advisor", icon: "sparkle", label: "AI Advisor" },

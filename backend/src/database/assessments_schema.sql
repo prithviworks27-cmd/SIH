@@ -2,8 +2,8 @@
 -- off frontend localStorage onto Supabase, scoped to the authenticated user.
 -- Run this after schema.sql (users table must already exist).
 
--- One row per skill test attempt (both passed and failed attempts are kept,
--- so a student's retake history is visible, not just their latest try).
+-- One current row per skill test. Retaking a test removes the previous row
+-- for that user/test before saving the new result.
 CREATE TABLE IF NOT EXISTS skill_test_results (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,

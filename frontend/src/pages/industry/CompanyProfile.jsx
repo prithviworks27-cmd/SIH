@@ -3,6 +3,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getCompanyProfile, saveCompanyProfile } from "../../services/companyProfileService";
+import { DEFAULT_COMPANY_PROFILE } from "../../services/mockData/companyProfile";
 import { FloppyDisk, Buildings, UploadSimple, X } from "@phosphor-icons/react";
 
 const inputClass =
@@ -18,7 +19,7 @@ export default function CompanyProfile() {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    getCompanyProfile().then(setForm);
+    getCompanyProfile().then((profile) => setForm(profile ?? DEFAULT_COMPANY_PROFILE));
   }, []);
 
   if (!form) {
@@ -66,7 +67,7 @@ export default function CompanyProfile() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await saveCompanyProfile(form);
+      await saveCompanyProfile(form, { requireBackend: true });
       setSaved(true);
     } finally {
       setSaving(false);

@@ -19,8 +19,8 @@ function levelForScore(score) {
   return "Beginner";
 }
 
-// GET /api/assessments/skill-tests/results — every attempt for the current user,
-// used by the "My Assessments" list to show each test's last result.
+// GET /api/assessments/skill-tests/results — the current result for each test
+// belonging to the authenticated user.
 export const getSkillTestResults = async (req, res) => {
   try {
     const userId = await resolveUserId(req);
@@ -48,8 +48,8 @@ export const getSkillTestResults = async (req, res) => {
 // body: { skillName, totalQuestions, correctAnswers, scorePercent, passingScore, passed }
 // Scoring itself stays client-side (the question bank + correct answers are
 // still mock data, per Step 2 scope — "no backend assessment APIs" for
-// question delivery/grading) — this endpoint only persists the already-computed
-// result and, on a pass, updates the shared skill_profile row.
+// question delivery/grading). A retest replaces the previous result for this
+// user and test, then updates the shared skill_profile row when passed.
 export const submitSkillTestResult = async (req, res) => {
   try {
     const userId = await resolveUserId(req);
@@ -70,6 +70,19 @@ export const submitSkillTestResult = async (req, res) => {
     }
 
     const completedAt = new Date().toISOString();
+
+    // Keep one current result per test for each user. The user is resolved from
+    // the authenticated request, so a retest cannot remove another user's data.
+    const { error: deleteError } = await supabase
+      .from("skill_test_results")
+      .delete()
+      .eq("user_id", userId)
+      .eq("test_id", testId);
+
+    if (deleteError) {
+      console.error("Delete previous skill test result error:", deleteError);
+      return res.status(500).json({ error: "Failed to replace previous assessment result" });
+    }
 
     const { data: result, error: insertError } = await supabase
       .from("skill_test_results")

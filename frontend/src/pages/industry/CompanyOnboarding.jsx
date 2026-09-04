@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { saveCompanyProfile } from "../../services/companyProfileService";
+import { saveCompanyProfile, uploadCompanyLogo } from "../../services/companyProfileService";
 import { ArrowClockwise, WarningCircle, Buildings } from "@phosphor-icons/react";
 
 const inputClass =
@@ -22,13 +22,40 @@ export default function CompanyOnboarding() {
     website: "",
     size: "",
     about: "",
+    logoUrl: null,
   });
   const [error, setError] = useState("");
+  const [logoError, setLogoError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [logoFile, setLogoFile] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     setError("");
+  };
+
+  const handleLogoSelect = (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setLogoError("Please choose an image file.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setLogoError("Image is too large — please choose one under 2MB.");
+      return;
+    }
+
+    setLogoError("");
+    setLogoFile(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm((prev) => ({ ...prev, logoUrl: reader.result }));
+      setError("");
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -37,11 +64,16 @@ export default function CompanyOnboarding() {
       setError("Company name is required");
       return;
     }
+    if (!logoFile) {
+      setError("Company logo is required");
+      return;
+    }
 
     setSaving(true);
     setError("");
     try {
-      await saveCompanyProfile(form);
+      const logoUrl = await uploadCompanyLogo(logoFile);
+      await saveCompanyProfile({ ...form, logoUrl }, { requireBackend: true });
       navigate("/industry/dashboard", { replace: true });
     } catch (err) {
       setError(err.message || "Could not save your company profile. Please try again.");
@@ -73,6 +105,27 @@ export default function CompanyOnboarding() {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Company Logo *</label>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full border border-hairline bg-bone flex items-center justify-center overflow-hidden flex-shrink-0">
+                  {form.logoUrl ? <img src={form.logoUrl} alt="Company logo preview" className="w-full h-full object-cover" /> : <Buildings size={24} className="text-muted" />}
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={saving}
+                    className="py-2 px-4 rounded-md border border-hairline text-ink text-sm hover:bg-bone transition-colors disabled:opacity-50"
+                  >
+                    {form.logoUrl ? "Replace logo" : "Upload logo"}
+                  </button>
+                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoSelect} className="hidden" />
+                  <p className="text-xs text-muted mt-1">PNG or JPG, up to 2MB.</p>
+                  {logoError && <p className="text-xs text-pastel-red-ink mt-1">{logoError}</p>}
+                </div>
+              </div>
+            </div>
             <div>
               <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Company Name *</label>
               <input
