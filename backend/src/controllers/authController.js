@@ -87,7 +87,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     // Validate input
     const validation = validateLoginInput(email, password);
@@ -125,7 +125,7 @@ export const login = async (req, res) => {
       JWT_SECRET,
       { expiresIn: "7d" }
     );
-    setAuthCookie(res, token);
+    setAuthCookie(res, token, Boolean(rememberMe));
 
     // Update last login
     await supabase

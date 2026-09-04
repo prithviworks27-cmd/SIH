@@ -53,7 +53,7 @@ export default function Login() {
       }
 
       // Call login function
-      const response = await login(formData.email, formData.password);
+      const response = await login(formData.email, formData.password, formData.rememberMe);
 
       // Redirect based on role
       navigate(getPostLoginRedirect(response.user.role), { replace: true });
