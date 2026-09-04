@@ -248,7 +248,7 @@ export default function InternshipJobListings() {
                   </div>
                   <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 border-t md:border-t-0 border-hairline pt-4 md:pt-0 mt-4 md:mt-0">
                     <div className="text-right">
-                      <span className="block font-editorial text-2xl text-ink">{job.match.overallScore}%</span>
+                      <span className="block font-editorial text-2xl text-ink tracking-tight">{job.match.overallScore}%</span>
                       <span className="text-xs text-muted">Match</span>
                     </div>
                     <div className="flex items-center gap-2">

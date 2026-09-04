@@ -54,7 +54,7 @@ export default function SkillTestResult() {
 
           <div className="mb-6">
             <p className="text-xs uppercase tracking-wide text-muted mb-1">Score</p>
-            <p className="font-editorial text-5xl text-ink">{scorePercent}%</p>
+            <p className="font-editorial text-5xl text-ink tracking-tight">{scorePercent}%</p>
           </div>
 
           <div

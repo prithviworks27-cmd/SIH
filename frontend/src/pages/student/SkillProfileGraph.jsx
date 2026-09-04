@@ -54,7 +54,7 @@ export default function SkillProfileGraph() {
         <div className="lg:col-span-4 flex flex-col gap-6">
           <div className="bg-white border border-hairline p-8 rounded-xl flex flex-col items-center text-center">
             <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Current Readiness Score</h2>
-            <div className="font-editorial text-4xl text-ink mb-2">{overallMatchPercent}%</div>
+            <div className="font-editorial text-4xl text-ink tracking-tight mb-2">{overallMatchPercent}%</div>
             <p className="text-sm text-charcoal">
               You match {provenCount} out of {totalCount} core competencies.
             </p>

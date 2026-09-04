@@ -51,13 +51,13 @@ export default function CareerDigitalTwin() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <section className="bg-white border border-hairline rounded-xl p-8 text-center">
           <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Current Profile</h2>
-          <div className="font-editorial text-5xl text-ink mb-2">{overallMatchPercent}%</div>
+          <div className="font-editorial text-5xl text-ink tracking-tight mb-2">{overallMatchPercent}%</div>
           <p className="text-sm text-muted">Software Developer Readiness</p>
         </section>
         <section className="bg-white border border-hairline rounded-xl p-8 text-center relative overflow-hidden">
           <span className="absolute top-3 right-3 text-xs uppercase tracking-wide text-muted bg-bone px-2 py-0.5 rounded-full">Estimate</span>
           <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Projected After Learning Paths</h2>
-          <div className="font-editorial text-5xl text-pastel-green-ink mb-2 flex items-center justify-center gap-2">
+          <div className="font-editorial text-5xl text-pastel-green-ink tracking-tight mb-2 flex items-center justify-center gap-2">
             <TrendUp size={32} />
             {projectedPercent}%
           </div>
