@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChartLineUp, Handshake, RocketLaunch, ArrowUpRight } from "@phosphor-icons/react";
 import useScrollReveal from "../../hooks/useScrollReveal";
 import logo from "../../assets/logo.png";
+import { AntiMetalButton } from "../../components/ui/anti-metal-button";
 
 const STEPS = [
   {
@@ -28,6 +29,7 @@ const STEPS = [
 ];
 
 export default function Landing() {
+  const navigate = useNavigate();
   const heroRef = useScrollReveal();
   const stepsHeaderRef = useScrollReveal();
 
@@ -78,12 +80,11 @@ export default function Landing() {
             A skill-first platform for students, institutions, and employers — verified assessments,
             real matches, and career guidance grounded in data.
           </p>
-          <Link
-            to="/signup"
-            className="mt-9 inline-flex items-center bg-ink text-white text-xs font-bold uppercase tracking-[0.12em] px-8 py-4 rounded-full hover:bg-[#222222] active:scale-[0.97] transition-all"
-          >
-            Get Started
-          </Link>
+          <AntiMetalButton
+            className="mt-9"
+            label="Get Started"
+            onClick={() => navigate("/signup")}
+          />
         </section>
 
         {/* How it works — bento grid */}
