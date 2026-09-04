@@ -31,19 +31,24 @@ export default function DashboardLayout({
   title,
   subtitle,
   contentClassName = "",
+  hideSidebar = false,
 }) {
+  // hideSidebar drops the nav, top-right icon row, and message bar entirely
+  // rather than just visually hiding them — used for focused, single-task
+  // screens like an in-progress skill test where navigating away mid-attempt
+  // isn't wanted.
   const isStudentPortal = navItems === studentNavItems;
 
   return (
     <div className="bg-canvas text-charcoal min-h-screen">
-      <Sidebar navItems={navItems} footerNavItems={footerNavItems} title={title} subtitle={subtitle} />
-      <main className="md:ml-64 px-4 md:px-10 py-10">
+      {!hideSidebar && <Sidebar navItems={navItems} footerNavItems={footerNavItems} title={title} subtitle={subtitle} />}
+      <main className={hideSidebar ? "px-4 md:px-10 py-10" : "md:ml-64 px-4 md:px-10 py-10"}>
         <div className={`max-w-5xl mx-auto ${contentClassName}`}>
-          {isStudentPortal && <TopRightLinks />}
+          {!hideSidebar && isStudentPortal && <TopRightLinks />}
           {children}
         </div>
       </main>
-      <MessagesBar />
+      {!hideSidebar && <MessagesBar />}
     </div>
   );
 }

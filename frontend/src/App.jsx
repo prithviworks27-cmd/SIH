@@ -24,6 +24,8 @@ import SkillAssessment from "./pages/student/SkillAssessment.jsx";
 import SkillTests from "./pages/student/SkillTests.jsx";
 import SkillTestStart from "./pages/student/SkillTestStart.jsx";
 import SkillTestResult from "./pages/student/SkillTestResult.jsx";
+import DynamicTestRun from "./pages/student/DynamicTestRun.jsx";
+import DynamicTestSummary from "./pages/student/DynamicTestSummary.jsx";
 import MySkills from "./pages/student/MySkills.jsx";
 import SkillGap from "./pages/student/SkillGap.jsx";
 import CareerPath from "./pages/student/CareerPath.jsx";
@@ -189,6 +191,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
                 <SkillTestResult />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-tests/dynamic/summary"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <DynamicTestSummary />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skill-tests/dynamic/run"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <DynamicTestRun />
               </ProtectedRoute>
             }
           />

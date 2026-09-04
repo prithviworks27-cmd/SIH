@@ -54,6 +54,65 @@ export async function getSkillTestForAttempt(testId) {
   });
 }
 
+// Dynamic tests: 20-question objective tests per skill, sourced from the
+// Supabase assessment_questions bank (see assessmentController.js) instead
+// of the hardcoded SKILL_TESTS array above. Unlike the static path, there's
+// no mock/offline fallback here — the question bank only exists server-side,
+// so this always hits the backend.
+export async function getDynamicTestForAttempt(skillName) {
+  const { testId, ...test } = await assessmentAPI.getDynamicTest(skillName);
+  return { id: testId, ...test };
+}
+
+export async function submitDynamicSkillTest(skillName, answers) {
+  const { result, profile } = await assessmentAPI.submitDynamicTest(skillName, answers);
+  const mapped = {
+    testId: result.test_id,
+    skillName: result.skill_name,
+    title: skillName,
+    total: result.total_questions,
+    correct: result.correct_answers,
+    scorePercent: result.score_percent,
+    passingScore: result.passing_score,
+    passed: result.passed,
+    completedAt: result.completed_at,
+    // Per-level (beginner/intermediate/advanced) score breakdown within this
+    // skill — see assessmentController.submitDynamicTest's levelBreakdown.
+    levelBreakdown: (result.level_breakdown || []).map((lb) => ({
+      level: lb.level,
+      total: lb.total,
+      correct: lb.correct,
+      scorePercent: lb.score_percent,
+    })),
+  };
+
+  persistResultLocally(mapped);
+  if (profile) {
+    // Keep the local skill-profile cache in sync the same way a passed
+    // static test does, so pages reading getStoredSkillProfileOrDemo() see
+    // the update immediately without waiting on a fresh backend fetch.
+    const current = await getStoredSkillProfileOrDemo();
+    const now = mapped.completedAt;
+    const nextProfile = current.profile.map((s) =>
+      s.name === mapped.skillName
+        ? {
+            ...s,
+            currentScore: profile.current_score,
+            trustLevel: profile.trust_level,
+            proficiencyLevel: profile.proficiency_level,
+            lastUpdated: now,
+          }
+        : s
+    );
+    const overallMatchPercent = Math.round(
+      (nextProfile.reduce((sum, s) => sum + Math.min(s.currentScore / s.requiredScore, 1), 0) / nextProfile.length) * 100
+    );
+    persistSkillProfileLocally({ profile: nextProfile, overallMatchPercent, completedAt: current.completedAt ?? now });
+  }
+
+  return mapped;
+}
+
 // Total Questions / Correct Answers / Score % / Pass-Fail — the threshold
 // comes from the test definition (SKILL_TESTS[].passingScore), never a
 // magic number in the component, so it can be tuned per skill in one place.

@@ -8,7 +8,21 @@ import { getSkillProfile } from "../../services/skillsService";
 import { getApplications } from "../../services/applicationsService";
 import { getInternshipsWithMatch } from "../../services/matchService";
 import { getCourses } from "../../services/coursesService";
-import { Target, Briefcase, CalendarBlank, Sparkle, Clock, Code, ShieldCheck, TrendUp, UserCircle } from "@phosphor-icons/react";
+import { aiAdvisorAPI } from "../../services/api";
+import {
+  Target,
+  Briefcase,
+  CalendarBlank,
+  Sparkle,
+  Clock,
+  Code,
+  ShieldCheck,
+  TrendUp,
+  UserCircle,
+  TrendDown,
+  MapTrifold,
+  CircleNotch,
+} from "@phosphor-icons/react";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -18,6 +32,14 @@ export default function StudentDashboard() {
   const [applications, setApplications] = useState(undefined);
   const [topMatches, setTopMatches] = useState(undefined);
   const [courses, setCourses] = useState(undefined);
+  // AI skill analysis popup (weak/strong points + roadmap from the most
+  // recently completed dynamic test run) — separate from the Skill Gap
+  // Report modal above, which reflects the self-rating/overall profile
+  // rather than one specific test run's scores and level breakdowns.
+  const [showSkillAnalysis, setShowSkillAnalysis] = useState(false);
+  const [skillAnalysis, setSkillAnalysis] = useState(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState("");
 
   useEffect(() => {
     getSkillProfile().then(setSkillProfile);
@@ -31,6 +53,25 @@ export default function StudentDashboard() {
 
   const startAssessment = (fromBeginning = false) => {
     navigate(fromBeginning ? "/skill-assessment?start=beginning" : "/skill-assessment");
+  };
+
+  // Fetches an AI analysis (strengths/weaknesses/roadmap) of the student's
+  // most recently completed skill-test run — see
+  // aiAdvisorController.analyzeLatestSkillRun. Opens the modal immediately
+  // so the loading/error state is visible inside it rather than only on the button.
+  const runSkillAnalysis = async () => {
+    setShowSkillAnalysis(true);
+    setAnalysisLoading(true);
+    setAnalysisError("");
+    try {
+      const data = await aiAdvisorAPI.analyzeLatestRun();
+      setSkillAnalysis(data);
+    } catch (err) {
+      setAnalysisError(err.message || "Something went wrong analyzing your results.");
+      setSkillAnalysis(null);
+    } finally {
+      setAnalysisLoading(false);
+    }
   };
 
   return (
@@ -75,13 +116,24 @@ export default function StudentDashboard() {
             <p className="text-xs uppercase tracking-wide text-muted mb-1">Assessment complete</p>
             <h2 className="text-lg font-medium text-ink">Your skill gap report is ready</h2>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowSkillGapReport(true)}
-            className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] transition-colors self-start sm:self-auto"
-          >
-            View skill gap report
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+            <button
+              type="button"
+              onClick={runSkillAnalysis}
+              disabled={analysisLoading}
+              className="border border-hairline text-charcoal text-sm px-4 py-2.5 rounded-md hover:bg-bone transition-colors self-start sm:self-auto disabled:opacity-60 flex items-center gap-2"
+            >
+              {analysisLoading ? <CircleNotch size={16} className="animate-spin" /> : <Sparkle size={16} />}
+              {analysisLoading ? "Analyzing…" : "Analyze My Results"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowSkillGapReport(true)}
+              className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] transition-colors self-start sm:self-auto"
+            >
+              View skill gap report
+            </button>
+          </div>
         </section>
       )}
 
@@ -153,6 +205,141 @@ export default function StudentDashboard() {
                 className="bg-ink text-white text-sm px-4 py-2 rounded-md hover:bg-[#333333] transition-colors"
               >
                 Retake assessment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSkillAnalysis && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowSkillAnalysis(false);
+          }}
+        >
+          <div
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-hairline rounded-xl p-6 md:p-8 shadow-xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="skill-analysis-title"
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-hairline pb-4 mb-6">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted mb-1">AI Skill Analysis</p>
+                <h2 id="skill-analysis-title" className="font-editorial text-2xl text-ink tracking-tight">
+                  Your Latest Assessment Results
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSkillAnalysis(false)}
+                className="text-sm text-muted hover:text-ink transition-colors flex-shrink-0"
+                aria-label="Close skill analysis"
+              >
+                Close
+              </button>
+            </div>
+
+            {analysisLoading && (
+              <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted">
+                <CircleNotch size={28} className="animate-spin" />
+                <p className="text-sm">Analyzing your results…</p>
+              </div>
+            )}
+
+            {!analysisLoading && analysisError && (
+              <div className="text-center py-12">
+                <p className="text-sm text-muted mb-6">{analysisError}</p>
+                <button
+                  type="button"
+                  onClick={() => navigate("/skill-assessment")}
+                  className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] transition-colors"
+                >
+                  Take a Skill Assessment
+                </button>
+              </div>
+            )}
+
+            {!analysisLoading && !analysisError && skillAnalysis && (
+              <div className="flex flex-col gap-8">
+                {skillAnalysis.basedOn?.length > 0 && (
+                  <p className="text-xs text-muted -mt-2">
+                    Based on your latest run: {skillAnalysis.basedOn.map((b) => `${b.skillName} (${b.scorePercent}%)`).join(", ")}
+                  </p>
+                )}
+
+                <section>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendUp size={18} className="text-pastel-green-ink" />
+                    <h3 className="text-base font-medium text-ink">Strong Points</h3>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {skillAnalysis.analysis.strengths.map((s, i) => (
+                      <div key={i} className="border border-hairline bg-pastel-green/20 rounded-lg p-3">
+                        <p className="text-sm font-medium text-ink">{s.skill}</p>
+                        <p className="text-sm text-muted">{s.note}</p>
+                      </div>
+                    ))}
+                    {skillAnalysis.analysis.strengths.length === 0 && (
+                      <p className="text-sm text-muted">No clear strengths identified yet.</p>
+                    )}
+                  </div>
+                </section>
+
+                <section>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendDown size={18} className="text-pastel-red-ink" />
+                    <h3 className="text-base font-medium text-ink">Weak Points</h3>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {skillAnalysis.analysis.weaknesses.map((w, i) => (
+                      <div key={i} className="border border-hairline bg-pastel-red/20 rounded-lg p-3">
+                        <p className="text-sm font-medium text-ink">{w.skill}</p>
+                        <p className="text-sm text-muted">{w.note}</p>
+                      </div>
+                    ))}
+                    {skillAnalysis.analysis.weaknesses.length === 0 && (
+                      <p className="text-sm text-muted">No significant weaknesses identified.</p>
+                    )}
+                  </div>
+                </section>
+
+                <section>
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapTrifold size={18} className="text-pastel-blue-ink" />
+                    <h3 className="text-base font-medium text-ink">Roadmap to Improve</h3>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {skillAnalysis.analysis.roadmap.map((step, i) => (
+                      <div key={i} className="border border-hairline rounded-lg p-4">
+                        <div className="flex items-baseline gap-2 mb-1">
+                          <span className="text-xs font-medium text-muted">Step {i + 1}</span>
+                          <p className="text-sm font-medium text-ink">{step.title}</p>
+                        </div>
+                        {step.focus && <p className="text-xs text-muted mb-2">Focus: {step.focus}</p>}
+                        <ul className="list-disc list-inside flex flex-col gap-1">
+                          {step.steps?.map((line, j) => (
+                            <li key={j} className="text-sm text-charcoal">
+                              {line}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
+
+            <div className="flex justify-end mt-8 pt-4 border-t border-hairline">
+              <button
+                type="button"
+                onClick={() => setShowSkillAnalysis(false)}
+                className="border border-hairline text-charcoal text-sm px-4 py-2 rounded-md hover:bg-bone transition-colors"
+              >
+                Close
               </button>
             </div>
           </div>

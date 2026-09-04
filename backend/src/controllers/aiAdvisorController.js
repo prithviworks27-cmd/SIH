@@ -149,6 +149,164 @@ export const generateSkillRoadmap = async (req, res) => {
   }
 };
 
+// How close together (ms) two skill_test_results rows' completed_at values
+// must be to count as the "same run" — DynamicTestRun submits every
+// selected skill within milliseconds of each other (Promise.all), so a
+// generous 2-minute window comfortably covers one run without pulling in an
+// unrelated earlier retake of some other skill.
+const SAME_RUN_WINDOW_MS = 2 * 60 * 1000;
+
+// GET /api/ai-advisor/analyze-latest-run
+// Analyzes the student's most recently completed skill-test run (one or more
+// skills submitted together from DynamicTestRun.jsx) — strengths, weaknesses,
+// and an improvement roadmap grounded in the actual scores and per-level
+// (beginner/intermediate/advanced) breakdowns, never invented. Reuses the
+// same OpenRouter/Gemini JSON-mode call path as generateSkillRoadmap.
+export const analyzeLatestSkillRun = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { data: recent, error: fetchError } = await supabase
+      .from("skill_test_results")
+      .select("skill_name, score_percent, passing_score, passed, level_breakdown, completed_at")
+      .eq("user_id", userId)
+      .order("completed_at", { ascending: false })
+      .limit(30);
+
+    if (fetchError) {
+      console.error("Fetch latest skill run error:", fetchError);
+      return res.status(500).json({ error: "Failed to load your assessment results" });
+    }
+
+    if (!recent || recent.length === 0) {
+      return res.status(404).json({ error: "Take a skill assessment first to get an analysis of your results." });
+    }
+
+    // Cluster the newest row together with every row within SAME_RUN_WINDOW_MS
+    // of it — that's "this run", whether it was one skill or several.
+    const latestTime = new Date(recent[0].completed_at).getTime();
+    const batch = recent.filter((r) => latestTime - new Date(r.completed_at).getTime() <= SAME_RUN_WINDOW_MS);
+
+    const openRouterKey = process.env.OPENROUTER_API_KEY;
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (!openRouterKey && !geminiKey) {
+      return res.status(503).json({ error: "AI skill analysis is not configured on the server." });
+    }
+
+    const prompt = buildAnalysisPrompt(batch);
+    let analysis = null;
+    let upstreamError = null;
+
+    if (openRouterKey) {
+      ({ analysis, error: upstreamError } = await callOpenRouterAnalysis(openRouterKey, prompt));
+    }
+    if (!analysis && geminiKey) {
+      ({ analysis, error: upstreamError } = await callGeminiAnalysis(geminiKey, prompt));
+    }
+    if (!analysis) {
+      console.error("Skill analysis generation failed:", upstreamError);
+      return res.status(503).json({ error: "Skill analysis is temporarily unavailable. Please try again in a moment." });
+    }
+
+    const provider = openRouterKey ? "openrouter" : "gemini";
+    const model = openRouterKey ? OPENROUTER_MODEL : GEMINI_MODEL;
+    res.status(200).json({
+      analysis,
+      basedOn: batch.map((r) => ({ skillName: r.skill_name, scorePercent: r.score_percent, passed: r.passed })),
+      provider,
+      model,
+    });
+  } catch (error) {
+    console.error("Analyze latest skill run error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+function buildAnalysisPrompt(batch) {
+  const dataLines = batch
+    .map((r) => {
+      const levelPart = Array.isArray(r.level_breakdown) && r.level_breakdown.length > 0
+        ? " Level breakdown: " +
+          r.level_breakdown.map((lb) => `${lb.level} ${lb.correct}/${lb.total} (${lb.scorePercent}%)`).join(", ") + "."
+        : "";
+      return `- ${r.skill_name}: ${r.score_percent}% overall (passing score ${r.passing_score}%, ${r.passed ? "passed" : "not passed"}).${levelPart}`;
+    })
+    .join("\n");
+
+  return `A student just completed a skill assessment run. Here is their REAL, exact data — do not invent any skill, number, or level not listed here:
+${dataLines}
+
+Analyze this data and respond with strict JSON only, no markdown, no commentary outside the JSON, in this exact shape:
+{"strengths":[{"skill":"...","note":"one sentence, reference the actual score/level"}],"weaknesses":[{"skill":"...","note":"one sentence, reference the actual score/level"}],"roadmap":[{"title":"...","focus":"which skill/level this step targets","steps":["concrete action 1","concrete action 2","concrete action 3"]}]}
+
+Rules:
+- strengths: skills or levels within a skill that scored well (e.g. high overall %, or a specific level like "advanced" scoring highest) — 1 to 4 entries, only ones justified by the data above.
+- weaknesses: skills or levels that scored lowest or failed — 1 to 4 entries, only ones justified by the data above. If a skill has a level_breakdown, prefer calling out the specific weak level (e.g. "advanced JavaScript" rather than just "JavaScript") over the whole skill when only one level is weak.
+- roadmap: 3 to 5 ordered steps, each targeting the weakest areas first, with concrete, actionable steps a student can start this week (specific topics/practice, not vague advice like "practice more").
+- Every claim must be traceable to a number in the data above. Do not mention skills that aren't listed.`;
+}
+
+async function callOpenRouterAnalysis(apiKey, prompt) {
+  try {
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": process.env.FRONTEND_URL?.split(",")[0] || "http://localhost:5173",
+        "X-Title": "SIH Student Portal",
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_MODEL,
+        messages: [
+          { role: "system", content: "You analyze student assessment data and return valid JSON only, grounded strictly in the provided numbers." },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.3,
+        max_tokens: 1200,
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!response.ok) return { analysis: null, error: `${response.status}: ${(await response.text()).slice(0, 300)}` };
+    const data = await response.json();
+    return parseAnalysis(data?.choices?.[0]?.message?.content);
+  } catch (error) {
+    return { analysis: null, error: error.message };
+  }
+}
+
+async function callGeminiAnalysis(apiKey, prompt) {
+  try {
+    const response = await fetch(`${GEMINI_API_URL}/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: "Return valid JSON only for the requested skill analysis." }] },
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1200, responseMimeType: "application/json" },
+      }),
+    });
+    if (!response.ok) return { analysis: null, error: `${response.status}: ${(await response.text()).slice(0, 300)}` };
+    const data = await response.json();
+    return parseAnalysis(data?.candidates?.[0]?.content?.parts?.map((part) => part.text).filter(Boolean).join("\n"));
+  } catch (error) {
+    return { analysis: null, error: error.message };
+  }
+}
+
+function parseAnalysis(content) {
+  try {
+    const analysis = JSON.parse(content);
+    if (!Array.isArray(analysis?.strengths) || !Array.isArray(analysis?.weaknesses) || !Array.isArray(analysis?.roadmap)) {
+      return { analysis: null, error: "The model returned an incomplete analysis" };
+    }
+    return { analysis, error: null };
+  } catch {
+    return { analysis: null, error: "The model returned invalid JSON" };
+  }
+}
+
 function buildRoadmapPrompt(skill, currentLevel, format) {
   return `Create a practical ${format} learning roadmap for the specific skill "${skill}"${currentLevel ? `, considering the student's current level "${currentLevel}"` : ""}.
 The roadmap must take a complete beginner to advanced/expert capability in a logical sequence. Cover these progression stages in order: Beginner fundamentals, Core foundations, Intermediate application, Advanced engineering or analysis, and Expert-level production practice. Do not skip foundations or assume prior knowledge. Every step must focus only on "${skill}" and must contain concrete topics, a learning activity, a practice exercise, and an applied task.

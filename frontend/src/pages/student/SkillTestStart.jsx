@@ -26,7 +26,7 @@ export default function SkillTestStart() {
 
   if (test === undefined) {
     return (
-      <DashboardLayout>
+      <DashboardLayout hideSidebar>
         <LoadingState label="Loading assessment…" />
       </DashboardLayout>
     );
@@ -34,7 +34,7 @@ export default function SkillTestStart() {
 
   if (test === null) {
     return (
-      <DashboardLayout>
+      <DashboardLayout hideSidebar>
         <EmptyState title="Assessment not found" description="This skill test doesn't exist or may have been removed." actionLabel="Back to Assessments" onAction={() => navigate("/skill-tests")} />
       </DashboardLayout>
     );
@@ -79,7 +79,7 @@ export default function SkillTestStart() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout hideSidebar>
       <div className="w-full bg-white border border-hairline rounded-xl flex flex-col mb-10">
         <ProgressBar percent={progressPercent} className="rounded-t-xl rounded-b-none" />
         <div className="px-6 py-4 flex justify-between items-center">
