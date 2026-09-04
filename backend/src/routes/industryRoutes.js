@@ -1,7 +1,9 @@
 import express from "express";
+import multer from "multer";
 import {
   getCompanyProfile,
   saveCompanyProfile,
+  uploadCompanyLogo,
   getPostedOpportunities,
   getMyOpportunities,
   createOpportunity,
@@ -17,9 +19,11 @@ import {
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+const logoUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 2 * 1024 * 1024 } });
 
 router.get("/company-profile", authMiddleware, getCompanyProfile);
 router.post("/company-profile", authMiddleware, saveCompanyProfile);
+router.post("/company-profile/logo", authMiddleware, logoUpload.single("logo"), uploadCompanyLogo);
 
 // Opportunities are readable by any authenticated user (students need the
 // full posted list) — only creating/updating is restricted to the posting

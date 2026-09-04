@@ -262,13 +262,8 @@ export async function getSkillTestResult(testId) {
   return all[testId] ?? null;
 }
 
-// Full assessment history (Issue 6) — every past attempt across every
-// domain, not just the last result per test. The backend already stores
-// every attempt (skill_test_results keeps both passed and failed rows,
-// never overwrites), this just exposes that instead of collapsing it to
-// "latest only" the way getSkillTests()/loadResults() do for the domain grid.
-// Grouped per test so the UI can show "3 attempts, best 92%, latest 82%"
-// without every page re-deriving that from a flat list.
+// Assessment results grouped per test. Retesting replaces the previous
+// database row, so each group contains the current result only.
 export async function getAssessmentHistory() {
   let rows = [];
   try {

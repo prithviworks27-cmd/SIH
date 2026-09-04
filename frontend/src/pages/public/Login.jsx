@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getPostLoginRedirect } from "../../utils/roleRedirect";
 import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
-import logo from "../../assets/logo.png";
+import AmbientBrandGlow from "../../components/ui/ambient-brand-glow";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -76,23 +76,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4">
+    <AmbientBrandGlow className="min-h-screen flex items-center justify-center text-charcoal antialiased px-4 py-12">
       <main className="w-full max-w-sm">
-        {/* Wordmark */}
-        <div className="text-center mb-10">
-          <h1 className="font-editorial italic text-3xl tracking-tight flex items-center justify-center gap-2">
-            <img src={logo} alt="SkillBridge" className="w-14 h-14 rounded-full object-cover" />
-            <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, #4fadb0, #7a6fe0, #e4895c)" }}
+        {/* Card — wordmark and form live in one unified surface, with a
+            soft lift shadow so it reads clearly against the ambient glow. */}
+        <div className="bg-white border border-hairline rounded-2xl shadow-lift p-8 md:p-10">
+          {/* Wordmark */}
+          <div className="text-center mb-8">
+            <h1
+              className="font-sans font-black leading-[0.9] tracking-tight bg-clip-text text-transparent"
+              style={{
+                fontSize: "clamp(1.8rem, 7vw, 2.5rem)",
+                backgroundImage: "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)",
+              }}
             >
-              SkillBridge
-            </span>
-          </h1>
-        </div>
+              SKILLBRIDGE
+            </h1>
+          </div>
 
-        {/* Card */}
-        <div className="bg-white border border-hairline rounded-lg p-8">
           {errorMessage && (
             <div className="mb-5 px-3 py-2.5 bg-pastel-red rounded-md">
               <div className="flex items-start gap-2">
@@ -104,11 +105,17 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <button
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium border border-hairline bg-white text-charcoal hover:border-ink transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium border border-hairline bg-white text-charcoal hover:border-ink hover:bg-bone transition-colors disabled:opacity-50"
               type="button"
               onClick={handleGoogleLogin}
               disabled={isSubmitting || loading}
             >
+              <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                <path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19z" />
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+              </svg>
               Continue with Google
             </button>
 
@@ -228,6 +235,6 @@ export default function Login() {
           <p className="text-xs text-muted">© 2026 SkillBridge Collaboration Portal.</p>
         </div>
       </main>
-    </div>
+    </AmbientBrandGlow>
   );
 }

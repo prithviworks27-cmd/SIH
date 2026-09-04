@@ -192,7 +192,7 @@ export default function DigitalPortfolio() {
               <ul className="flex flex-col gap-3 list-disc list-inside text-sm text-charcoal">
                 {portfolio.achievements.length === 0 && <p className="text-sm text-muted list-none">No achievements added yet.</p>}
                 {portfolio.achievements.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item.id}>{item.description}</li>
                 ))}
               </ul>
             </section>

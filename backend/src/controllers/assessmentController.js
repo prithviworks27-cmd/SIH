@@ -115,7 +115,9 @@ function gradeTextAnswer(submitted, correctAnswer) {
 }
 
 // GET /api/assessments/skill-tests/results — every attempt for the current user,
-// used by the "My Assessments" list to show each test's last result.
+// used by the "My Assessments" list to show each test's last result plus its
+// full attempt history (see getAssessmentHistory on the frontend, which
+// relies on every retake staying as its own row rather than being replaced).
 export const getSkillTestResults = async (req, res) => {
   try {
     const userId = await resolveUserId(req);
@@ -144,7 +146,8 @@ export const getSkillTestResults = async (req, res) => {
 // Scoring itself stays client-side (the question bank + correct answers are
 // still mock data, per Step 2 scope — "no backend assessment APIs" for
 // question delivery/grading) — this endpoint only persists the already-computed
-// result and, on a pass, updates the shared skill_profile row.
+// result via persistTestResult, which keeps every attempt as its own row
+// (never replaces a retake) and updates the shared skill_profile row when passed.
 export const submitSkillTestResult = async (req, res) => {
   try {
     const userId = await resolveUserId(req);

@@ -96,7 +96,7 @@ export default function CareerPath() {
                 <p className="text-xs text-muted mb-1">{r.role.category}</p>
                 <h3 className="text-base font-medium text-ink mb-3">{r.role.title}</h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-editorial text-ink">{r.readinessPercent}%</span>
+                  <span className="text-2xl font-editorial text-ink tracking-tight">{r.readinessPercent}%</span>
                   <span className="text-xs text-muted">Readiness</span>
                 </div>
               </button>
@@ -111,7 +111,7 @@ export default function CareerPath() {
             <p className="text-xs uppercase tracking-wide text-muted mb-1">Selected Role</p>
             <h2 className="font-editorial text-2xl text-ink tracking-tight mb-4">{readiness.role.title}</h2>
             <div className="flex items-end gap-2 mb-1">
-              <span className="font-editorial text-4xl text-ink">{readiness.readinessPercent}%</span>
+              <span className="font-editorial text-4xl text-ink tracking-tight">{readiness.readinessPercent}%</span>
               <span className="text-sm text-muted mb-1">Readiness</span>
             </div>
             <p className="text-sm text-muted mb-6">{readiness.role.description}</p>
