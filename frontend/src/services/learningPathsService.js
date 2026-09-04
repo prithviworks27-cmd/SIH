@@ -5,7 +5,7 @@ import { modulesForSkill } from "./mockData/learningPathModules";
 import { projectForSkill } from "./mockData/recommendedProjects";
 import { getAllSkillPrograms } from "./skillProgramsService";
 import { getStoredSkillProfileOrDemo } from "./assessmentService";
-import { TRUST_LEVELS } from "./mockData/skills";
+import { SKILL_CATALOG, TRUST_LEVELS } from "./mockData/skills";
 import { studentStateAPI, assessmentAPI } from "./api";
 
 const STORAGE_KEY = "learningPathProgress";
@@ -42,12 +42,9 @@ async function loadProgress() {
   }
 }
 
-// Builds one learning path per missing skill for the student's current
-// target role (see careerRoleService.getTargetRoleReadiness — Step 3/4's
-// gap data), so "Recommended Learning" is explicitly Skill Gap -> Learning,
-// not a disconnected topic list. Falls back to the generic threshold-based
-// gaps (skillsService.getSkillProfile) if no target role gaps exist, so the
-// page never looks empty for a fully-role-ready student.
+// Builds one learning path for every catalog skill. Current target-role gaps
+// are placed first, followed by the rest of the catalog, so the page contains
+// the complete skill set while still leading with the most relevant paths.
 export async function getLearningPaths() {
   const roleReadiness = await getTargetRoleReadiness();
   const progress = await loadProgress();
@@ -55,10 +52,14 @@ export async function getLearningPaths() {
   let gapNames = (roleReadiness?.missingSkills ?? []).map((s) => s.name);
   if (gapNames.length === 0) {
     const { skillGaps } = await getSkillProfile();
-    gapNames = skillGaps.slice(0, 6).map((s) => s.name);
+    gapNames = skillGaps.map((s) => s.name);
   }
 
-  const paths = gapNames.map((skillName) => {
+  const skillNames = [...gapNames, ...SKILL_CATALOG.map((skill) => skill.name)].filter(
+    (skillName, index, names) => names.indexOf(skillName) === index
+  );
+
+  const paths = skillNames.map((skillName) => {
     const modules = modulesForSkill(skillName);
     const completed = Math.min(progress[skillName] ?? 0, modules.length);
     return {

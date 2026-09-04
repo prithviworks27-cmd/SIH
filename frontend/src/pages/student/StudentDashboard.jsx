@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import StatCard from "../../components/common/StatCard";
 import SkillProgress from "../../components/common/SkillProgress";
@@ -12,7 +12,9 @@ import { Target, Briefcase, CalendarBlank, Sparkle, Clock, Code, ShieldCheck, Tr
 
 export default function StudentDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [skillProfile, setSkillProfile] = useState(undefined);
+  const [showSkillGapReport, setShowSkillGapReport] = useState(false);
   const [applications, setApplications] = useState(undefined);
   const [topMatches, setTopMatches] = useState(undefined);
   const [courses, setCourses] = useState(undefined);
@@ -27,6 +29,10 @@ export default function StudentDashboard() {
   const activeApplications = applications?.filter((a) => a.status !== "Closed" && a.status !== "Rejected").length ?? "—";
   const upcomingInterviews = applications?.filter((a) => a.status === "Interview").length ?? "—";
 
+  const startAssessment = (fromBeginning = false) => {
+    navigate(fromBeginning ? "/skill-assessment?start=beginning" : "/skill-assessment");
+  };
+
   return (
     <DashboardLayout>
       {/*Welcome Header*/}
@@ -34,6 +40,124 @@ export default function StudentDashboard() {
         <h1 className="font-editorial text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Student"}</h1>
         <p className="text-muted leading-relaxed">Here is a summary of your academic progress and opportunities.</p>
       </header>
+
+      {skillProfile && !skillProfile.completedAt && (
+        <section className="mb-10 bg-ink text-white rounded-xl p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-[#cfcfcf] mb-2">Start here</p>
+            <h2 className="font-editorial text-2xl tracking-tight mb-2">Give your skills a starting point</h2>
+            <p className="text-sm text-[#cfcfcf] max-w-xl leading-relaxed">
+              Complete your skill assessment to see your strengths, identify gaps, and get more relevant opportunities.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => startAssessment()}
+              className="bg-white text-ink text-sm px-4 py-2.5 rounded-md hover:bg-[#eeeeee] transition-colors"
+            >
+              Give skill assessment
+            </button>
+            <button
+              type="button"
+              onClick={() => startAssessment(true)}
+              className="border border-[#777777] text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] transition-colors"
+            >
+              Start from beginning
+            </button>
+          </div>
+        </section>
+      )}
+
+      {skillProfile?.completedAt && (
+        <section className="mb-10 bg-white border border-hairline rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted mb-1">Assessment complete</p>
+            <h2 className="text-lg font-medium text-ink">Your skill gap report is ready</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowSkillGapReport(true)}
+            className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] transition-colors self-start sm:self-auto"
+          >
+            View skill gap report
+          </button>
+        </section>
+      )}
+
+      {showSkillGapReport && skillProfile && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowSkillGapReport(false);
+          }}
+        >
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-hairline rounded-xl p-6 md:p-8 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="skill-gap-report-title">
+            <div className="flex items-start justify-between gap-4 border-b border-hairline pb-4 mb-6">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted mb-1">Assessment results</p>
+                <h2 id="skill-gap-report-title" className="font-editorial text-2xl text-ink tracking-tight">Skill Gap Report</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSkillGapReport(false)}
+                className="text-sm text-muted hover:text-ink transition-colors"
+                aria-label="Close skill gap report"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+              <div className="border border-hairline rounded-lg p-4 bg-bone">
+                <p className="text-xs uppercase tracking-wide text-muted mb-1">Overall score</p>
+                <p className="text-lg font-medium text-ink">{skillProfile.overallMatchPercent}%</p>
+              </div>
+              <div className="border border-hairline rounded-lg p-4 bg-bone">
+                <p className="text-xs uppercase tracking-wide text-muted mb-1">Strong skills</p>
+                <p className="text-lg font-medium text-ink">{skillProfile.strongSkills.length}</p>
+              </div>
+              <div className="border border-hairline rounded-lg p-4 bg-bone">
+                <p className="text-xs uppercase tracking-wide text-muted mb-1">Identified gaps</p>
+                <p className="text-lg font-medium text-pastel-red-ink">{skillProfile.skillGaps.length}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <h3 className="text-base font-medium text-ink">Assessment Data</h3>
+              {skillProfile.profile.filter((skill) => skill.lastUpdated).sort((a, b) => b.currentScore - a.currentScore).map((skill) => (
+                <div key={skill.name}>
+                  <div className="flex justify-between gap-4 mb-1">
+                    <span className="text-sm text-ink">{skill.name}</span>
+                    <span className="text-xs text-muted whitespace-nowrap">{skill.proficiencyLevel ?? (skill.currentScore === 0 ? "Not yet started" : `${skill.currentScore}%`)} ({skill.currentScore}%)</span>
+                  </div>
+                  <div className="w-full bg-bone h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-ink h-full" style={{ width: `${skill.currentScore}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-hairline">
+              <button
+                type="button"
+                onClick={() => navigate("/learning-paths")}
+                className="border border-hairline text-charcoal text-sm px-4 py-2 rounded-md hover:bg-bone transition-colors"
+              >
+                Improve your skills
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/skill-assessment?retake=true&start=beginning")}
+                className="bg-ink text-white text-sm px-4 py-2 rounded-md hover:bg-[#333333] transition-colors"
+              >
+                Retake assessment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/*Stat Cards Grid*/}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">

@@ -1,53 +1,30 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
-import { getLearningPaths, getIndustryPrograms, completeNextModule } from "../../services/learningPathsService";
+import { getLearningPaths, getIndustryPrograms } from "../../services/learningPathsService";
 import { CheckCircle, Circle, GraduationCap, Rocket, Buildings } from "@phosphor-icons/react";
 
 export default function RecommendedLearningPaths() {
+  const navigate = useNavigate();
   const [paths, setPaths] = useState(undefined);
   const [programs, setPrograms] = useState(undefined);
-  const [updatingSkill, setUpdatingSkill] = useState(null);
-  const [justVerified, setJustVerified] = useState(null);
 
   useEffect(() => {
     getLearningPaths().then(setPaths);
     getIndustryPrograms().then(setPrograms);
   }, []);
 
-  const handleCompleteModule = async (skillName) => {
-    setUpdatingSkill(skillName);
-    setJustVerified(null);
-    try {
-      const result = await completeNextModule(skillName);
-      const refreshed = await getLearningPaths();
-      setPaths(refreshed);
-      if (result.justFinished) setJustVerified(skillName);
-    } finally {
-      setUpdatingSkill(null);
-    }
-  };
-
   return (
     <DashboardLayout>
       <header className="mb-10">
         <h2 className="font-editorial text-3xl text-ink tracking-tight mb-2">Learning &amp; Skill Development</h2>
         <p className="text-muted max-w-2xl leading-relaxed">
-          Curated module sequences generated from your skill gap — complete them to close the gap, improve your role
-          readiness, and update your verified skill level.
+          Explore learning paths for every technical and soft skill in your profile. Paths linked to your current gaps
+          appear first so you can improve your role readiness faster.
         </p>
       </header>
-
-      {justVerified && (
-        <div className="mb-8 border border-pastel-green-ink/30 bg-pastel-green rounded-xl p-4 flex items-center gap-3">
-          <CheckCircle size={20} weight="fill" className="text-pastel-green-ink shrink-0" />
-          <p className="text-sm text-pastel-green-ink">
-            <span className="font-medium">{justVerified}</span> path complete — your skill level was updated from this
-            re-assessment. Check My Skills to see the change.
-          </p>
-        </div>
-      )}
 
       {paths === undefined && <LoadingState label="Loading learning paths…" />}
 
@@ -61,10 +38,9 @@ export default function RecommendedLearningPaths() {
 
       {paths && paths.length > 0 && (
         <section className="mb-12">
-          <h3 className="text-xs uppercase tracking-wide text-muted mb-4">Recommended Learning</h3>
+          <h3 className="text-xs uppercase tracking-wide text-muted mb-4">All Skill Learning Paths</h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {paths.map((path) => {
-              const isComplete = path.completed >= path.modules.length;
               return (
                 <article key={path.skillName} className="bg-white border border-hairline rounded-xl flex flex-col h-full">
                   <div className="p-6 flex-grow">
@@ -109,11 +85,10 @@ export default function RecommendedLearningPaths() {
                   </div>
                   <div className="p-6 border-t border-hairline mt-auto">
                     <button
-                      onClick={() => handleCompleteModule(path.skillName)}
-                      disabled={isComplete || updatingSkill === path.skillName}
+                      onClick={() => navigate(`/learning-paths/study?skill=${encodeURIComponent(path.skillName)}`)}
                       className="block text-center w-full bg-ink text-white rounded-md text-sm py-2.5 hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-60"
                     >
-                      {isComplete ? "Path Complete ✓" : updatingSkill === path.skillName ? "Updating…" : "Complete Next Module"}
+                      Study
                     </button>
                   </div>
                 </article>

@@ -190,21 +190,20 @@ export const aiAdvisorAPI = {
 
     return data;
   },
-  // Persisted conversation history — not rate-limited, just a read.
-  getHistory: async () => {
-    const response = await fetch(`${API_BASE_URL}/ai-advisor/history`, {
-      method: "GET",
+
+  generateRoadmap: async (skill, currentLevel, format) => {
+    const response = await fetch(`${API_BASE_URL}/ai-advisor/roadmap`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
+      body: JSON.stringify({ skill, currentLevel, format }),
     });
-
-    const data = await response.json().catch(() => ({}));
-
+    const data = await response.json();
     if (!response.ok) {
-      const err = new Error(data.error || "Could not load conversation history");
-      err.status = response.status;
-      throw err;
+      const error = new Error(data.error || "Failed to generate roadmap");
+      error.status = response.status;
+      throw error;
     }
-
     return data;
   },
 };

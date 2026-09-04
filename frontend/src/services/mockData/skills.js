@@ -21,6 +21,21 @@ export const SKILL_CATALOG = [
   { name: "Power BI", category: "Technical", requiredScore: 70 },
   { name: "Statistics", category: "Technical", requiredScore: 70 },
   { name: "Excel", category: "Technical", requiredScore: 70 },
+  { name: "TypeScript", category: "Technical", requiredScore: 80 },
+  { name: "Java / C++ / C#", category: "Technical", requiredScore: 80 },
+  { name: "Node.js", category: "Technical", requiredScore: 75 },
+  { name: "Docker / Kubernetes", category: "Technical", requiredScore: 70 },
+  { name: "CI/CD (Jenkins, GitHub Actions)", category: "Technical", requiredScore: 70 },
+  { name: "REST APIs / GraphQL", category: "Technical", requiredScore: 75 },
+  { name: "Deep Learning / NLP", category: "Technical", requiredScore: 70 },
+  { name: "Data Visualization (Tableau)", category: "Technical", requiredScore: 70 },
+  { name: "Linux / Shell Scripting", category: "Technical", requiredScore: 70 },
+  { name: "Cybersecurity Basics", category: "Technical", requiredScore: 70 },
+  { name: "Testing / QA (Selenium, Jest)", category: "Technical", requiredScore: 70 },
+  { name: "Mobile Development (iOS/Android, Flutter, React Native)", category: "Technical", requiredScore: 70 },
+  { name: "DevOps", category: "Technical", requiredScore: 70 },
+  { name: "Big Data (Hadoop, Spark)", category: "Technical", requiredScore: 70 },
+  { name: "Blockchain", category: "Technical", requiredScore: 70 },
 ];
 
 // Trust levels the self-rating assessment alone can produce are capped at

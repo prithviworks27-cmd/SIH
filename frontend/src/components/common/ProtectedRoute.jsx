@@ -15,11 +15,13 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  const normalizedRole = user.role?.trim().toLowerCase();
+
+  if (allowedRoles && !allowedRoles.includes(normalizedRole)) {
     // Send the user to wherever their own role belongs, never back into
     // this same guard (a hardcoded "/dashboard" here would infinite-loop
     // for any non-student role, since /dashboard is student-only).
-    return <Navigate to={getPostLoginRedirect(user.role)} replace />;
+    return <Navigate to={getPostLoginRedirect(normalizedRole)} replace />;
   }
 
   return children;
