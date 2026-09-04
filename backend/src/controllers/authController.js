@@ -78,6 +78,7 @@ export const register = async (req, res) => {
         name: newUser.name,
         role: newUser.role,
       },
+      token,
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -141,6 +142,7 @@ export const login = async (req, res) => {
         name: user.name,
         role: user.role,
       },
+      token,
     });
   } catch (error) {
     console.error("Login error:", error);
