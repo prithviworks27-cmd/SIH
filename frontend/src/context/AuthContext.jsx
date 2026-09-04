@@ -96,12 +96,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Login function
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await authAPI.login(email, password);
+      const response = await authAPI.login(email, password, rememberMe);
 
       localStorage.setItem("user", JSON.stringify(response.user));
 

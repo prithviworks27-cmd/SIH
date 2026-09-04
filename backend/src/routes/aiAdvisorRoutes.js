@@ -1,5 +1,5 @@
 import express from "express";
-import { askCareerAdvisor, generateSkillRoadmap } from "../controllers/aiAdvisorController.js";
+import { askCareerAdvisor, generateSkillRoadmap, getConversationHistory } from "../controllers/aiAdvisorController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { aiAdvisorLimiter } from "../middleware/rateLimiters.js";
 

@@ -35,12 +35,12 @@ export const authAPI = {
   },
 
   // Login user
-  login: async (email, password) => {
+  login: async (email, password, rememberMe = false) => {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, rememberMe }),
     });
 
     const data = await response.json();
