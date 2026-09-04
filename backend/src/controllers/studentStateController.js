@@ -119,7 +119,11 @@ export const setLearningProgress = async (req, res) => {
 // Also doubles as the "account settings" row (Issue 4: Settings page) —
 // phone + privacy/visibility + data-sharing consent live in the same
 // one-row-per-user table as the notification toggles (see settings_schema.sql)
-// rather than a parallel table for a handful of extra columns.
+// rather than a parallel table for a handful of extra columns. degree/branch/
+// graduationYear/preferredLocation (matching_profile_schema.sql) live here
+// too, for the same reason — they're the real student fields the matching
+// engine's education and location dimensions now compare against (see
+// matchingEngine.js evaluateEducation/evaluateLocation).
 const DEFAULT_PREFS = {
   emailNotifications: true,
   smsAlerts: false,
@@ -130,10 +134,14 @@ const DEFAULT_PREFS = {
   portfolioVisibility: "Public",
   opportunityVisibility: "Visible to Recruiters",
   dataSharingConsent: true,
+  degree: "",
+  branch: "",
+  graduationYear: null,
+  preferredLocation: "",
 };
 
 const PREFS_COLUMNS =
-  "email_notifications, sms_alerts, application_updates, phone, course, profile_visibility, portfolio_visibility, opportunity_visibility, data_sharing_consent";
+  "email_notifications, sms_alerts, application_updates, phone, course, profile_visibility, portfolio_visibility, opportunity_visibility, data_sharing_consent, degree, branch, graduation_year, preferred_location";
 
 function prefsRowToDto(data) {
   if (!data) return DEFAULT_PREFS;
@@ -147,6 +155,10 @@ function prefsRowToDto(data) {
     portfolioVisibility: data.portfolio_visibility ?? DEFAULT_PREFS.portfolioVisibility,
     opportunityVisibility: data.opportunity_visibility ?? DEFAULT_PREFS.opportunityVisibility,
     dataSharingConsent: data.data_sharing_consent ?? DEFAULT_PREFS.dataSharingConsent,
+    degree: data.degree ?? "",
+    branch: data.branch ?? "",
+    graduationYear: data.graduation_year ?? null,
+    preferredLocation: data.preferred_location ?? "",
   };
 }
 
@@ -188,6 +200,10 @@ export const saveNotificationPreferences = async (req, res) => {
       portfolioVisibility,
       opportunityVisibility,
       dataSharingConsent,
+      degree,
+      branch,
+      graduationYear,
+      preferredLocation,
     } = req.body;
 
     const { error } = await supabase.from("notification_preferences").upsert(
@@ -202,6 +218,10 @@ export const saveNotificationPreferences = async (req, res) => {
         portfolio_visibility: portfolioVisibility,
         opportunity_visibility: opportunityVisibility,
         data_sharing_consent: dataSharingConsent,
+        degree: degree ?? null,
+        branch: branch ?? null,
+        graduation_year: graduationYear ?? null,
+        preferred_location: preferredLocation ?? null,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_id" }
@@ -223,6 +243,10 @@ export const saveNotificationPreferences = async (req, res) => {
         portfolioVisibility,
         opportunityVisibility,
         dataSharingConsent,
+        degree,
+        branch,
+        graduationYear,
+        preferredLocation,
       },
     });
   } catch (error) {
@@ -326,6 +350,76 @@ export const enrollInCourse = async (req, res) => {
     res.status(200).json({ courseId, enrolled: true });
   } catch (error) {
     console.error("Enroll in course error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// --- Saved opportunities ("Save for Later" — savedOpportunitiesService.js) ---
+
+export const getSavedOpportunityIds = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { data, error } = await supabase.from("saved_opportunities").select("opportunity_id").eq("user_id", userId);
+
+    if (error) {
+      console.error("Fetch saved opportunities error:", error);
+      return res.status(500).json({ error: "Failed to load saved opportunities" });
+    }
+
+    res.status(200).json({ opportunityIds: data.map((row) => row.opportunity_id) });
+  } catch (error) {
+    console.error("Get saved opportunities error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const saveOpportunity = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { opportunityId } = req.body;
+    if (!opportunityId) return res.status(400).json({ error: "opportunityId is required" });
+
+    const { error } = await supabase
+      .from("saved_opportunities")
+      .upsert({ user_id: userId, opportunity_id: opportunityId }, { onConflict: "user_id,opportunity_id" });
+
+    if (error) {
+      console.error("Save opportunity error:", error);
+      return res.status(500).json({ error: "Failed to save opportunity" });
+    }
+
+    res.status(200).json({ opportunityId, saved: true });
+  } catch (error) {
+    console.error("Save opportunity error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const unsaveOpportunity = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { opportunityId } = req.params;
+
+    const { error } = await supabase
+      .from("saved_opportunities")
+      .delete()
+      .eq("user_id", userId)
+      .eq("opportunity_id", opportunityId);
+
+    if (error) {
+      console.error("Unsave opportunity error:", error);
+      return res.status(500).json({ error: "Failed to remove saved opportunity" });
+    }
+
+    res.status(200).json({ opportunityId, saved: false });
+  } catch (error) {
+    console.error("Unsave opportunity error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

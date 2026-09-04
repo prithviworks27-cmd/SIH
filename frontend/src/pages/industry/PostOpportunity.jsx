@@ -4,7 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { createOpportunity } from "../../services/opportunitiesService";
 import { getCompanyProfile } from "../../services/companyProfileService";
-import { SKILL_CATALOG } from "../../services/mockData/skills";
+import { OPPORTUNITY_SKILLS, OPPORTUNITY_CITIES } from "../../constants/opportunityFilters";
 import { WORK_MODES } from "../../utils/locationUtils";
 import { PaperPlaneTilt, Plus, X } from "@phosphor-icons/react";
 
@@ -16,7 +16,7 @@ const TYPES = ["Internship", "Full-time", "Part-time"];
 const initialForm = {
   title: "",
   type: "Internship",
-  city: "",
+  city: OPPORTUNITY_CITIES[0],
   mode: "On-site",
   duration: "",
   stipend: "",
@@ -71,7 +71,6 @@ export default function PostOpportunity() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) return setError("Title is required.");
-    if (form.mode !== "Remote" && !form.city.trim()) return setError("City is required for non-remote opportunities.");
     if (form.skills.length === 0) return setError("Select at least one required skill.");
 
     setSubmitting(true);
@@ -136,14 +135,13 @@ export default function PostOpportunity() {
           </div>
           <div className={form.mode === "Remote" ? "opacity-50" : ""}>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">City</label>
-            <input
-              className={inputClass}
-              type="text"
-              value={form.city}
-              onChange={handleChange("city")}
-              placeholder="e.g. Bangalore, Noida"
-              disabled={form.mode === "Remote"}
-            />
+            <select className={inputClass} value={form.city} onChange={handleChange("city")} disabled={form.mode === "Remote"}>
+              {OPPORTUNITY_CITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Duration</label>
@@ -167,18 +165,18 @@ export default function PostOpportunity() {
         <div>
           <label className="block text-xs uppercase tracking-wide text-muted mb-2">Required Skills</label>
           <div className="flex flex-wrap gap-2">
-            {SKILL_CATALOG.map((s) => {
-              const selected = form.skills.includes(s.name);
+            {OPPORTUNITY_SKILLS.map((skill) => {
+              const selected = form.skills.includes(skill);
               return (
                 <button
-                  key={s.name}
+                  key={skill}
                   type="button"
-                  onClick={() => toggleSkill(s.name)}
+                  onClick={() => toggleSkill(skill)}
                   className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
                     selected ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
                   }`}
                 >
-                  {s.name}
+                  {skill}
                 </button>
               );
             })}

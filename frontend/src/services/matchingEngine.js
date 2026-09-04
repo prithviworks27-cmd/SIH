@@ -26,14 +26,99 @@ function normalizeSkillName(name) {
   return name.trim().toLowerCase();
 }
 
-// A student is "eligible" for an opportunity in this mock model when nothing
-// in the opportunity's eligibility list is flagged as unmet — real
-// eligibility rules (degree, year, location preference) aren't modeled yet,
-// so unless mock data says otherwise every opportunity is treated as eligible.
-function evaluateEducation(opportunity) {
-  const criteria = opportunity.eligibility ?? [
-    { label: "Open to all eligible students", met: true },
-  ];
+// Ordinal ranking so "final year" / "3rd year or above" can be compared
+// against a student's actual graduation year, not just pattern-matched.
+// currentYear is derived from graduationYear (Indian degrees run ~4 years for
+// B.Tech/B.E./BCA, ~2 for M.Tech/M.E./MCA/M.Sc — close enough for eligibility
+// gating; a student mid-degree is what matters here, not the exact term).
+const DEGREE_PROGRAM_LENGTH = {
+  "b.tech": 4,
+  "b.e.": 4,
+  "b.sc": 3,
+  bca: 3,
+  "m.tech": 2,
+  "m.e.": 2,
+  "m.sc": 2,
+  mca: 2,
+};
+
+function programLength(degree) {
+  if (!degree) return 4; // reasonable default (undergrad) when unset
+  return DEGREE_PROGRAM_LENGTH[degree.trim().toLowerCase()] ?? 4;
+}
+
+// Rough "which year of the program is the student in right now" estimate
+// from graduationYear + degree — assumes an academic year starting ~June/July,
+// so a grad year of "now" or earlier reads as final year rather than negative.
+function currentYearOfProgram(student) {
+  const gradYear = student.graduationYear;
+  if (!gradYear) return null;
+  const length = programLength(student.degree);
+  const now = new Date();
+  // Academic year rolls over around June/July — before that, still count as
+  // the prior academic year.
+  const academicYear = now.getMonth() < 6 ? now.getFullYear() - 1 : now.getFullYear();
+  const yearsUntilGraduation = gradYear - academicYear;
+  const year = length - yearsUntilGraduation + 1;
+  return Math.min(Math.max(year, 1), length);
+}
+
+function isFinalYearOrAbove(student) {
+  const year = currentYearOfProgram(student);
+  if (year === null) return null; // unknown — can't say either way
+  const length = programLength(student.degree);
+  return year >= length;
+}
+
+// Evaluates one eligibility criterion against the student's actual stored
+// education data (degree/branch/graduationYear from Settings — see
+// preferencesService.js) instead of trusting the opportunity's own `met`
+// flag, which a recruiter always posts as true. Criteria this can't parse
+// (custom free-text requirements) fall back to the recruiter's stated `met`
+// so they don't silently always fail — same graceful-unknown treatment as
+// an unset student field.
+function evaluateCriterion(criterion, student) {
+  const label = criterion.label.toLowerCase();
+
+  // "3rd year or above", "final year", "recent graduate" — degree-stage checks.
+  if (/final year|recent graduate|graduating/.test(label)) {
+    const result = isFinalYearOrAbove(student);
+    return result === null ? criterion.met : result;
+  }
+  const yearMatch = label.match(/(\d)(?:st|nd|rd|th)\s+year/);
+  if (yearMatch) {
+    const requiredYear = Number(yearMatch[1]);
+    const year = currentYearOfProgram(student);
+    return year === null ? criterion.met : year >= requiredYear;
+  }
+
+  // Degree-type checks, e.g. "B.Tech/B.E." or "Graduate or advanced undergraduate".
+  const degreeMention = Object.keys(DEGREE_PROGRAM_LENGTH).find((d) => label.includes(d));
+  if (degreeMention) {
+    if (!student.degree) return criterion.met;
+    return student.degree.trim().toLowerCase() === degreeMention;
+  }
+
+  // Location-stage checks are scored by the separate Location dimension —
+  // treat as met here so they don't double-penalize.
+  if (/remote-friendly|willing to relocate|based|onsite|on-site|hybrid/.test(label)) {
+    return true;
+  }
+
+  // Anything else (custom recruiter-authored text) — no real student
+  // attribute to check it against, so trust the recruiter's own flag rather
+  // than manufacturing a false negative.
+  return criterion.met;
+}
+
+// Compares the opportunity's stated eligibility criteria against the
+// student's actual stored education data (degree/branch/graduationYear) —
+// genuinely scores met/total instead of always trusting the recruiter's own
+// `met` flags (which are always posted as true, since a recruiter is
+// defining a requirement, not evaluating a candidate).
+function evaluateEducation(student, opportunity) {
+  const rawCriteria = opportunity.eligibility ?? [{ label: "Open to all eligible students", met: true }];
+  const criteria = rawCriteria.map((c) => ({ label: c.label, met: evaluateCriterion(c, student) }));
   const metCount = criteria.filter((c) => c.met).length;
   const score = criteria.length === 0 ? 100 : Math.round((metCount / criteria.length) * 100);
   return { criteria, score };
@@ -77,10 +162,11 @@ function evaluateExperience(student) {
 }
 
 // Full score when the opportunity is Remote or the student has no stated
-// location preference (nothing to conflict with yet — no real preferences
-// service exists); a lower baseline otherwise since we can't confirm a real
-// match without that data. Structured the same way projects/certifications
-// are, so a real preferencesService can slot in later.
+// preference (see Settings > Education & Match Preferences —
+// preferencesService.js) — nothing to conflict with. Otherwise genuinely
+// compares the student's real preferredLocation against the opportunity's
+// location and scores lower on an actual mismatch instead of always
+// defaulting to 100.
 function evaluateLocation(student, opportunity) {
   const isRemote = opportunity.location?.toLowerCase().includes("remote");
   const preferredLocation = student.preferredLocation;
@@ -89,11 +175,14 @@ function evaluateLocation(student, opportunity) {
   return { score: matches ? 100 : 50 };
 }
 
-// Catch-all for signals not modeled as their own dimension yet (portfolio
-// completeness, response rate, profile freshness, etc.) — kept as a neutral
-// baseline so it doesn't silently swing the score until real data backs it.
-function evaluateOther() {
-  return { score: 70 };
+// Profile completeness — the real signal behind what used to be a hardcoded
+// 70. See portfolioService.getProfileCompleteness() for the field-by-field
+// breakdown (skills assessed, projects, certifications, bio, education,
+// resume/portfolio). Passed in pre-computed (0-100) rather than derived here
+// so the engine stays synchronous and doesn't need to know about portfolio
+// shape directly.
+function evaluateOther(student) {
+  return { score: student.profileCompleteness ?? 0 };
 }
 
 function bestNextAction(missingSkills, education) {
@@ -111,7 +200,8 @@ function bestNextAction(missingSkills, education) {
 /**
  * calculateMatch(student, opportunity, weights)
  *
- * student: { skills: SkillProfile[], projects?, certifications?, hasPriorInternship?, preferredLocation? }
+ * student: { skills: SkillProfile[], projects?, certifications?, hasPriorInternship?,
+ *            degree?, branch?, graduationYear?, preferredLocation?, profileCompleteness? }
  * opportunity: { skills: string[], eligibility?: [{label, met}], location? }
  * weights: { skillMatch, education, projects, certifications, experience, location, other } — percentages summing to 100
  *
@@ -120,12 +210,12 @@ function bestNextAction(missingSkills, education) {
  */
 export function calculateMatch(student, opportunity, weights = DEFAULT_WEIGHTS) {
   const skills = evaluateSkills(student.skills ?? [], opportunity.skills ?? []);
-  const education = evaluateEducation(opportunity);
+  const education = evaluateEducation(student, opportunity);
   const projects = evaluateProjects(student);
   const certifications = evaluateCertifications(student);
   const experience = evaluateExperience(student);
   const location = evaluateLocation(student, opportunity);
-  const other = evaluateOther();
+  const other = evaluateOther(student);
 
   const totalWeight =
     weights.skillMatch +

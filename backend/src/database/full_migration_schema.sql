@@ -4,12 +4,17 @@
 -- assessments_schema.sql (users, skill_test_results, skill_profile must
 -- already exist).
 --
--- Read-only seed/demo catalogs (SKILL_CATALOG, CAREER_ROLES, internships.js
--- seed jobs, candidates.js mock pool, learning module content, etc.) are
--- NOT migrated — they stay as frontend mock data exactly as before. Only the
--- MUTABLE state layered on top of them (a student's selections, an
--- industry user's created content, progress/read-state overrides) moves to
--- real tables. This mirrors exactly what each service's STORAGE_KEY held.
+-- Read-only seed/demo catalogs (SKILL_CATALOG, CAREER_ROLES, candidates.js
+-- mock pool, learning module content, etc.) are NOT migrated — they stay as
+-- frontend mock data exactly as before. Only the MUTABLE state layered on
+-- top of them (a student's selections, an industry user's created content,
+-- progress/read-state overrides) moves to real tables. This mirrors exactly
+-- what each service's STORAGE_KEY held.
+--
+-- Opportunities and applications are the exception: their seed/demo data
+-- (internships.js seed jobs, applications.js seed applications) was removed
+-- entirely (see git history) — opportunities and applications tables below
+-- are now the ONLY source for both, no mock fallback layered on top.
 
 -- ============================================================
 -- STUDENT: target role selection (careerRoleService.js)
@@ -188,8 +193,8 @@ CREATE TABLE IF NOT EXISTS company_profiles (
 
 -- ============================================================
 -- INDUSTRY: posted opportunities (internshipsService.js / opportunitiesService.js)
--- Seed opportunities (internships.js) stay in frontend mock data; this is
--- only what an industry user actually posts through the app.
+-- The only source of opportunities shown anywhere in the app — no seed/demo
+-- data layered on top (see internshipsService.js allOpportunities()).
 -- ============================================================
 CREATE TABLE IF NOT EXISTS opportunities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

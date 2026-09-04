@@ -13,6 +13,12 @@ const DEFAULTS = {
   portfolioVisibility: "Public",
   opportunityVisibility: "Visible to Recruiters",
   dataSharingConsent: true,
+  // Real student data the matching engine's education/location dimensions
+  // compare against (see matchingEngine.js) — no longer fake constants.
+  degree: "",
+  branch: "",
+  graduationYear: null,
+  preferredLocation: "",
 };
 
 function loadStoredLocally() {

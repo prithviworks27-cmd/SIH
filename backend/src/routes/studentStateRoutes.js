@@ -10,6 +10,9 @@ import {
   markNotificationsRead,
   getEnrolledCourseIds,
   enrollInCourse,
+  getSavedOpportunityIds,
+  saveOpportunity,
+  unsaveOpportunity,
 } from "../controllers/studentStateController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
@@ -29,5 +32,9 @@ router.post("/notification-read-state", authMiddleware, markNotificationsRead);
 
 router.get("/enrollments", authMiddleware, getEnrolledCourseIds);
 router.post("/enrollments", authMiddleware, enrollInCourse);
+
+router.get("/saved-opportunities", authMiddleware, getSavedOpportunityIds);
+router.post("/saved-opportunities", authMiddleware, saveOpportunity);
+router.delete("/saved-opportunities/:opportunityId", authMiddleware, unsaveOpportunity);
 
 export default router;

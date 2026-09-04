@@ -165,9 +165,9 @@ export const updateOpportunityStatus = async (req, res) => {
 // GET /api/industry/applications — the real counterpart to the Applicant
 // Pipeline's seeded mock entries: every real student application against an
 // opportunity THIS recruiter posted. Two queries (not a join) because
-// applications.opportunity_id is a plain VARCHAR, not an FK, to also allow
-// seed opportunity ids like "job-001" — a Postgres join would require a
-// matching column type, so the scoping is done in application code instead.
+// applications.opportunity_id is a plain VARCHAR, not an FK to opportunities.id —
+// kept loose so it isn't tied to opportunities always being UUIDs, so the
+// scoping is done in application code instead of a DB-level join.
 export const getApplicationsForMyOpportunities = async (req, res) => {
   try {
     const userId = await resolveUserId(req);

@@ -3,11 +3,16 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
+import ExpandableFilterList from "../../components/common/ExpandableFilterList";
 import { getInternshipsWithMatch } from "../../services/matchService";
-import { parseLocation, getDistinctCities, WORK_MODES } from "../../utils/locationUtils";
-import { Briefcase, Check, Circle, MapPin } from "@phosphor-icons/react";
+import { getSavedOpportunityIds, saveOpportunity, unsaveOpportunity } from "../../services/savedOpportunitiesService";
+import { parseLocation, WORK_MODES } from "../../utils/locationUtils";
+import { OPPORTUNITY_SKILLS, OPPORTUNITY_CITIES } from "../../constants/opportunityFilters";
+import { Briefcase, Check, Circle, MapPin, BookmarkSimple } from "@phosphor-icons/react";
 
-const SKILL_FILTERS = ["Python Programming", "React", "SQL / Databases", "Cloud Computing (AWS)"];
+const SKILL_FILTERS = OPPORTUNITY_SKILLS;
+// "Remote" is always shown first, ahead of the curated Indian city list.
+const LOCATION_FILTERS = ["Remote", ...OPPORTUNITY_CITIES];
 const TYPE_FILTERS = ["Full-time", "Internship"];
 
 function toggle(set, value) {
@@ -18,6 +23,9 @@ function toggle(set, value) {
 
 export default function InternshipJobListings() {
   const [jobs, setJobs] = useState(undefined);
+  const [savedIds, setSavedIds] = useState(new Set());
+  const [savingId, setSavingId] = useState(null);
+  const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [skillFilters, setSkillFilters] = useState(new Set());
   const [cityFilters, setCityFilters] = useState(new Set());
   const [modeFilters, setModeFilters] = useState(new Set());
@@ -25,12 +33,25 @@ export default function InternshipJobListings() {
 
   useEffect(() => {
     getInternshipsWithMatch().then(setJobs);
+    getSavedOpportunityIds().then((ids) => setSavedIds(new Set(ids)));
   }, []);
 
-  // Built from the real opportunity list (seed + posted) rather than a
-  // hardcoded list, so every city that actually appears is filterable —
-  // including cities added later by industry-posted opportunities.
-  const cityOptions = useMemo(() => (jobs ? getDistinctCities(jobs) : []), [jobs]);
+  const handleToggleSave = async (e, jobId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSavingId(jobId);
+    try {
+      if (savedIds.has(jobId)) {
+        await unsaveOpportunity(jobId);
+        setSavedIds((prev) => toggle(prev, jobId));
+      } else {
+        await saveOpportunity(jobId);
+        setSavedIds((prev) => toggle(prev, jobId));
+      }
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   const filteredJobs = useMemo(() => {
     if (!jobs) return jobs;
@@ -40,9 +61,10 @@ export default function InternshipJobListings() {
       const matchesCity = cityFilters.size === 0 || cityFilters.has(city) || (cityFilters.has("Remote") && city === "Remote");
       const matchesMode = modeFilters.size === 0 || modeFilters.has(mode);
       const matchesType = typeFilters.size === 0 || typeFilters.has(job.type);
-      return matchesSkill && matchesCity && matchesMode && matchesType;
+      const matchesSaved = !showSavedOnly || savedIds.has(job.id);
+      return matchesSkill && matchesCity && matchesMode && matchesType && matchesSaved;
     });
-  }, [jobs, skillFilters, cityFilters, modeFilters, typeFilters]);
+  }, [jobs, skillFilters, cityFilters, modeFilters, typeFilters, showSavedOnly, savedIds]);
 
   return (
     <DashboardLayout>
@@ -53,8 +75,9 @@ export default function InternshipJobListings() {
             <h2 className="text-sm font-medium text-ink mb-4">Filters</h2>
             <div className="mb-6 border-b border-hairline pb-4">
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Skills</h3>
-              <div className="space-y-2">
-                {SKILL_FILTERS.map((skill) => (
+              <ExpandableFilterList
+                options={SKILL_FILTERS}
+                renderOption={(skill) => (
                   <label key={skill} className="flex items-center gap-2 cursor-pointer">
                     <input
                       className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
@@ -64,8 +87,8 @@ export default function InternshipJobListings() {
                     />
                     <span className="text-sm text-charcoal">{skill}</span>
                   </label>
-                ))}
-              </div>
+                )}
+              />
             </div>
             <div className="mb-6 border-b border-hairline pb-4">
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Work Mode</h3>
@@ -85,17 +108,9 @@ export default function InternshipJobListings() {
             </div>
             <div className="mb-6 border-b border-hairline pb-4">
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Location</h3>
-              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
-                    type="checkbox"
-                    checked={cityFilters.has("Remote")}
-                    onChange={() => setCityFilters((prev) => toggle(prev, "Remote"))}
-                  />
-                  <span className="text-sm text-charcoal">Remote</span>
-                </label>
-                {cityOptions.map((city) => (
+              <ExpandableFilterList
+                options={LOCATION_FILTERS}
+                renderOption={(city) => (
                   <label key={city} className="flex items-center gap-2 cursor-pointer">
                     <input
                       className="rounded border-hairline text-ink focus:ring-ink h-4 w-4"
@@ -105,8 +120,8 @@ export default function InternshipJobListings() {
                     />
                     <span className="text-sm text-charcoal">{city}</span>
                   </label>
-                ))}
-              </div>
+                )}
+              />
             </div>
             <div>
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Type</h3>
@@ -129,14 +144,39 @@ export default function InternshipJobListings() {
 
         {/*Opportunities List (Right)*/}
         <div className="flex-1">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium text-ink">Available Opportunities</h2>
+          <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
+            <div className="flex items-center gap-1 bg-bone rounded-lg p-1">
+              <button
+                onClick={() => setShowSavedOnly(false)}
+                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${!showSavedOnly ? "bg-white text-ink shadow-sm" : "text-muted"}`}
+              >
+                All Opportunities
+              </button>
+              <button
+                onClick={() => setShowSavedOnly(true)}
+                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${showSavedOnly ? "bg-white text-ink shadow-sm" : "text-muted"}`}
+              >
+                Saved ({savedIds.size})
+              </button>
+            </div>
             {filteredJobs && <span className="text-sm text-muted">Showing {filteredJobs.length} results</span>}
           </div>
 
           {jobs === undefined && <LoadingState label="Loading opportunities…" />}
 
-          {filteredJobs && filteredJobs.length === 0 && (
+          {filteredJobs && filteredJobs.length === 0 && showSavedOnly && (
+            <EmptyState icon={BookmarkSimple} title="No saved opportunities yet" description="Bookmark opportunities you're interested in to find them here later." />
+          )}
+
+          {filteredJobs && filteredJobs.length === 0 && !showSavedOnly && jobs.length === 0 && (
+            <EmptyState
+              icon={Briefcase}
+              title="No opportunities posted yet"
+              description="Check back soon — new opportunities from industry partners will appear here as they're posted."
+            />
+          )}
+
+          {filteredJobs && filteredJobs.length === 0 && !showSavedOnly && jobs.length > 0 && (
             <EmptyState icon={Briefcase} title="No opportunities match your filters" description="Try clearing a filter to see more results." />
           )}
 
@@ -211,7 +251,17 @@ export default function InternshipJobListings() {
                       <span className="block font-editorial text-2xl text-ink">{job.match.overallScore}%</span>
                       <span className="text-xs text-muted">Match</span>
                     </div>
-                    <span className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-[#333333] transition-colors">View Details</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => handleToggleSave(e, job.id)}
+                        disabled={savingId === job.id}
+                        title={savedIds.has(job.id) ? "Remove from saved" : "Save for later"}
+                        className="p-2 border border-hairline rounded-md text-charcoal hover:bg-bone transition-colors disabled:opacity-60"
+                      >
+                        <BookmarkSimple size={16} weight={savedIds.has(job.id) ? "fill" : "regular"} />
+                      </button>
+                      <span className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-[#333333] transition-colors">View Details</span>
+                    </div>
                   </div>
                 </Link>
                 );

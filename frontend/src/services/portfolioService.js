@@ -1,6 +1,8 @@
 import { resolveMock } from "./mockClient";
 import { DEFAULT_PORTFOLIO } from "./mockData/portfolio";
 import { getSkillTests } from "./skillTestService";
+import { getSkillProfile } from "./skillsService";
+import { getPreferences } from "./preferencesService";
 import { portfolioAPI } from "./api";
 
 const STORAGE_KEY = "studentPortfolio";
@@ -100,6 +102,35 @@ export async function getAssessmentResults() {
       scorePercent: t.lastResult.scorePercent,
       completedAt: t.lastResult.completedAt,
     }));
+}
+
+// Real replacement for the matching engine's old hardcoded "other" score of
+// 70 (see matchingEngine.js evaluateOther). Percentage of key profile fields
+// that are actually filled in — skills assessed, at least one project, at
+// least one certification, a written bio, education data, and a resume/
+// portfolio (avatar/headline stand in for "has a presentable portfolio",
+// since there's no separate resume upload yet). Also reusable directly as a
+// "profile strength" indicator wherever that's useful to show a student.
+const COMPLETENESS_FIELDS = 6;
+
+export async function getProfileCompleteness() {
+  const [{ profile }, portfolio, prefs] = await Promise.all([getSkillProfile(), getPortfolio(), getPreferences()]);
+
+  const hasAssessedSkills = profile.some((s) => s.currentScore > 0);
+  const hasProject = (portfolio.projects ?? []).length > 0;
+  const hasCertification = (portfolio.certifications ?? []).length > 0;
+  const hasBio = Boolean(portfolio.bio?.trim());
+  const hasEducation = Boolean(prefs.degree && prefs.branch && prefs.graduationYear);
+  const hasPresentablePortfolio = Boolean(portfolio.headline?.trim() && portfolio.avatarUrl?.trim());
+
+  const completedCount = [hasAssessedSkills, hasProject, hasCertification, hasBio, hasEducation, hasPresentablePortfolio].filter(
+    Boolean
+  ).length;
+
+  return {
+    percent: Math.round((completedCount / COMPLETENESS_FIELDS) * 100),
+    fields: { hasAssessedSkills, hasProject, hasCertification, hasBio, hasEducation, hasPresentablePortfolio },
+  };
 }
 
 // Portfolio-wide verification rollup used by the portfolio page's summary

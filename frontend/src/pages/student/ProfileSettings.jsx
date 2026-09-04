@@ -6,7 +6,10 @@ import { useAuth } from "../../hooks/useAuth";
 import { getPreferences, savePreferences } from "../../services/preferencesService";
 import { getPortfolio } from "../../services/portfolioService";
 import { authAPI } from "../../services/api";
+import { OPPORTUNITY_CITIES } from "../../constants/opportunityFilters";
 import { SignOut, PencilSimple, CheckCircle } from "@phosphor-icons/react";
+
+const DEGREES = ["B.Tech", "B.E.", "B.Sc", "BCA", "M.Tech", "M.E.", "M.Sc", "MCA", "Other"];
 
 const inputClass =
   "border border-hairline rounded-md px-3 py-2.5 text-sm focus:border-ink focus:ring-0 focus:outline-none bg-white text-charcoal transition-colors";
@@ -202,8 +205,75 @@ export default function ProfileSettings() {
           </div>
         </div>
         <p className="text-xs text-muted mt-4">
-          College and graduation year come from your Portfolio — edit them there. Name, email, and role are managed by your institution.
+          College comes from your Portfolio — edit it there. Name, email, and role are managed by your institution.
         </p>
+      </SectionCard>
+
+      {/* Education & Match Preferences — real student data the matching
+          engine's Education and Location dimensions compare opportunities
+          against (see matchingEngine.js evaluateEducation/evaluateLocation),
+          instead of always scoring ~100%. */}
+      <SectionCard title="Education & Match Preferences">
+        {prefs === undefined ? (
+          <LoadingState fullScreen={false} label="Loading…" />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs uppercase tracking-wide text-muted">Degree</label>
+              <select className={selectClass} value={prefs.degree || ""} onChange={handleSelectSave("degree")}>
+                <option value="">Not set</option>
+                {DEGREES.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs uppercase tracking-wide text-muted">Branch / Major</label>
+              <input
+                className={inputClass}
+                type="text"
+                placeholder="e.g. Computer Science"
+                value={prefs.branch || ""}
+                onChange={handleFieldSave("branch")}
+                onBlur={handleFieldBlur}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs uppercase tracking-wide text-muted">Graduation Year</label>
+              <input
+                className={inputClass}
+                type="number"
+                placeholder="e.g. 2026"
+                min="2000"
+                max="2100"
+                value={prefs.graduationYear ?? ""}
+                onChange={(e) => setPrefs((p) => ({ ...p, graduationYear: e.target.value ? Number(e.target.value) : null }))}
+                onBlur={handleFieldBlur}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs uppercase tracking-wide text-muted">Preferred Work Location</label>
+              <select className={selectClass} value={prefs.preferredLocation || ""} onChange={handleSelectSave("preferredLocation")}>
+                <option value="">No preference</option>
+                <option value="Remote">Remote</option>
+                {OPPORTUNITY_CITIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+        {saving && <p className="text-xs text-muted mt-4">Saving…</p>}
+        {saved && !saving && (
+          <p className="text-xs text-pastel-green-ink mt-4 flex items-center gap-1">
+            <CheckCircle size={14} weight="fill" />
+            Saved.
+          </p>
+        )}
       </SectionCard>
 
       {/* Account Settings */}

@@ -230,6 +230,10 @@ export const studentStateAPI = {
 
   getEnrolledCourseIds: () => request("/student/enrollments"),
   enrollInCourse: (courseId) => request("/student/enrollments", { method: "POST", body: { courseId } }),
+
+  getSavedOpportunityIds: () => request("/student/saved-opportunities"),
+  saveOpportunity: (opportunityId) => request("/student/saved-opportunities", { method: "POST", body: { opportunityId } }),
+  unsaveOpportunity: (opportunityId) => request(`/student/saved-opportunities/${opportunityId}`, { method: "DELETE" }),
 };
 
 // Portfolio — see backend/src/routes/portfolioRoutes.js
