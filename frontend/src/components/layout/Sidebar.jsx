@@ -70,9 +70,9 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
   };
 
   return (

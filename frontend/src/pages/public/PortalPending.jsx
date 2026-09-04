@@ -13,9 +13,9 @@ export default function PortalPending() {
   const navigate = useNavigate();
   const roleLabel = ROLE_LABELS[user?.role] || "your";
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
   };
 
   return (
