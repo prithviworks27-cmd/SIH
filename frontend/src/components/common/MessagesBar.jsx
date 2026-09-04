@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChatCircleDots } from "@phosphor-icons/react";
+import { List } from "@phosphor-icons/react";
 import { useAuth } from "../../hooks/useAuth";
 import { getConversations } from "../../services/messagesService";
 import { initialsOf, avatarGradientFor } from "../../utils/avatarColor";
@@ -40,6 +40,7 @@ export default function MessagesBar() {
   if (!user) return null;
 
   const recent = conversations?.slice(0, 6);
+  const stackAvatars = recent?.slice(0, 3) ?? [];
   const unreadCount = conversations?.filter((c) => c.unread).length ?? 0;
 
   const goToMessages = () => {
@@ -90,18 +91,30 @@ export default function MessagesBar() {
         </div>
       </div>
 
-      {/* Collapsed bar */}
+      {/* Collapsed bar — a stack of the most recent contacts' avatars and a
+          menu affordance, separated by a hairline divider. Shows who
+          you're actually talking to instead of your own avatar. */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="relative flex items-center gap-2.5 bg-ink text-white pl-2 pr-4 py-2 rounded-full shadow-lift hover:bg-[#333333] active:scale-[0.97] transition-all"
+        aria-label="Messages"
+        title="Messages"
+        className="relative flex items-center gap-3 bg-ink pl-3 pr-3 py-2 rounded-full shadow-lift hover:bg-[#333333] active:scale-[0.97] transition-all"
       >
-        <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-xs font-semibold">
-          {initialsOf(user.name)}
-        </span>
-        <span className="text-sm font-medium flex items-center gap-1.5">
-          <ChatCircleDots size={16} />
-          Messages
-        </span>
+        {stackAvatars.length > 0 && (
+          <span className="flex items-center gap-1.5">
+            {stackAvatars.map((c) => (
+              <span
+                key={c.id}
+                className="w-8 h-8 rounded-full text-white flex items-center justify-center text-[11px] font-semibold flex-shrink-0"
+                style={{ backgroundImage: avatarGradientFor(c.name) }}
+              >
+                {initialsOf(c.name)}
+              </span>
+            ))}
+          </span>
+        )}
+        <span className="w-px h-6 bg-white/20 flex-shrink-0" />
+        <List size={18} className="text-white/70 flex-shrink-0" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 rounded-full bg-pastel-red-ink text-white text-[10px] font-semibold flex items-center justify-center">
             {unreadCount}

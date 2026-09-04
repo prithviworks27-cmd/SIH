@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { UserCircle, EnvelopeSimple, Bell } from "@phosphor-icons/react";
 import Sidebar from "./Sidebar";
 import MessagesBar from "../common/MessagesBar";
+import AmbientBrandGlow from "../ui/ambient-brand-glow";
 import { studentNavItems, studentFooterNavItems } from "../../config/studentNavConfig";
 
 // Portfolio/Messages/Notifications moved out of the student sidebar and up
@@ -65,7 +66,7 @@ export default function DashboardLayout({
   const isStudentPortal = navItems === studentNavItems;
 
   return (
-    <div className="bg-canvas text-charcoal min-h-screen">
+    <AmbientBrandGlow className="text-charcoal min-h-screen">
       {!hideSidebar && <Sidebar navItems={navItems} footerNavItems={footerNavItems} title={title} subtitle={subtitle} />}
       <main className={hideSidebar ? "px-4 md:px-10 py-10" : "md:ml-56 px-4 md:px-10 py-10"}>
         <div className={`max-w-5xl mx-auto ${contentClassName}`}>
@@ -74,6 +75,6 @@ export default function DashboardLayout({
         </div>
       </main>
       {!hideSidebar && <MessagesBar />}
-    </div>
+    </AmbientBrandGlow>
   );
 }

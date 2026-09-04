@@ -78,8 +78,8 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
   return (
     <>
       {/* Mobile top bar */}
-      <header className="md:hidden flex items-center justify-between p-4 border-b border-hairline bg-canvas sticky top-0 z-20">
-        <h1 className="font-sans font-bold text-lg text-ink tracking-tight">{title}</h1>
+      <header className="md:hidden flex items-center justify-between p-4 border-b border-hairline bg-white/70 backdrop-blur-md sticky top-0 z-20">
+        <h1 className="font-sans font-bold text-xl text-ink tracking-tight">{title}</h1>
         <button onClick={() => setMobileOpen(true)} className="icon-btn p-2" aria-label="Open menu" title="Open menu">
           <List size={20} />
         </button>
@@ -95,14 +95,14 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
       />
 
       <aside
-        className={`flex flex-col bg-canvas border-r border-hairline fixed left-0 top-0 h-screen w-56 py-8 px-4 z-30 overflow-y-auto transition-transform duration-300 ease-out ${
+        className={`flex flex-col bg-white md:bg-transparent border-r border-hairline fixed left-0 top-0 h-screen w-56 py-8 px-4 z-30 overflow-y-auto transition-transform duration-300 ease-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
         <div className="flex items-center justify-between gap-2 mb-8 px-2">
           <div>
-            <h2 className="font-sans font-bold text-lg text-ink leading-tight tracking-tight">{title}</h2>
-            <p className="text-xs font-medium text-muted mt-0.5">{subtitle}</p>
+            <h2 className="font-sans font-bold text-xl text-ink leading-tight tracking-tight">{title}</h2>
+            <p className="text-sm font-medium text-muted mt-0.5">{subtitle}</p>
           </div>
           <button onClick={() => setMobileOpen(false)} className="icon-btn md:hidden p-1.5" aria-label="Close menu" title="Close menu">
             <X size={18} />

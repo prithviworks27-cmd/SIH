@@ -13,13 +13,21 @@ import { cn } from "@/lib/utils";
  * wrapper (e.g. Signup, whose content floats directly on the glow with no
  * card) falls through to a transparent background.
  *
- * Shared across Landing/Login/Signup so all three public pages read as one
- * consistent design language rather than three separate treatments.
+ * Shared across Landing/Login/Signup, and the DashboardLayout/ConversationInbox
+ * shells every portal renders inside, so the whole site reads as one
+ * consistent design language rather than separate treatments.
+ *
+ * The bloom layer is `fixed` (not `absolute` inside an `overflow-hidden`
+ * wrapper) so it clips itself to the viewport without making the outer
+ * wrapper `overflow-hidden` — that would break `position: sticky` on any
+ * descendant (e.g. the mobile Sidebar header), since an `overflow: hidden`
+ * ancestor that never actually scrolls becomes sticky's containing block
+ * and the element just scrolls away instead of sticking.
  */
 export default function AmbientBrandGlow({ children, className, contentClassName }) {
   return (
-    <div className={cn("relative overflow-hidden bg-white", className)}>
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+    <div className={cn("relative bg-white", className)}>
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div
           className="absolute -top-24 -left-24 w-[36rem] h-[36rem] rounded-full opacity-25 blur-[110px]"
           style={{ background: "#4fadb0" }}
