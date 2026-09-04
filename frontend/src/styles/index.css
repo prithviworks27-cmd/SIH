@@ -6,6 +6,21 @@ body {
   font-family: "IBM Plex Sans", sans-serif;
 }
 
+/* Apple-inspired restraint: one confident accent for keyboard focus, and a
+   single quiet press-state on every button — instead of per-page shadows
+   or per-button hover treatments. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid #1f6c9f; /* accent */
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  button:active:not(:disabled),
+  [role="button"]:active {
+    transform: scale(0.97);
+  }
+}
+
 /* Reusable icon-only button hover treatment — subtle background + color
    shift, no size/padding change on hover so nothing around it shifts.
    Used for sidebar nav icons, dashboard/opportunity/assessment action

@@ -8,12 +8,17 @@ import { cn } from "@/lib/utils";
  * whatever renders inside `children` keeps its existing text/colors
  * completely unchanged.
  *
+ * Sets its own bg-white so every page using this component gets a
+ * guaranteed light canvas — without it, a page with no other opaque
+ * wrapper (e.g. Signup, whose content floats directly on the glow with no
+ * card) falls through to a transparent background.
+ *
  * Shared across Landing/Login/Signup so all three public pages read as one
  * consistent design language rather than three separate treatments.
  */
 export default function AmbientBrandGlow({ children, className, contentClassName }) {
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={cn("relative overflow-hidden bg-white", className)}>
       <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
         <div
           className="absolute -top-24 -left-24 w-[36rem] h-[36rem] rounded-full opacity-25 blur-[110px]"
