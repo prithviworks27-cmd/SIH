@@ -90,7 +90,7 @@ export default function Landing() {
         {/* How it works — bento grid */}
         <section className="w-full py-20 px-6 md:px-10 border-t border-hairline" id="how-it-works">
           <div ref={stepsHeaderRef} className="reveal text-center mb-16 max-w-5xl mx-auto">
-            <h2 className="font-editorial text-3xl md:text-4xl text-ink tracking-tight">
+            <h2 className="font-sans text-4xl md:text-5xl font-bold text-ink tracking-tight">
               A structured pathway
             </h2>
           </div>
