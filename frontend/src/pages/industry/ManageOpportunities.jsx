@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getMyOpportunities, updateOpportunityStatus } from "../../services/opportunitiesService";
 import { Briefcase, PlusCircle } from "@phosphor-icons/react";
 
@@ -43,7 +41,7 @@ export default function ManageOpportunities() {
   };
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
           <h2 className="font-editorial text-3xl text-ink tracking-tight">Opportunities</h2>
@@ -124,6 +122,6 @@ export default function ManageOpportunities() {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </>
   );
 }

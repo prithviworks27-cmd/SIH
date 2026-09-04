@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import StatCard from "../../components/common/StatCard";
 import ApplicationStatus from "../../components/common/ApplicationStatus";
 import { useAuth } from "../../hooks/useAuth";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getMyOpportunities } from "../../services/opportunitiesService";
 import { getPipeline, PIPELINE_STAGES } from "../../services/pipelineService";
 import { getMySkillPrograms } from "../../services/skillProgramsService";
@@ -33,12 +31,7 @@ export default function IndustryDashboard() {
     .slice(0, 3);
 
   return (
-    <DashboardLayout
-      navItems={industryNavItems}
-      footerNavItems={industryFooterNavItems}
-      title="Industry Portal"
-      subtitle="Talent & Recruitment"
-    >
+    <>
       <header className="mb-10">
         <h1 className="font-editorial text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Partner"}</h1>
         <p className="text-muted leading-relaxed">Here's an overview of your recruitment pipeline.</p>
@@ -123,6 +116,6 @@ export default function IndustryDashboard() {
           </section>
         </div>
       </div>
-    </DashboardLayout>
+    </>
   );
 }

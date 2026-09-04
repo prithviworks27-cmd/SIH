@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { createOpportunity } from "../../services/opportunitiesService";
 import { getCompanyProfile } from "../../services/companyProfileService";
 import { OPPORTUNITY_SKILLS, OPPORTUNITY_CITIES } from "../../constants/opportunityFilters";
@@ -115,7 +113,7 @@ export default function PostOpportunity() {
   };
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <header className="mb-10">
         <h2 className="font-editorial text-3xl text-ink tracking-tight">Post an Opportunity</h2>
         <p className="text-muted mt-2">Define the role and required skills — matched candidates appear the moment it's published.</p>
@@ -290,6 +288,6 @@ export default function PostOpportunity() {
           </button>
         </div>
       </form>
-    </DashboardLayout>
+    </>
   );
 }

@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { useAuth } from "../../hooks/useAuth";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getPipeline, moveStage, rejectCandidate, PIPELINE_STAGES } from "../../services/pipelineService";
 import { startConversation } from "../../services/messagesService";
 import { UsersThree, ArrowRight, XCircle, EnvelopeSimple } from "@phosphor-icons/react";
@@ -74,7 +72,7 @@ export default function ApplicantPipeline() {
   };
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <header className="mb-10 border-b border-hairline pb-6">
         <h2 className="font-editorial text-3xl text-ink tracking-tight">Applicant Pipeline</h2>
         <p className="text-muted mt-2">Move candidates through your recruitment stages.</p>
@@ -192,6 +190,6 @@ export default function ApplicantPipeline() {
           </div>
         </>
       )}
-    </DashboardLayout>
+    </>
   );
 }

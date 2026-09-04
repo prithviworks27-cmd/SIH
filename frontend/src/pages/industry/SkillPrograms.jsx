@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getMySkillPrograms, createSkillProgram } from "../../services/skillProgramsService";
 import { SKILL_CATALOG } from "../../services/mockData/skills";
 import { GraduationCap, Plus, Trash, ArrowRight } from "@phosphor-icons/react";
@@ -61,7 +59,7 @@ export default function SkillPrograms() {
   };
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
           <h2 className="font-editorial text-3xl text-ink tracking-tight">Skill Development Programs</h2>
@@ -188,6 +186,6 @@ export default function SkillPrograms() {
           ))}
         </div>
       )}
-    </DashboardLayout>
+    </>
   );
 }

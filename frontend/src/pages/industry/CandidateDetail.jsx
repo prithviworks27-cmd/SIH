@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams, Link } from "react-router-dom";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import WhyThisMatch from "../../components/common/WhyThisMatch";
 import SkillTrustBadge from "../../components/common/SkillTrustBadge";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getCandidateById } from "../../services/candidatesService";
 import { getMyOpportunities } from "../../services/opportunitiesService";
 import { calculateMatch, DEFAULT_WEIGHTS } from "../../services/matchingEngine";
@@ -58,7 +56,7 @@ export default function CandidateDetail() {
   const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       {candidate === undefined && <LoadingState label="Loading candidate…" />}
 
       {candidate === null && (
@@ -170,6 +168,6 @@ export default function CandidateDetail() {
           )}
         </div>
       )}
-    </DashboardLayout>
+    </>
   );
 }

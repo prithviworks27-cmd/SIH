@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getCompanyProfile, saveCompanyProfile } from "../../services/companyProfileService";
 import { DEFAULT_COMPANY_PROFILE } from "../../services/mockData/companyProfile";
 import { FloppyDisk, Buildings, UploadSimple, X } from "@phosphor-icons/react";
@@ -23,11 +21,7 @@ export default function CompanyProfile() {
   }, []);
 
   if (!form) {
-    return (
-      <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
-        <LoadingState fullScreen={false} label="Loading company profile…" />
-      </DashboardLayout>
-    );
+    return <LoadingState fullScreen={false} label="Loading company profile…" />;
   }
 
   const handleChange = (field) => (e) => {
@@ -75,7 +69,7 @@ export default function CompanyProfile() {
   };
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
           <h2 className="font-editorial text-3xl text-ink tracking-tight">Company Profile</h2>
@@ -158,6 +152,6 @@ export default function CompanyProfile() {
           </div>
         </div>
       </section>
-    </DashboardLayout>
+    </>
   );
 }

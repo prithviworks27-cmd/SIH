@@ -1,12 +1,10 @@
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function IndustrySettings() {
   const { user } = useAuth();
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <header className="mb-10">
         <h2 className="font-editorial text-3xl text-ink tracking-tight">Account Settings</h2>
         <p className="text-muted mt-2">Manage your recruiter account.</p>
@@ -27,6 +25,6 @@ export default function IndustrySettings() {
           <span className="text-sm text-charcoal capitalize">{user?.role}</span>
         </div>
       </div>
-    </DashboardLayout>
+    </>
   );
 }
