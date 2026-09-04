@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
@@ -17,7 +17,7 @@ export default function ApplicantPipeline() {
   const [entries, setEntries] = useState(undefined);
   const [movingId, setMovingId] = useState(null);
   const [contactingId, setContactingId] = useState(null);
-  const [collapsedStages, setCollapsedStages] = useState(() => new Set());
+  const [collapsedStages, setCollapsedStages] = useState(() => new Set(STAGES));
 
   useEffect(() => {
     getPipeline().then(setEntries);
@@ -88,80 +88,100 @@ export default function ApplicantPipeline() {
       )}
 
       {entries && entries.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-start gap-3">
           {STAGES.map((stage) => {
             const stageEntries = entries.filter((e) => e.stage === stage);
             const isRejectedStage = stage === REJECTED_STAGE;
             const isCollapsed = collapsedStages.has(stage);
 
             return (
-              <section key={stage} className="border border-hairline rounded-xl bg-white overflow-hidden">
+              <Fragment key={stage}>
                 <button
                   onClick={() => toggleStage(stage)}
-                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-bone transition-colors"
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 transition-colors ${
+                    isCollapsed ? "border-hairline bg-white hover:bg-bone" : "border-ink bg-ink text-white hover:bg-[#333333]"
+                  }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <h3 className="text-sm font-medium text-ink">{stage}</h3>
-                    <span className="text-xs text-muted bg-bone px-2 py-0.5 rounded-full">{stageEntries.length}</span>
-                  </div>
-                  <CaretDown size={16} className={`text-muted transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />
+                  <span className="text-sm font-medium">{stage}</span>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${
+                      isCollapsed ? "text-muted bg-bone" : "text-white/80 bg-white/15"
+                    }`}
+                  >
+                    {stageEntries.length}
+                  </span>
+                  <CaretDown size={14} className={`transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} />
                 </button>
 
-                {!isCollapsed && (
-                  <div className="px-5 pb-5">
-                    {stageEntries.length === 0 ? (
-                      <div className="text-sm text-muted border border-dashed border-hairline rounded-xl py-8 text-center">
-                        Empty
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {stageEntries.map((entry) => {
-                          const isLastStage = PIPELINE_STAGES.indexOf(entry.stage) === PIPELINE_STAGES.length - 1;
-                          return (
-                            <div key={entry.id} className="border border-hairline rounded-xl p-5 flex flex-col gap-3">
-                              <Link to={`/industry/candidates/${entry.candidateId}`} className="block">
-                                <p className="text-base font-medium text-ink hover:underline">{entry.candidate?.name}</p>
-                                <p className="text-sm text-muted mt-0.5">{entry.opportunity?.title}</p>
-                              </Link>
+                {/* w-0 while collapsed keeps this out of the wrapped pill row
+                    entirely; switching to w-full on expand forces a line
+                    break so the panel lands directly under the pill row it
+                    opened from. Smooth height animation via the
+                    grid-template-rows 0fr/1fr trick — no JS height
+                    measurement, works with dynamic content. */}
+                <div className={isCollapsed ? "w-0 h-0 overflow-hidden" : "w-full"}>
+                  <div
+                    className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                      isCollapsed ? "grid-rows-[0fr]" : "grid-rows-[1fr]"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="pt-1 pb-2">
+                      {stageEntries.length === 0 ? (
+                        <div className="text-sm text-muted border border-dashed border-hairline rounded-xl py-8 text-center">
+                          Empty
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                          {stageEntries.map((entry) => {
+                            const isLastStage = PIPELINE_STAGES.indexOf(entry.stage) === PIPELINE_STAGES.length - 1;
+                            return (
+                              <div key={entry.id} className="border border-hairline rounded-xl p-5 flex flex-col gap-3 bg-white">
+                                <Link to={`/industry/candidates/${entry.candidateId}`} className="block">
+                                  <p className="text-base font-medium text-ink hover:underline">{entry.candidate?.name}</p>
+                                  <p className="text-sm text-muted mt-0.5">{entry.opportunity?.title}</p>
+                                </Link>
 
-                              {!isRejectedStage && (
-                                <div className="flex flex-wrap items-center gap-2 mt-1">
-                                  {!isLastStage && (
+                                {!isRejectedStage && (
+                                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                                    {!isLastStage && (
+                                      <button
+                                        onClick={() => handleAdvance(entry)}
+                                        disabled={movingId === entry.id}
+                                        className="flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
+                                      >
+                                        {movingId === entry.id ? "Moving…" : `Move to ${PIPELINE_STAGES[PIPELINE_STAGES.indexOf(entry.stage) + 1]}`}
+                                        {movingId !== entry.id && <ArrowRight size={12} />}
+                                      </button>
+                                    )}
                                     <button
-                                      onClick={() => handleAdvance(entry)}
-                                      disabled={movingId === entry.id}
+                                      onClick={() => handleContact(entry)}
+                                      disabled={contactingId === entry.id}
                                       className="flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
                                     >
-                                      {movingId === entry.id ? "Moving…" : `Move to ${PIPELINE_STAGES[PIPELINE_STAGES.indexOf(entry.stage) + 1]}`}
-                                      {movingId !== entry.id && <ArrowRight size={12} />}
+                                      <EnvelopeSimple size={12} />
+                                      {contactingId === entry.id ? "Opening…" : "Contact"}
                                     </button>
-                                  )}
-                                  <button
-                                    onClick={() => handleContact(entry)}
-                                    disabled={contactingId === entry.id}
-                                    className="flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
-                                  >
-                                    <EnvelopeSimple size={12} />
-                                    {contactingId === entry.id ? "Opening…" : "Contact"}
-                                  </button>
-                                  <button
-                                    onClick={() => handleReject(entry)}
-                                    disabled={movingId === entry.id}
-                                    className="flex items-center justify-center gap-1.5 border border-hairline text-pastel-red-ink text-xs px-3 py-1.5 rounded-md hover:bg-pastel-red transition-colors disabled:opacity-50"
-                                  >
-                                    <XCircle size={12} />
-                                    Reject
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                                    <button
+                                      onClick={() => handleReject(entry)}
+                                      disabled={movingId === entry.id}
+                                      className="flex items-center justify-center gap-1.5 border border-hairline text-pastel-red-ink text-xs px-3 py-1.5 rounded-md hover:bg-pastel-red transition-colors disabled:opacity-50"
+                                    >
+                                      <XCircle size={12} />
+                                      Reject
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                       </div>
-                    )}
+                    </div>
                   </div>
-                )}
-              </section>
+                </div>
+              </Fragment>
             );
           })}
         </div>
