@@ -1,4 +1,5 @@
 import Sidebar from "./Sidebar";
+import MessagesBar from "../common/MessagesBar";
 import { studentNavItems, studentFooterNavItems } from "../../config/studentNavConfig";
 
 export default function DashboardLayout({
@@ -15,6 +16,7 @@ export default function DashboardLayout({
       <main className="md:ml-64 px-4 md:px-10 py-10">
         <div className={`max-w-5xl mx-auto ${contentClassName}`}>{children}</div>
       </main>
+      <MessagesBar />
     </div>
   );
 }
