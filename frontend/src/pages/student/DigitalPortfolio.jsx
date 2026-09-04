@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import SkillTrustBadge from "../../components/common/SkillTrustBadge";
+import CertificationStatusBadge from "../../components/common/CertificationStatusBadge";
 import SkillEvidencePanel from "../../components/common/SkillEvidencePanel";
 import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
@@ -32,7 +33,13 @@ export default function DigitalPortfolio() {
   }
 
   const displayedSkills = skillProfile.strongSkills.length > 0 ? skillProfile.strongSkills : skillProfile.profile.slice(0, 6);
-  const shareUrl = `https://skillbridge.edu/passport/${(user?.email || "student").split("@")[0]}`;
+  // Real, working share link — /passport/:userId (see PublicPortfolio.jsx),
+  // generated from this deployment's actual origin instead of the old fake
+  // https://skillbridge.edu domain. Respects the student's own Portfolio
+  // Visibility setting server-side (Settings > Privacy) — a Private/
+  // Institution-Only portfolio will decline to load for a visitor even
+  // though the link itself always resolves.
+  const shareUrl = `${window.location.origin}/passport/${user?.id ?? ""}`;
 
   return (
     <DashboardLayout>
@@ -40,6 +47,9 @@ export default function DigitalPortfolio() {
       <div className="flex justify-between items-center mb-6">
         <div />
         <div className="flex gap-3">
+          <Link to="/portfolio/manage" className="border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors">
+            Manage Entries
+          </Link>
           <Link to="/portfolio/edit" className="border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors">
             Edit Portfolio
           </Link>
@@ -96,9 +106,13 @@ export default function DigitalPortfolio() {
               {portfolio.certifications.length === 0 && <p className="text-sm text-muted">No certifications added yet.</p>}
               {portfolio.certifications.map((cert) => (
                 <li key={cert.id} className="border-b border-hairline pb-4 last:border-b-0 last:pb-0">
-                  <p className="text-sm text-ink">{cert.title}</p>
+                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                    <p className="text-sm text-ink">{cert.title}</p>
+                    <CertificationStatusBadge status={cert.verificationStatus} />
+                  </div>
                   <p className="text-xs text-muted mt-0.5">
-                    {cert.issuer} • {new Date(cert.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    {cert.issuer}
+                    {cert.date && ` • ${new Date(cert.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}`}
                   </p>
                 </li>
               ))}
