@@ -8,18 +8,43 @@ import { studentNavItems, studentFooterNavItems } from "../../config/studentNavC
 // here as a small top-right icon row instead — this only renders when
 // navItems is the (default) student set, so Industry/Faculty/Admin pages
 // (which always pass their own navItems) never see it.
+// Same 115deg teal/purple/orange gradient as the SKILLBRIDGE wordmark on
+// Landing/Login/Signup, so this pill reads as branded rather than a plain
+// utility control.
+const WORDMARK_GRADIENT = "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)";
+
 function TopRightLinks() {
   return (
-    <div className="flex justify-end items-center gap-1 mb-6">
-      <Link to="/portfolio" className="icon-btn p-2" aria-label="Portfolio" title="Portfolio">
-        <UserCircle size={20} />
-      </Link>
-      <Link to="/messages" className="icon-btn p-2" aria-label="Messages" title="Messages">
-        <EnvelopeSimple size={20} />
-      </Link>
-      <Link to="/notifications" className="icon-btn p-2" aria-label="Notifications" title="Notifications">
-        <Bell size={20} />
-      </Link>
+    <div className="flex justify-end mb-6">
+      <div className="inline-flex items-center gap-1.5 rounded-full p-1.5 shadow-lift" style={{ backgroundImage: WORDMARK_GRADIENT }}>
+        <Link
+          to="/portfolio"
+          className="icon-btn flex items-center justify-center w-9 h-9 bg-white hover:bg-white"
+          style={{ borderRadius: "9999px" }}
+          aria-label="Portfolio"
+          title="Portfolio"
+        >
+          <UserCircle size={18} weight="bold" color="#111111" />
+        </Link>
+        <Link
+          to="/messages"
+          className="icon-btn flex items-center justify-center w-9 h-9 bg-white hover:bg-white"
+          style={{ borderRadius: "9999px" }}
+          aria-label="Messages"
+          title="Messages"
+        >
+          <EnvelopeSimple size={18} weight="bold" color="#111111" />
+        </Link>
+        <Link
+          to="/notifications"
+          className="icon-btn flex items-center justify-center w-9 h-9 bg-white hover:bg-white"
+          style={{ borderRadius: "9999px" }}
+          aria-label="Notifications"
+          title="Notifications"
+        >
+          <Bell size={18} weight="bold" color="#111111" />
+        </Link>
+      </div>
     </div>
   );
 }
@@ -42,7 +67,7 @@ export default function DashboardLayout({
   return (
     <div className="bg-canvas text-charcoal min-h-screen">
       {!hideSidebar && <Sidebar navItems={navItems} footerNavItems={footerNavItems} title={title} subtitle={subtitle} />}
-      <main className={hideSidebar ? "px-4 md:px-10 py-10" : "md:ml-64 px-4 md:px-10 py-10"}>
+      <main className={hideSidebar ? "px-4 md:px-10 py-10" : "md:ml-56 px-4 md:px-10 py-10"}>
         <div className={`max-w-5xl mx-auto ${contentClassName}`}>
           {!hideSidebar && isStudentPortal && <TopRightLinks />}
           {children}

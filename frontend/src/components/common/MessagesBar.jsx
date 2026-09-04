@@ -3,17 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { ChatCircleDots } from "@phosphor-icons/react";
 import { useAuth } from "../../hooks/useAuth";
 import { getConversations } from "../../services/messagesService";
+import { initialsOf, avatarGradientFor } from "../../utils/avatarColor";
 
 const MESSAGES_ROUTE_BY_ROLE = {
   student: "/messages",
   industry: "/industry/messages",
 };
-
-function initialsOf(name) {
-  if (!name) return "?";
-  const parts = name.trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase() || "?";
-}
 
 export default function MessagesBar() {
   const { user } = useAuth();
@@ -77,7 +72,10 @@ export default function MessagesBar() {
               onClick={goToMessages}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-bone transition-colors text-left border-b border-hairline last:border-b-0"
             >
-              <span className="w-9 h-9 rounded-full bg-pastel-blue text-pastel-blue-ink flex items-center justify-center text-xs font-medium flex-shrink-0">
+              <span
+                className="w-9 h-9 rounded-full text-white flex items-center justify-center text-xs font-semibold flex-shrink-0"
+                style={{ backgroundImage: avatarGradientFor(c.name) }}
+              >
                 {initialsOf(c.name)}
               </span>
               <span className="min-w-0 flex-1">

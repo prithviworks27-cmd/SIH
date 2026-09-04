@@ -95,7 +95,7 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
       />
 
       <aside
-        className={`flex flex-col bg-canvas border-r border-hairline fixed left-0 top-0 h-screen w-64 py-8 px-4 z-30 overflow-y-auto transition-transform duration-300 ease-out ${
+        className={`flex flex-col bg-canvas border-r border-hairline fixed left-0 top-0 h-screen w-56 py-8 px-4 z-30 overflow-y-auto transition-transform duration-300 ease-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
