@@ -165,6 +165,32 @@ export const assessmentAPI = {
     if (!response.ok) throw new Error(data.error || "Failed to update skill profile");
     return data;
   },
+
+  // Dynamic tests: 20-question objective tests per skill sourced from the
+  // assessment_questions bank. skillName is encoded since several skill
+  // names contain "/" (e.g. "SQL / Databases").
+  getDynamicTest: async (skillName) => {
+    const response = await fetch(`${API_BASE_URL}/assessments/dynamic-tests/${encodeURIComponent(skillName)}`, {
+      method: "GET",
+      headers: getHeaders(),
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to fetch assessment questions");
+    return data;
+  },
+
+  submitDynamicTest: async (skillName, answers) => {
+    const response = await fetch(`${API_BASE_URL}/assessments/dynamic-tests/${encodeURIComponent(skillName)}/submit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ answers }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to submit assessment result");
+    return data;
+  },
 };
 
 // AI Career Advisor — real LLM call (Gemini, via the backend so the API
@@ -201,6 +227,24 @@ export const aiAdvisorAPI = {
     const data = await response.json();
     if (!response.ok) {
       const error = new Error(data.error || "Failed to generate roadmap");
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  },
+
+  // Analyzes the student's most recently completed skill-test run (see
+  // assessmentController.submitDynamicTest / aiAdvisorController.analyzeLatestSkillRun)
+  // — strengths, weaknesses, and an improvement roadmap grounded in real scores.
+  analyzeLatestRun: async () => {
+    const response = await fetch(`${API_BASE_URL}/ai-advisor/analyze-latest-run`, {
+      method: "GET",
+      headers: getHeaders(),
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.error || "Failed to analyze your results");
       error.status = response.status;
       throw error;
     }

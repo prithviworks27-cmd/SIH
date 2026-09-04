@@ -1,0 +1,12 @@
+-- Adds a per-level (beginner/intermediate/advanced) score breakdown to each
+-- skill test attempt. Dynamic tests (assessment_questions-backed, see
+-- assessmentController.submitDynamicTest) already compute this per submit —
+-- it was only ever returned in the HTTP response, never persisted, so
+-- nothing outside that one response could see it again. This column makes
+-- every attempt's breakdown durably queryable (e.g. by the AI skill
+-- analysis endpoint, aiAdvisorController.analyzeLatestSkillRun).
+--
+-- Static SKILL_TESTS attempts (submitSkillTestResult) have no level data per
+-- question, so this stays NULL for those rows — same "optional, additive"
+-- shape as everywhere else level data flows through this feature.
+ALTER TABLE skill_test_results ADD COLUMN IF NOT EXISTS level_breakdown JSONB;

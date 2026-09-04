@@ -2,61 +2,35 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
-import { ArrowLeft, ArrowRight, CheckCircle, ClockCounterClockwise } from "@phosphor-icons/react";
-import { getAssessmentQuestions, submitAssessment, getStoredSkillProfileOrDemo } from "../../services/assessmentService";
+import { ClockCounterClockwise } from "@phosphor-icons/react";
+import { getAssessmentQuestions, getStoredSkillProfileOrDemo } from "../../services/assessmentService";
 
-const STORAGE_DRAFT_KEY = "skillAssessmentDraft";
-
-function loadDraft() {
-  try {
-    const raw = localStorage.getItem(STORAGE_DRAFT_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveDraft(answers) {
-  try {
-    localStorage.setItem(STORAGE_DRAFT_KEY, JSON.stringify(answers));
-  } catch {
-    // best-effort only — losing draft progress isn't fatal
-  }
-}
+const QUEUE_STORAGE_KEY = "dynamicTestQueue";
 
 export default function SkillAssessment() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [questions, setQuestions] = useState(undefined);
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState({});
   const [selectedSkills, setSelectedSkills] = useState([]);
-  const [selectionComplete, setSelectionComplete] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   // undefined = still checking, null = never completed, string = last completion date.
-  // If the student already completed this self-rating once, don't force them
-  // through the whole form again on every visit — show a summary with an
-  // explicit "Retake" choice instead (Issue 6).
+  // If the student already completed a skill assessment once, don't force
+  // them through the whole picker again on every visit — show a summary with
+  // an explicit "Retake" choice instead (Issue 6).
   const [previousCompletedAt, setPreviousCompletedAt] = useState(undefined);
   const [forceRetake, setForceRetake] = useState(false);
 
   useEffect(() => {
+    // getAssessmentQuestions() only supplies the skill picker's sections/list
+    // here — the objective test questions themselves come from Supabase
+    // per-skill once a test starts (see DynamicSkillTestStart.jsx).
     getAssessmentQuestions().then(setQuestions);
     getStoredSkillProfileOrDemo().then((profile) => setPreviousCompletedAt(profile?.completedAt ?? null));
   }, []);
 
   useEffect(() => {
-    if (forceRetake) setAnswers(loadDraft());
-  }, [forceRetake]);
-
-  useEffect(() => {
     if (searchParams.get("start") === "beginning") {
-      localStorage.removeItem(STORAGE_DRAFT_KEY);
-      setAnswers({});
       setSelectedSkills([]);
-      setSelectionComplete(false);
-      setCurrent(0);
     }
     if (searchParams.get("retake") === "true") setForceRetake(true);
   }, [searchParams]);
@@ -92,7 +66,7 @@ export default function SkillAssessment() {
                 onClick={() => setForceRetake(true)}
                 className="w-full border border-hairline text-charcoal text-sm px-4 py-2.5 rounded-md hover:bg-bone transition-colors cursor-pointer"
               >
-                Retake Self-Assessment
+                Retake Assessment
               </button>
             </div>
           </div>
@@ -101,14 +75,18 @@ export default function SkillAssessment() {
     );
   }
 
-  const availableSections = questions.reduce((sections, question) => {
-    const section = sections.find((item) => item.section === question.section);
-    if (section) section.questions.push(question);
-    else sections.push({ section: question.section, questions: [question] });
-    return sections;
-  }, []);
-
-  const activeQuestions = questions.filter((question) => selectedSkills.includes(question.skill));
+  // Only "Technical Skills" have a question bank in Supabase's
+  // assessment_questions table — the "Soft Skills" section (Communication,
+  // Teamwork, etc.) has no objective test to send a selection into, so it's
+  // excluded from this picker rather than dead-ending in a 404 dynamic test.
+  const availableSections = questions
+    .filter((question) => question.section === "Technical Skills")
+    .reduce((sections, question) => {
+      const section = sections.find((item) => item.section === question.section);
+      if (section) section.questions.push(question);
+      else sections.push({ section: question.section, questions: [question] });
+      return sections;
+    }, []);
 
   const toggleSkill = (skill) => {
     setSelectedSkills((currentSkills) =>
@@ -116,202 +94,69 @@ export default function SkillAssessment() {
     );
   };
 
-  const beginLevelQuestions = () => {
+  // Runs every selected skill as one combined 20-question-per-skill test
+  // (see DynamicTestRun.jsx) instead of the old in-page self-rating step —
+  // sessionStorage is a durability fallback so a page refresh mid-run
+  // doesn't lose the skill list; location.state is the primary channel.
+  const beginSkillTests = () => {
     if (selectedSkills.length === 0) {
       setError("Please select at least one skill before continuing.");
       return;
     }
-    setSelectionComplete(true);
-    setCurrent(0);
-    setError("");
-  };
-
-  if (!selectionComplete) {
-    return (
-      <DashboardLayout>
-        <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
-          <div className="mb-8">
-            <p className="text-sm text-muted mb-2">Step 1 of 2</p>
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Which skills do you know?</h1>
-            <p className="text-muted">Select the technical and non-technical skills you have started learning or using. You will rate your level next.</p>
-          </div>
-
-          <div className="flex flex-col gap-8">
-            {availableSections.map((section) => (
-              <section key={section.section}>
-                <h2 className="text-base font-medium text-ink mb-3">{section.section}</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {section.questions.map((question) => {
-                    const isSelected = selectedSkills.includes(question.skill);
-                    return (
-                      <label
-                        key={question.skill}
-                        className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-colors ${
-                          isSelected ? "border-ink bg-bone" : "border-hairline hover:border-ink"
-                        }`}
-                      >
-                        <input
-                          className="w-4 h-4 text-ink border-hairline focus:ring-ink"
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleSkill(question.skill)}
-                        />
-                        <span className="text-sm text-ink">{question.skill}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
-          </div>
-
-          {error && <p className="text-sm text-pastel-red-ink mt-6">{error}</p>}
-
-          <div className="flex justify-end mt-8 pt-4 border-t border-hairline">
-            <button
-              type="button"
-              onClick={beginLevelQuestions}
-              className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all"
-            >
-              Continue to skill levels
-            </button>
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
-  const total = activeQuestions.length;
-  const question = activeQuestions[current];
-  const progressPercent = Math.round(((current + 1) / total) * 100);
-  const selectedValue = answers[question.id];
-  const isLastQuestion = current === total - 1;
-
-  const handleSelect = (value) => {
-    const next = { ...answers, [question.id]: value };
-    setAnswers(next);
-    saveDraft(next);
-    setError("");
-  };
-
-  const handleBack = () => {
-    if (current > 0) setCurrent((c) => c - 1);
-  };
-
-  const handleNext = () => {
-    if (!selectedValue) {
-      setError("Please select an option before continuing.");
-      return;
-    }
-    setCurrent((c) => c + 1);
-  };
-
-  const handleSaveExit = () => {
-    saveDraft(answers);
-    navigate("/dashboard");
-  };
-
-  const handleSubmit = async () => {
-    if (!selectedValue) {
-      setError("Please select an option before submitting.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await submitAssessment(answers);
-      localStorage.removeItem(STORAGE_DRAFT_KEY);
-      navigate("/dashboard");
-    } catch {
-      setError("Something went wrong submitting your assessment. Please try again.");
-      setSubmitting(false);
-    }
+    sessionStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(selectedSkills));
+    navigate("/skill-tests/dynamic/run", { state: { selectedSkills } });
   };
 
   return (
     <DashboardLayout>
-      {/* Top Progress Bar */}
-      <div className="w-full bg-white border border-hairline rounded-xl flex flex-col mb-10">
-        <div className="h-1 w-full bg-bone rounded-t-xl overflow-hidden">
-          <div className="h-1 bg-ink transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+      <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
+        <div className="mb-8">
+          <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Which skills do you know?</h1>
+          <p className="text-muted">
+            Select the technical skills you have started learning or using. You'll take a 20-question assessment for each one to verify
+            your level.
+          </p>
         </div>
-        <div className="px-6 py-4 flex justify-between items-center">
-          <span className="text-sm text-muted">
-            Step 2 of 2 · Question {current + 1} of {total} · {question.section}
-          </span>
-          <button type="button" onClick={handleSaveExit} className="text-sm text-ink hover:underline">
-            Save &amp; Exit
+
+        <div className="flex flex-col gap-8">
+          {availableSections.map((section) => (
+            <section key={section.section}>
+              <h2 className="text-base font-medium text-ink mb-3">{section.section}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {section.questions.map((question) => {
+                  const isSelected = selectedSkills.includes(question.skill);
+                  return (
+                    <label
+                      key={question.skill}
+                      className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-colors ${
+                        isSelected ? "border-ink bg-bone" : "border-hairline hover:border-ink"
+                      }`}
+                    >
+                      <input
+                        className="w-4 h-4 text-ink border-hairline focus:ring-ink"
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSkill(question.skill)}
+                      />
+                      <span className="text-sm text-ink">{question.skill}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        {error && <p className="text-sm text-pastel-red-ink mt-6">{error}</p>}
+
+        <div className="flex justify-end mt-8 pt-4 border-t border-hairline">
+          <button
+            type="button"
+            onClick={beginSkillTests}
+            className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all"
+          >
+            Start Skill Tests
           </button>
-        </div>
-      </div>
-
-      {/* Assessment Form Container */}
-      <div className="flex items-center justify-center">
-        <div className="w-full max-w-2xl bg-white border border-hairline rounded-xl p-10">
-          <div className="mb-8">
-            <h2 className="text-xl font-medium text-ink mb-2">{question.skill}</h2>
-            <p className="text-muted">{question.prompt}</p>
-          </div>
-
-          <div className="flex flex-col gap-3 mb-8">
-            {question.options.map((option) => {
-              const isSelected = selectedValue === option.value;
-              return (
-                <label
-                  key={option.value}
-                  className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${
-                    isSelected ? "border-ink bg-bone" : "border-hairline hover:border-ink"
-                  }`}
-                >
-                  <input
-                    className="w-4 h-4 text-ink border-hairline focus:ring-ink"
-                    name={question.id}
-                    type="radio"
-                    value={option.value}
-                    checked={isSelected}
-                    onChange={() => handleSelect(option.value)}
-                  />
-                  <div className="ml-4">
-                    <span className="block text-sm font-medium text-ink">{option.label}</span>
-                    <span className="block text-sm text-muted">{option.desc}</span>
-                  </div>
-                </label>
-              );
-            })}
-          </div>
-
-          {error && <p className="text-sm text-pastel-red-ink mb-4">{error}</p>}
-
-          <div className="flex justify-between items-center pt-4 border-t border-hairline">
-            <button
-              className="px-4 py-2 border border-hairline rounded-md text-charcoal text-sm hover:bg-bone transition-colors flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
-              type="button"
-              onClick={handleBack}
-              disabled={current === 0}
-            >
-              <ArrowLeft size={16} />
-              Back
-            </button>
-            {isLastQuestion ? (
-              <button
-                className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
-                type="button"
-                onClick={handleSubmit}
-                disabled={submitting}
-              >
-                {submitting ? "Submitting…" : "Submit Assessment"}
-                <CheckCircle size={16} />
-              </button>
-            ) : (
-              <button
-                className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2"
-                type="button"
-                onClick={handleNext}
-              >
-                Next
-                <ArrowRight size={16} />
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </DashboardLayout>

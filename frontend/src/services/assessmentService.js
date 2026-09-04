@@ -138,7 +138,23 @@ export async function getStoredSkillProfileOrDemo() {
     (profile.reduce((sum, s) => sum + Math.min(s.currentScore / s.requiredScore, 1), 0) / profile.length) * 100
   );
 
-  const merged = { profile, overallMatchPercent, completedAt: localBase.completedAt };
+  // completedAt drives the dashboard's "assessment complete" banner. The old
+  // self-rating flow (assessmentService.submitAssessment) used to set this
+  // in localStorage directly, but that flow is dead now that skill
+  // assessment means taking real dynamic skill tests (DynamicTestRun.jsx) —
+  // those only ever write to Supabase's skill_profile, never to
+  // localStorage's completedAt. So once ANY backend skill_profile entry
+  // exists (i.e. at least one dynamic test has been passed), treat the
+  // assessment as completed, using the most recent entry's timestamp —
+  // localBase.completedAt stays as a fallback for accounts that still only
+  // have the legacy localStorage-only self-rating data.
+  const mostRecentUpdate = backendEntries.reduce(
+    (latest, e) => (e.last_updated && (!latest || e.last_updated > latest) ? e.last_updated : latest),
+    null
+  );
+  const completedAt = mostRecentUpdate ?? localBase.completedAt;
+
+  const merged = { profile, overallMatchPercent, completedAt };
   return resolveMock(merged);
 }
 
