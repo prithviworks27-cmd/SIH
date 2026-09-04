@@ -1,15 +1,15 @@
 import { resolveMock } from "./mockClient";
-import { internships as seedInternships } from "./mockData/internships";
 import { industryAPI } from "./api";
 
-// Shared opportunity store for BOTH sides of the platform: internships.js
-// seeds the initial catalog, and anything an industry user posts (see
-// opportunitiesService.createOpportunity) is layered on top — now from
-// Supabase's opportunities table (readable by any authenticated user) with
-// localStorage as a same-tab cache/offline fallback. Students browsing
-// /internships and industry managing /industry/opportunities read the exact
-// same underlying list — a posted opportunity really does show up for
-// students, it isn't two disconnected datasets.
+// Shared opportunity store for BOTH sides of the platform: every opportunity
+// comes from industry users posting (see opportunitiesService.createOpportunity),
+// stored in Supabase's opportunities table (readable by any authenticated
+// user) with localStorage as a same-tab cache/offline fallback. Students
+// browsing /internships and industry managing /industry/opportunities read
+// the exact same underlying list — a posted opportunity really does show up
+// for students, it isn't two disconnected datasets. There is no seed/demo
+// data layered in here — an empty result means no real opportunities have
+// been posted yet, and callers render that as an empty state, not a crash.
 const STORAGE_KEY = "postedOpportunities";
 
 function loadPostedLocally() {
@@ -41,9 +41,8 @@ async function loadPosted() {
 }
 
 async function allOpportunities() {
-  const posted = await loadPosted();
-  // Posted opportunities are shown first (newest activity), seed data after.
-  return [...posted, ...seedInternships];
+  // Only real opportunities posted by industry users — no hardcoded/seed data.
+  return await loadPosted();
 }
 
 export async function getInternships() {

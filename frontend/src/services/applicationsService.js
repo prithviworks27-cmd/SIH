@@ -1,5 +1,4 @@
 import { resolveMock } from "./mockClient";
-import { applications as seedApplications } from "./mockData/applications";
 import { applicationsAPI } from "./api";
 
 const STORAGE_KEY = "myApplications";
@@ -24,16 +23,17 @@ function persistAppliedIdsLocally(list) {
 
 // Applications now live in Supabase, with localStorage as a same-tab
 // cache/offline fallback — same resilience pattern as every other migrated
-// service. Real applications are shown first (newest activity), seed demo
-// applications after, same ordering the localStorage version used.
+// service. No seed/demo data is layered in — an empty result means the
+// student genuinely hasn't applied to anything yet, and callers render that
+// as an empty state, not a crash.
 export async function getApplications() {
   try {
     const { applications } = await applicationsAPI.getApplications();
     persistAppliedIdsLocally(applications);
-    return resolveMock([...applications, ...seedApplications]);
+    return resolveMock(applications);
   } catch (err) {
     console.warn("Could not load applications from backend, using local cache only:", err.message);
-    return resolveMock([...loadAppliedIdsLocally(), ...seedApplications]);
+    return resolveMock(loadAppliedIdsLocally());
   }
 }
 

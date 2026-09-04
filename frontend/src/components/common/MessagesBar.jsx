@@ -1,0 +1,115 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChatCircleDots } from "@phosphor-icons/react";
+import { useAuth } from "../../hooks/useAuth";
+import { getConversations } from "../../services/messagesService";
+
+const MESSAGES_ROUTE_BY_ROLE = {
+  student: "/messages",
+  industry: "/industry/messages",
+};
+
+function initialsOf(name) {
+  if (!name) return "?";
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase() || "?";
+}
+
+export default function MessagesBar() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [conversations, setConversations] = useState(undefined);
+  const containerRef = useRef(null);
+
+  const messagesRoute = user ? MESSAGES_ROUTE_BY_ROLE[user.role] : undefined;
+
+  useEffect(() => {
+    if (!user) return;
+    getConversations()
+      .then(setConversations)
+      .catch(() => setConversations([]));
+  }, [user]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  if (!user) return null;
+
+  const recent = conversations?.slice(0, 6);
+  const unreadCount = conversations?.filter((c) => c.unread).length ?? 0;
+
+  const goToMessages = () => {
+    setOpen(false);
+    if (messagesRoute) navigate(messagesRoute);
+  };
+
+  return (
+    <div ref={containerRef} className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+      {/* Popup panel */}
+      <div
+        className={`mb-3 w-80 max-w-[calc(100vw-3rem)] bg-white border border-hairline rounded-xl shadow-lift overflow-hidden origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          open ? "opacity-100 scale-100 translate-y-0 pointer-events-auto" : "opacity-0 scale-95 translate-y-3 pointer-events-none"
+        }`}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-hairline">
+          <h4 className="text-sm font-medium text-ink">Recent Chats</h4>
+          {messagesRoute && (
+            <button onClick={goToMessages} className="text-xs text-muted hover:text-ink transition-colors">
+              View all
+            </button>
+          )}
+        </div>
+        <div className="max-h-80 overflow-y-auto">
+          {recent === undefined && <p className="text-sm text-muted px-4 py-6 text-center">Loading…</p>}
+          {recent?.length === 0 && <p className="text-sm text-muted px-4 py-6 text-center">No messages yet.</p>}
+          {recent?.map((c) => (
+            <button
+              key={c.id}
+              onClick={goToMessages}
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-bone transition-colors text-left border-b border-hairline last:border-b-0"
+            >
+              <span className="w-9 h-9 rounded-full bg-pastel-blue text-pastel-blue-ink flex items-center justify-center text-xs font-medium flex-shrink-0">
+                {initialsOf(c.name)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-ink truncate">{c.name}</span>
+                  {c.unread && <span className="w-2 h-2 rounded-full bg-pastel-red-ink flex-shrink-0" />}
+                </span>
+                {c.subtitle && <span className="block text-xs text-muted truncate">{c.subtitle}</span>}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Collapsed bar */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="relative flex items-center gap-2.5 bg-ink text-white pl-2 pr-4 py-2 rounded-full shadow-lift hover:bg-[#333333] active:scale-[0.97] transition-all"
+      >
+        <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-xs font-semibold">
+          {initialsOf(user.name)}
+        </span>
+        <span className="text-sm font-medium flex items-center gap-1.5">
+          <ChatCircleDots size={16} />
+          Messages
+        </span>
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 rounded-full bg-pastel-red-ink text-white text-[10px] font-semibold flex items-center justify-center">
+            {unreadCount}
+          </span>
+        )}
+      </button>
+    </div>
+  );
+}

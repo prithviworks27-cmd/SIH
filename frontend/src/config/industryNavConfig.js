@@ -4,6 +4,7 @@ export const industryNavItems = [
   { to: "/industry/opportunities", icon: "work", label: "Opportunities" },
   { to: "/industry/applications", icon: "applications", label: "Applications" },
   { to: "/industry/candidates", icon: "candidates", label: "Candidates" },
+  { to: "/industry/messages", icon: "mail", label: "Messages" },
   { to: "/industry/skill-programs", icon: "school", label: "Skill Programs" },
 ];
 

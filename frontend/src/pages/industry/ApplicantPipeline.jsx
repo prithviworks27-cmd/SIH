@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
+import { useAuth } from "../../hooks/useAuth";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getPipeline, moveStage, rejectCandidate, PIPELINE_STAGES, REJECTED_STAGE } from "../../services/pipelineService";
+import { startConversation } from "../../services/messagesService";
 import { UsersThree, ArrowRight, XCircle, EnvelopeSimple } from "@phosphor-icons/react";
 
 const COLUMNS = [...PIPELINE_STAGES, REJECTED_STAGE];
 
 export default function ApplicantPipeline() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [entries, setEntries] = useState(undefined);
   const [movingId, setMovingId] = useState(null);
-  const [contactedId, setContactedId] = useState(null);
+  const [contactingId, setContactingId] = useState(null);
 
   useEffect(() => {
     getPipeline().then(setEntries);
@@ -44,12 +48,21 @@ export default function ApplicantPipeline() {
     }
   };
 
-  // No messaging backend wired to the industry side yet (messagesService is
-  // student-facing only) — this just confirms intent to contact so the
-  // recruiter has a clear signal without a dead button.
-  const handleContact = (entry) => {
-    setContactedId(entry.id);
-    setTimeout(() => setContactedId(null), 2000);
+  // Opens (or creates) a real conversation with this applicant and takes the
+  // recruiter straight to it — no more fake "Contacted ✓" label flip that
+  // sent no actual message.
+  const handleContact = async (entry) => {
+    setContactingId(entry.id);
+    try {
+      await startConversation({
+        studentId: entry.candidateId,
+        industryId: user.id,
+        opportunityId: entry.opportunity?.id,
+      });
+      navigate("/industry/messages");
+    } finally {
+      setContactingId(null);
+    }
   };
 
   return (
@@ -101,10 +114,11 @@ export default function ApplicantPipeline() {
                               <div className="flex gap-1.5">
                                 <button
                                   onClick={() => handleContact(entry)}
-                                  className="flex-1 flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors"
+                                  disabled={contactingId === entry.id}
+                                  className="flex-1 flex items-center justify-center gap-1.5 border border-hairline text-charcoal text-xs px-3 py-1.5 rounded-md hover:bg-bone transition-colors disabled:opacity-50"
                                 >
                                   <EnvelopeSimple size={12} />
-                                  {contactedId === entry.id ? "Contacted ✓" : "Contact"}
+                                  {contactingId === entry.id ? "Opening…" : "Contact"}
                                 </button>
                                 <button
                                   onClick={() => handleReject(entry)}

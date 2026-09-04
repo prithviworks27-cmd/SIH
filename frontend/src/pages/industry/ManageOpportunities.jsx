@@ -17,17 +17,26 @@ const STATUS_TONE = {
 export default function ManageOpportunities() {
   const [opportunities, setOpportunities] = useState(undefined);
   const [updatingId, setUpdatingId] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getMyOpportunities().then(setOpportunities);
   }, []);
 
   const handleClose = async (opp) => {
+    // Confirmation gate — closing stops the posting from appearing to
+    // students immediately, so guard against an accidental click.
+    const confirmed = window.confirm(`Close "${opp.title}"? It will stop appearing to students immediately. Existing applications are unaffected.`);
+    if (!confirmed) return;
+
     setUpdatingId(opp.id);
+    setError("");
     try {
       await updateOpportunityStatus(opp.id, "Closed");
       const refreshed = await getMyOpportunities();
       setOpportunities(refreshed);
+    } catch (err) {
+      setError(err.message || `Could not close "${opp.title}". Please try again.`);
     } finally {
       setUpdatingId(null);
     }
@@ -49,13 +58,17 @@ export default function ManageOpportunities() {
         </Link>
       </header>
 
+      {error && (
+        <p className="text-sm text-pastel-red-ink bg-pastel-red/20 border border-pastel-red rounded-md px-3 py-2 mb-6">{error}</p>
+      )}
+
       {opportunities === undefined && <LoadingState label="Loading opportunities…" />}
 
       {opportunities && opportunities.length === 0 && (
         <EmptyState
           icon={Briefcase}
           title="No opportunities posted yet"
-          description="Post your first opportunity to start matching with candidates."
+          description="Click Post Opportunity to create your first listing."
           actionLabel="Post Opportunity"
           onAction={() => (window.location.href = "/industry/opportunities/create")}
         />

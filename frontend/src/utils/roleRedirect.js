@@ -3,7 +3,7 @@ export function getPostLoginRedirect(role) {
     case "student":
       return "/dashboard";
     case "industry":
-      return "/industry/dashboard";
+      return "/industry/profile";
     case "admin":
       return "/admin/dashboard";
     case "academician":

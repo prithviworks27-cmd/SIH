@@ -49,13 +49,3 @@ export function formatLocation(rawLocation) {
   return `${city} · ${mode}`;
 }
 
-// Distinct city values across a list of opportunities, for building a
-// location filter dynamically from real data instead of a hardcoded list.
-export function getDistinctCities(opportunities) {
-  const cities = new Set();
-  for (const o of opportunities) {
-    const { city } = parseLocation(o.location);
-    if (city && city !== "Remote") cities.add(city);
-  }
-  return Array.from(cities).sort();
-}

@@ -4,7 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { createOpportunity } from "../../services/opportunitiesService";
 import { getCompanyProfile } from "../../services/companyProfileService";
-import { SKILL_CATALOG } from "../../services/mockData/skills";
+import { OPPORTUNITY_SKILLS, OPPORTUNITY_CITIES } from "../../constants/opportunityFilters";
 import { WORK_MODES } from "../../utils/locationUtils";
 import { PaperPlaneTilt, Plus, X } from "@phosphor-icons/react";
 
@@ -16,12 +16,13 @@ const TYPES = ["Internship", "Full-time", "Part-time"];
 const initialForm = {
   title: "",
   type: "Internship",
-  city: "",
+  city: OPPORTUNITY_CITIES[0],
   mode: "On-site",
   duration: "",
   stipend: "",
   commitment: "",
   description: "",
+  responsibilities: "",
   skills: [],
   eligibility: [],
 };
@@ -40,6 +41,7 @@ export default function PostOpportunity() {
   const [customEligibility, setCustomEligibility] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [posted, setPosted] = useState(false);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -71,11 +73,11 @@ export default function PostOpportunity() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) return setError("Title is required.");
-    if (form.mode !== "Remote" && !form.city.trim()) return setError("City is required for non-remote opportunities.");
     if (form.skills.length === 0) return setError("Select at least one required skill.");
 
     setSubmitting(true);
     setError("");
+    setPosted(false);
     try {
       const company = await getCompanyProfile();
       // Stored as a single "location" string for compatibility with existing
@@ -91,12 +93,23 @@ export default function PostOpportunity() {
         stipend: form.stipend || undefined,
         commitment: form.commitment || undefined,
         overview: form.description ? [form.description] : undefined,
+        responsibilities: form.responsibilities
+          ? form.responsibilities.split("\n").map((line) => line.trim()).filter(Boolean)
+          : undefined,
         skills: form.skills,
         eligibility: form.eligibility,
       });
-      navigate("/industry/opportunities");
-    } catch {
-      setError("Something went wrong posting this opportunity. Please try again.");
+      // createOpportunity() throws on any real failure now (no more silent
+      // local-only fallback masquerading as success — see
+      // opportunitiesService.js) — reaching here means the row genuinely
+      // landed in Supabase, so it's safe to confirm and redirect.
+      setPosted(true);
+      setTimeout(() => navigate("/industry/opportunities"), 900);
+    } catch (err) {
+      // Surface the real backend/validation error instead of a generic
+      // message — a recruiter needs to know *why* a post failed (expired
+      // session, a missing required field the backend rejected, etc.).
+      setError(err.message || "Something went wrong posting this opportunity. Please try again.");
       setSubmitting(false);
     }
   };
@@ -136,14 +149,13 @@ export default function PostOpportunity() {
           </div>
           <div className={form.mode === "Remote" ? "opacity-50" : ""}>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">City</label>
-            <input
-              className={inputClass}
-              type="text"
-              value={form.city}
-              onChange={handleChange("city")}
-              placeholder="e.g. Bangalore, Noida"
-              disabled={form.mode === "Remote"}
-            />
+            <select className={inputClass} value={form.city} onChange={handleChange("city")} disabled={form.mode === "Remote"}>
+              {OPPORTUNITY_CITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Duration</label>
@@ -165,20 +177,30 @@ export default function PostOpportunity() {
         </div>
 
         <div>
+          <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Key Responsibilities</label>
+          <textarea
+            className={`${inputClass} min-h-[100px] resize-y`}
+            value={form.responsibilities}
+            onChange={handleChange("responsibilities")}
+            placeholder={"One responsibility per line, e.g.\nBuild and iterate on features using React.\nParticipate in sprint planning and code review."}
+          />
+        </div>
+
+        <div>
           <label className="block text-xs uppercase tracking-wide text-muted mb-2">Required Skills</label>
           <div className="flex flex-wrap gap-2">
-            {SKILL_CATALOG.map((s) => {
-              const selected = form.skills.includes(s.name);
+            {OPPORTUNITY_SKILLS.map((skill) => {
+              const selected = form.skills.includes(skill);
               return (
                 <button
-                  key={s.name}
+                  key={skill}
                   type="button"
-                  onClick={() => toggleSkill(s.name)}
+                  onClick={() => toggleSkill(skill)}
                   className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
                     selected ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
                   }`}
                 >
-                  {s.name}
+                  {skill}
                 </button>
               );
             })}
@@ -241,7 +263,14 @@ export default function PostOpportunity() {
           )}
         </div>
 
-        {error && <p className="text-sm text-pastel-red-ink">{error}</p>}
+        {error && (
+          <p className="text-sm text-pastel-red-ink bg-pastel-red/20 border border-pastel-red rounded-md px-3 py-2">{error}</p>
+        )}
+        {posted && (
+          <p className="text-sm text-pastel-green-ink bg-pastel-green/20 border border-pastel-green rounded-md px-3 py-2">
+            Opportunity published — redirecting to your opportunities…
+          </p>
+        )}
 
         <div className="flex justify-end gap-3 pt-4 border-t border-hairline">
           <button
@@ -253,10 +282,10 @@ export default function PostOpportunity() {
           </button>
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || posted}
             className="px-6 py-2.5 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
           >
-            {submitting ? "Publishing…" : "Publish Opportunity"}
+            {posted ? "Published ✓" : submitting ? "Publishing…" : "Publish Opportunity"}
             <PaperPlaneTilt size={16} />
           </button>
         </div>

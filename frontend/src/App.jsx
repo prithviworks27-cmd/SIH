@@ -15,6 +15,8 @@ import CourseCatalog from "./pages/student/CourseCatalog.jsx";
 import CourseDetail from "./pages/student/CourseDetail.jsx";
 import DigitalPortfolio from "./pages/student/DigitalPortfolio.jsx";
 import DigitalPortfolioEdit from "./pages/student/DigitalPortfolioEdit.jsx";
+import PortfolioManage from "./pages/student/PortfolioManage.jsx";
+import PublicPortfolio from "./pages/public/PublicPortfolio.jsx";
 import SkillAssessment from "./pages/student/SkillAssessment.jsx";
 import SkillTests from "./pages/student/SkillTests.jsx";
 import SkillTestStart from "./pages/student/SkillTestStart.jsx";
@@ -45,12 +47,14 @@ import ManageOpportunities from "./pages/industry/ManageOpportunities.jsx";
 import ApplicantPipeline from "./pages/industry/ApplicantPipeline.jsx";
 import CandidatesList from "./pages/industry/CandidatesList.jsx";
 import CandidateDetail from "./pages/industry/CandidateDetail.jsx";
+import IndustryMessages from "./pages/industry/IndustryMessages.jsx";
 import IndustrySettings from "./pages/industry/IndustrySettings.jsx";
 import SkillPrograms from "./pages/industry/SkillPrograms.jsx";
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import StudentManagement from "./pages/admin/StudentManagement.jsx";
 import SkillAnalytics from "./pages/admin/SkillAnalytics.jsx";
+import CertificateReview from "./pages/admin/CertificateReview.jsx";
 
 import FacultyDashboard from "./pages/academician/FacultyDashboard.jsx";
 import StudentDetail from "./pages/academician/StudentDetail.jsx";
@@ -81,6 +85,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RootRoute />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/passport/:userId" element={<PublicPortfolio />} />
           <Route path="/signup" element={<SignupRoleSelection />} />
           <Route
             path="/portal-pending"
@@ -128,6 +133,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
                 <DigitalPortfolioEdit />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio/manage"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <PortfolioManage />
               </ProtectedRoute>
             }
           />
@@ -369,6 +382,14 @@ function App() {
             }
           />
           <Route
+            path="/industry/messages"
+            element={
+              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
+                <IndustryMessages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/industry/skill-programs"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
@@ -407,6 +428,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                 <SkillAnalytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/certificate-review"
+            element={
+              <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                <CertificateReview />
               </ProtectedRoute>
             }
           />

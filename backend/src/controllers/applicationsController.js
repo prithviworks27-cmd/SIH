@@ -143,6 +143,22 @@ export const applyToOpportunity = async (req, res) => {
       return res.status(500).json({ error: "Failed to submit application" });
     }
 
+    // Auto-create the student<->recruiter conversation thread the moment a
+    // real application lands — gives the two accounts a legitimate reason
+    // to be linked (see messagesController.findOrCreateConversation). Only
+    // possible for a real (UUID) opportunity with a posted_by recruiter;
+    // best-effort — a failure here shouldn't fail the application itself.
+    const { data: opportunity } = await supabase.from("opportunities").select("posted_by").eq("id", opportunityId).maybeSingle();
+    if (opportunity?.posted_by) {
+      const { error: convError } = await supabase
+        .from("conversations")
+        .upsert(
+          { student_id: userId, industry_id: opportunity.posted_by, opportunity_id: opportunityId },
+          { onConflict: "student_id,industry_id", ignoreDuplicates: true }
+        );
+      if (convError) console.error("Auto-create conversation on apply error:", convError);
+    }
+
     res.status(201).json({
       application: {
         id: data.id,
