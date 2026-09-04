@@ -266,6 +266,10 @@ export const industryAPI = {
   saveCompanyProfile: (fields) => request("/industry/company-profile", { method: "POST", body: fields }),
 
   getPostedOpportunities: () => request("/industry/opportunities"),
+  // Scoped to the logged-in recruiter's own postings — used by Manage
+  // Opportunities/the dashboard/Candidates pages, which want "MY listings",
+  // not every recruiter's (that's what getPostedOpportunities is for).
+  getMyOpportunities: () => request("/industry/my-opportunities"),
   createOpportunity: (fields) => request("/industry/opportunities", { method: "POST", body: fields }),
   updateOpportunityStatus: (id, status) => request(`/industry/opportunities/${id}/status`, { method: "PATCH", body: { status } }),
 

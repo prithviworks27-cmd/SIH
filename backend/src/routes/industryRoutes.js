@@ -3,6 +3,7 @@ import {
   getCompanyProfile,
   saveCompanyProfile,
   getPostedOpportunities,
+  getMyOpportunities,
   createOpportunity,
   updateOpportunityStatus,
   getApplicationsForMyOpportunities,
@@ -19,9 +20,12 @@ router.get("/company-profile", authMiddleware, getCompanyProfile);
 router.post("/company-profile", authMiddleware, saveCompanyProfile);
 
 // Opportunities are readable by any authenticated user (students need the
-// posted list alongside the seed catalog) — only creating/updating is
-// restricted to the posting company via posted_by in the controller.
+// full posted list) — only creating/updating is restricted to the posting
+// company via posted_by in the controller.
 router.get("/opportunities", authMiddleware, getPostedOpportunities);
+// Scoped to the logged-in recruiter's own postings — what Manage
+// Opportunities, the dashboard, and the Candidates pages actually want.
+router.get("/my-opportunities", authMiddleware, getMyOpportunities);
 router.post("/opportunities", authMiddleware, createOpportunity);
 router.patch("/opportunities/:id/status", authMiddleware, updateOpportunityStatus);
 

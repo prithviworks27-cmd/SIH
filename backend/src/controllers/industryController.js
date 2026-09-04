@@ -63,6 +63,7 @@ function mapOpportunityRow(o) {
     stipend: o.stipend,
     commitment: o.commitment,
     overview: o.overview,
+    responsibilities: o.responsibilities,
     skills: o.skills,
     eligibility: o.eligibility,
     status: o.status,
@@ -70,8 +71,9 @@ function mapOpportunityRow(o) {
   };
 }
 
-// Public — any authenticated user can see active posted opportunities
-// (students browsing /internships need this alongside the seed catalog).
+// Public — any authenticated user can see every opportunity posted by any
+// recruiter (students browsing /internships need this — internshipsService.js
+// filters to status === "Active" client-side).
 export const getPostedOpportunities = async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -91,14 +93,46 @@ export const getPostedOpportunities = async (req, res) => {
   }
 };
 
+// Scoped to the logged-in recruiter only — the counterpart to
+// getPostedOpportunities' unscoped "every recruiter's opportunities" list.
+// Manage Opportunities, the industry dashboard, and the Candidates pages all
+// need "MY postings", not every company's — using the unscoped endpoint here
+// was the bug where one recruiter's /industry/opportunities showed every
+// other recruiter's postings too.
+export const getMyOpportunities = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { data, error } = await supabase
+      .from("opportunities")
+      .select("*")
+      .eq("posted_by", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Fetch my opportunities error:", error);
+      return res.status(500).json({ error: "Failed to load opportunities" });
+    }
+
+    res.status(200).json({ opportunities: data.map(mapOpportunityRow) });
+  } catch (error) {
+    console.error("Get my opportunities error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const createOpportunity = async (req, res) => {
   try {
     const userId = await resolveUserId(req);
     if (!userId) return res.status(404).json({ error: "User not found" });
 
-    const { title, company, type, location, duration, stipend, commitment, overview, skills, eligibility } = req.body;
+    const { title, company, type, location, duration, stipend, commitment, overview, responsibilities, skills, eligibility } = req.body;
     if (!title || !location) {
       return res.status(400).json({ error: "title and location are required" });
+    }
+    if (!Array.isArray(skills) || skills.length === 0) {
+      return res.status(400).json({ error: "At least one required skill is needed." });
     }
 
     const { data, error } = await supabase
@@ -113,6 +147,7 @@ export const createOpportunity = async (req, res) => {
         stipend,
         commitment,
         overview: overview ?? [],
+        responsibilities: responsibilities ?? [],
         skills: skills ?? [],
         eligibility: eligibility ?? [],
         status: "Active",
@@ -122,7 +157,7 @@ export const createOpportunity = async (req, res) => {
 
     if (error) {
       console.error("Create opportunity error:", error);
-      return res.status(500).json({ error: "Failed to post opportunity" });
+      return res.status(500).json({ error: `Failed to post opportunity: ${error.message}` });
     }
 
     res.status(201).json({ opportunity: mapOpportunityRow(data) });
@@ -151,7 +186,7 @@ export const updateOpportunityStatus = async (req, res) => {
 
     if (error) {
       console.error("Update opportunity status error:", error);
-      return res.status(500).json({ error: "Failed to update opportunity" });
+      return res.status(500).json({ error: `Failed to update opportunity: ${error.message}` });
     }
     if (!data) return res.status(404).json({ error: "Opportunity not found" });
 

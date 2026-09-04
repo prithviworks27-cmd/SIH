@@ -22,6 +22,7 @@ const initialForm = {
   stipend: "",
   commitment: "",
   description: "",
+  responsibilities: "",
   skills: [],
   eligibility: [],
 };
@@ -40,6 +41,7 @@ export default function PostOpportunity() {
   const [customEligibility, setCustomEligibility] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [posted, setPosted] = useState(false);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -75,6 +77,7 @@ export default function PostOpportunity() {
 
     setSubmitting(true);
     setError("");
+    setPosted(false);
     try {
       const company = await getCompanyProfile();
       // Stored as a single "location" string for compatibility with existing
@@ -90,12 +93,23 @@ export default function PostOpportunity() {
         stipend: form.stipend || undefined,
         commitment: form.commitment || undefined,
         overview: form.description ? [form.description] : undefined,
+        responsibilities: form.responsibilities
+          ? form.responsibilities.split("\n").map((line) => line.trim()).filter(Boolean)
+          : undefined,
         skills: form.skills,
         eligibility: form.eligibility,
       });
-      navigate("/industry/opportunities");
-    } catch {
-      setError("Something went wrong posting this opportunity. Please try again.");
+      // createOpportunity() throws on any real failure now (no more silent
+      // local-only fallback masquerading as success — see
+      // opportunitiesService.js) — reaching here means the row genuinely
+      // landed in Supabase, so it's safe to confirm and redirect.
+      setPosted(true);
+      setTimeout(() => navigate("/industry/opportunities"), 900);
+    } catch (err) {
+      // Surface the real backend/validation error instead of a generic
+      // message — a recruiter needs to know *why* a post failed (expired
+      // session, a missing required field the backend rejected, etc.).
+      setError(err.message || "Something went wrong posting this opportunity. Please try again.");
       setSubmitting(false);
     }
   };
@@ -160,6 +174,16 @@ export default function PostOpportunity() {
         <div>
           <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Description</label>
           <textarea className={`${inputClass} min-h-[100px] resize-y`} value={form.description} onChange={handleChange("description")} placeholder="What will this person work on?" />
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Key Responsibilities</label>
+          <textarea
+            className={`${inputClass} min-h-[100px] resize-y`}
+            value={form.responsibilities}
+            onChange={handleChange("responsibilities")}
+            placeholder={"One responsibility per line, e.g.\nBuild and iterate on features using React.\nParticipate in sprint planning and code review."}
+          />
         </div>
 
         <div>
@@ -239,7 +263,14 @@ export default function PostOpportunity() {
           )}
         </div>
 
-        {error && <p className="text-sm text-pastel-red-ink">{error}</p>}
+        {error && (
+          <p className="text-sm text-pastel-red-ink bg-pastel-red/20 border border-pastel-red rounded-md px-3 py-2">{error}</p>
+        )}
+        {posted && (
+          <p className="text-sm text-pastel-green-ink bg-pastel-green/20 border border-pastel-green rounded-md px-3 py-2">
+            Opportunity published — redirecting to your opportunities…
+          </p>
+        )}
 
         <div className="flex justify-end gap-3 pt-4 border-t border-hairline">
           <button
@@ -251,10 +282,10 @@ export default function PostOpportunity() {
           </button>
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || posted}
             className="px-6 py-2.5 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
           >
-            {submitting ? "Publishing…" : "Publish Opportunity"}
+            {posted ? "Published ✓" : submitting ? "Publishing…" : "Publish Opportunity"}
             <PaperPlaneTilt size={16} />
           </button>
         </div>
