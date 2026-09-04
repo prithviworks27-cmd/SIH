@@ -20,6 +20,12 @@ import {
   UsersThree,
   ChartBar,
   Sparkle,
+  BookOpen,
+  Target,
+  GitBranch,
+  Trophy,
+  Robot,
+  ShieldCheck,
 } from "@phosphor-icons/react";
 
 const ICONS = {
@@ -38,6 +44,12 @@ const ICONS = {
   applications: UsersThree,
   analytics: ChartBar,
   sparkle: Sparkle,
+  courses: BookOpen,
+  gap_report: Target,
+  skill_graph: GitBranch,
+  trophy: Trophy,
+  career_twin: Robot,
+  trust: ShieldCheck,
 };
 
 function NavIcon({ name, ...props }) {

@@ -243,6 +243,10 @@ export const portfolioAPI = {
 export const applicationsAPI = {
   getApplications: () => request("/applications"),
   applyToOpportunity: (payload) => request("/applications", { method: "POST", body: payload }),
+  // Recruiter-side: moves a REAL student application's status. Ownership is
+  // enforced server-side (the application must belong to an opportunity this
+  // recruiter posted), so this call fails harmlessly for anyone else's applications.
+  updateApplicationStatus: (id, status) => request(`/applications/${id}/status`, { method: "PATCH", body: { status } }),
 };
 
 // Messages — see backend/src/routes/messagesRoutes.js
@@ -260,6 +264,10 @@ export const industryAPI = {
   getPostedOpportunities: () => request("/industry/opportunities"),
   createOpportunity: (fields) => request("/industry/opportunities", { method: "POST", body: fields }),
   updateOpportunityStatus: (id, status) => request(`/industry/opportunities/${id}/status`, { method: "PATCH", body: { status } }),
+
+  // Real student applications against opportunities this recruiter posted —
+  // the join the Applicant Pipeline was missing.
+  getApplicationsForMyOpportunities: () => request("/industry/applications"),
 
   getPipelineOverrides: () => request("/industry/pipeline-overrides"),
   setPipelineStage: (entryId, stage) => request("/industry/pipeline-overrides", { method: "POST", body: { entryId, stage } }),

@@ -5,6 +5,7 @@ import {
   getPostedOpportunities,
   createOpportunity,
   updateOpportunityStatus,
+  getApplicationsForMyOpportunities,
   getPipelineOverrides,
   setPipelineStage,
   getAllSkillPrograms,
@@ -23,6 +24,10 @@ router.post("/company-profile", authMiddleware, saveCompanyProfile);
 router.get("/opportunities", authMiddleware, getPostedOpportunities);
 router.post("/opportunities", authMiddleware, createOpportunity);
 router.patch("/opportunities/:id/status", authMiddleware, updateOpportunityStatus);
+
+// Real applications against opportunities this recruiter posted — the
+// counterpart to /api/applications (the student's own view of the same rows).
+router.get("/applications", authMiddleware, getApplicationsForMyOpportunities);
 
 router.get("/pipeline-overrides", authMiddleware, getPipelineOverrides);
 router.post("/pipeline-overrides", authMiddleware, setPipelineStage);

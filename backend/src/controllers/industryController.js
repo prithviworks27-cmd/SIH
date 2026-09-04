@@ -162,6 +162,75 @@ export const updateOpportunityStatus = async (req, res) => {
   }
 };
 
+// GET /api/industry/applications — the real counterpart to the Applicant
+// Pipeline's seeded mock entries: every real student application against an
+// opportunity THIS recruiter posted. Two queries (not a join) because
+// applications.opportunity_id is a plain VARCHAR, not an FK, to also allow
+// seed opportunity ids like "job-001" — a Postgres join would require a
+// matching column type, so the scoping is done in application code instead.
+export const getApplicationsForMyOpportunities = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { data: myOpportunities, error: oppError } = await supabase
+      .from("opportunities")
+      .select("id, title, company")
+      .eq("posted_by", userId);
+
+    if (oppError) {
+      console.error("Fetch my opportunities error:", oppError);
+      return res.status(500).json({ error: "Failed to load applications" });
+    }
+
+    const opportunityIds = myOpportunities.map((o) => o.id);
+    if (opportunityIds.length === 0) {
+      return res.status(200).json({ applications: [] });
+    }
+
+    const { data: applications, error: appError } = await supabase
+      .from("applications")
+      .select("id, user_id, opportunity_id, status, applied_at")
+      .in("opportunity_id", opportunityIds)
+      .order("applied_at", { ascending: false });
+
+    if (appError) {
+      console.error("Fetch applications for my opportunities error:", appError);
+      return res.status(500).json({ error: "Failed to load applications" });
+    }
+
+    const applicantIds = [...new Set(applications.map((a) => a.user_id))];
+    const { data: applicants, error: userError } = applicantIds.length
+      ? await supabase.from("users").select("id, name, email").in("id", applicantIds)
+      : { data: [], error: null };
+
+    if (userError) {
+      console.error("Fetch applicant profiles error:", userError);
+      return res.status(500).json({ error: "Failed to load applications" });
+    }
+
+    const opportunityById = new Map(myOpportunities.map((o) => [o.id, o]));
+    const applicantById = new Map(applicants.map((u) => [u.id, u]));
+
+    res.status(200).json({
+      applications: applications.map((a) => ({
+        id: a.id,
+        candidateId: a.user_id,
+        candidateName: applicantById.get(a.user_id)?.name ?? "Unknown Applicant",
+        candidateEmail: applicantById.get(a.user_id)?.email ?? null,
+        opportunityId: a.opportunity_id,
+        opportunityTitle: opportunityById.get(a.opportunity_id)?.title ?? null,
+        opportunityCompany: opportunityById.get(a.opportunity_id)?.company ?? null,
+        stage: a.status,
+        appliedAt: a.applied_at,
+      })),
+    });
+  } catch (error) {
+    console.error("Get applications for my opportunities error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 // --- Pipeline stage overrides (pipelineService.js) ---
 
 export const getPipelineOverrides = async (req, res) => {
