@@ -1,10 +1,21 @@
 import { supabase } from "../config/supabase.js";
 import { resolveUserId } from "../utils/resolveUserId.js";
 
+const PROFICIENCY_LEVELS = new Set(["Not yet started", "Beginner", "Intermediate", "Advanced", "Expert"]);
+const ASSESSABLE_SKILLS = new Set([
+  "JavaScript", "Python Programming", "React", "SQL / Databases", "Data Structures & Algorithms",
+  "Cloud Computing (AWS)", "Machine Learning", "Git & Version Control", "Communication", "Teamwork",
+  "Problem Solving", "Time Management", "Power BI", "Statistics", "Excel", "TypeScript", "Java / C++ / C#",
+  "Node.js", "Docker / Kubernetes", "CI/CD (Jenkins, GitHub Actions)", "REST APIs / GraphQL", "Deep Learning / NLP",
+  "Data Visualization (Tableau)", "Linux / Shell Scripting", "Cybersecurity Basics", "Testing / QA (Selenium, Jest)",
+  "Mobile Development (iOS/Android, Flutter, React Native)", "DevOps", "Big Data (Hadoop, Spark)", "Blockchain",
+]);
+
 function levelForScore(score) {
   if (score >= 90) return "Expert";
   if (score >= 75) return "Advanced";
   if (score >= 50) return "Intermediate";
+  if (score === 0) return "Not yet started";
   return "Beginner";
 }
 
@@ -48,7 +59,7 @@ export const submitSkillTestResult = async (req, res) => {
 
     if (
       !testId ||
-      !skillName ||
+      !ASSESSABLE_SKILLS.has(skillName) ||
       typeof totalQuestions !== "number" ||
       typeof correctAnswers !== "number" ||
       typeof scorePercent !== "number" ||
@@ -139,7 +150,16 @@ export const upsertSkillProfileEntry = async (req, res) => {
     if (!userId) return res.status(404).json({ error: "User not found" });
 
     const { skillName, currentScore, trustLevel, proficiencyLevel } = req.body;
-    if (!skillName || typeof currentScore !== "number" || !trustLevel) {
+    if (
+      !skillName ||
+      !ASSESSABLE_SKILLS.has(skillName) ||
+      typeof currentScore !== "number" ||
+      !Number.isFinite(currentScore) ||
+      currentScore < 0 ||
+      currentScore > 100 ||
+      !trustLevel ||
+      (proficiencyLevel !== undefined && proficiencyLevel !== null && !PROFICIENCY_LEVELS.has(proficiencyLevel))
+    ) {
       return res.status(400).json({ error: "skillName, currentScore, and trustLevel are required" });
     }
 

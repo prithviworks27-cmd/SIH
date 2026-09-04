@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import { ArrowLeft, ArrowRight, CheckCircle, ClockCounterClockwise } from "@phosphor-icons/react";
@@ -26,9 +26,12 @@ function saveDraft(answers) {
 
 export default function SkillAssessment() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [questions, setQuestions] = useState(undefined);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectionComplete, setSelectionComplete] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   // undefined = still checking, null = never completed, string = last completion date.
@@ -46,6 +49,17 @@ export default function SkillAssessment() {
   useEffect(() => {
     if (forceRetake) setAnswers(loadDraft());
   }, [forceRetake]);
+
+  useEffect(() => {
+    if (searchParams.get("start") === "beginning") {
+      localStorage.removeItem(STORAGE_DRAFT_KEY);
+      setAnswers({});
+      setSelectedSkills([]);
+      setSelectionComplete(false);
+      setCurrent(0);
+    }
+    if (searchParams.get("retake") === "true") setForceRetake(true);
+  }, [searchParams]);
 
   if (!questions || previousCompletedAt === undefined) {
     return (
@@ -87,8 +101,88 @@ export default function SkillAssessment() {
     );
   }
 
-  const total = questions.length;
-  const question = questions[current];
+  const availableSections = questions.reduce((sections, question) => {
+    const section = sections.find((item) => item.section === question.section);
+    if (section) section.questions.push(question);
+    else sections.push({ section: question.section, questions: [question] });
+    return sections;
+  }, []);
+
+  const activeQuestions = questions.filter((question) => selectedSkills.includes(question.skill));
+
+  const toggleSkill = (skill) => {
+    setSelectedSkills((currentSkills) =>
+      currentSkills.includes(skill) ? currentSkills.filter((item) => item !== skill) : [...currentSkills, skill]
+    );
+  };
+
+  const beginLevelQuestions = () => {
+    if (selectedSkills.length === 0) {
+      setError("Please select at least one skill before continuing.");
+      return;
+    }
+    setSelectionComplete(true);
+    setCurrent(0);
+    setError("");
+  };
+
+  if (!selectionComplete) {
+    return (
+      <DashboardLayout>
+        <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
+          <div className="mb-8">
+            <p className="text-sm text-muted mb-2">Step 1 of 2</p>
+            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Which skills do you know?</h1>
+            <p className="text-muted">Select the technical and non-technical skills you have started learning or using. You will rate your level next.</p>
+          </div>
+
+          <div className="flex flex-col gap-8">
+            {availableSections.map((section) => (
+              <section key={section.section}>
+                <h2 className="text-base font-medium text-ink mb-3">{section.section}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {section.questions.map((question) => {
+                    const isSelected = selectedSkills.includes(question.skill);
+                    return (
+                      <label
+                        key={question.skill}
+                        className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-colors ${
+                          isSelected ? "border-ink bg-bone" : "border-hairline hover:border-ink"
+                        }`}
+                      >
+                        <input
+                          className="w-4 h-4 text-ink border-hairline focus:ring-ink"
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSkill(question.skill)}
+                        />
+                        <span className="text-sm text-ink">{question.skill}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+          </div>
+
+          {error && <p className="text-sm text-pastel-red-ink mt-6">{error}</p>}
+
+          <div className="flex justify-end mt-8 pt-4 border-t border-hairline">
+            <button
+              type="button"
+              onClick={beginLevelQuestions}
+              className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all"
+            >
+              Continue to skill levels
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const total = activeQuestions.length;
+  const question = activeQuestions[current];
   const progressPercent = Math.round(((current + 1) / total) * 100);
   const selectedValue = answers[question.id];
   const isLastQuestion = current === total - 1;
@@ -126,7 +220,7 @@ export default function SkillAssessment() {
     try {
       await submitAssessment(answers);
       localStorage.removeItem(STORAGE_DRAFT_KEY);
-      navigate("/skill-profile/gap-report");
+      navigate("/dashboard");
     } catch {
       setError("Something went wrong submitting your assessment. Please try again.");
       setSubmitting(false);
@@ -142,7 +236,7 @@ export default function SkillAssessment() {
         </div>
         <div className="px-6 py-4 flex justify-between items-center">
           <span className="text-sm text-muted">
-            Question {current + 1} of {total} · {question.section}
+            Step 2 of 2 · Question {current + 1} of {total} · {question.section}
           </span>
           <button type="button" onClick={handleSaveExit} className="text-sm text-ink hover:underline">
             Save &amp; Exit

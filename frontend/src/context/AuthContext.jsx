@@ -43,12 +43,17 @@ export function AuthProvider({ children }) {
     const restoreLegacySession = () => {
       const storedUser = localStorage.getItem("user");
 
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch {
-          localStorage.removeItem("user");
-        }
+      if (!storedUser) {
+        if (mounted) setLoading(false);
+        return;
+      }
+
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem("user");
+        if (mounted) setLoading(false);
+        return;
       }
 
       authAPI
@@ -91,12 +96,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Login function
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await authAPI.login(email, password);
+      const response = await authAPI.login(email, password, rememberMe);
 
       localStorage.setItem("user", JSON.stringify(response.user));
 

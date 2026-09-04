@@ -1,9 +1,9 @@
 export function getPostLoginRedirect(role) {
-  switch (role) {
+  switch (role?.trim().toLowerCase()) {
     case "student":
       return "/dashboard";
     case "industry":
-      return "/industry/dashboard";
+      return "/industry/profile";
     case "admin":
       return "/admin/dashboard";
     case "academician":

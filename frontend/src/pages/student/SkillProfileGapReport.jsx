@@ -17,7 +17,7 @@ function levelLabel(score) {
   if (score >= 70) return "Advanced";
   if (score >= 50) return "Intermediate";
   if (score >= 25) return "Beginner";
-  return "Untested";
+  return "Not yet started";
 }
 
 function formatDate(iso) {
@@ -41,7 +41,10 @@ export default function SkillProfileGapReport() {
     );
   }
 
-  const { strongSkills, skillGaps, overallMatchPercent, completedAt } = data;
+  const { profile, strongSkills, skillGaps, overallMatchPercent, completedAt } = data;
+  const assessedSkills = profile
+    .filter((skill) => skill.lastUpdated)
+    .sort((a, b) => b.currentScore - a.currentScore);
   const primaryDomain = strongSkills[0]?.category ?? "General";
 
   return (
@@ -86,11 +89,11 @@ export default function SkillProfileGapReport() {
           <section className="bg-white border border-hairline rounded-xl p-8">
             <div className="flex items-center gap-2 mb-4 border-b border-hairline pb-3">
               <SealCheck size={18} className="text-pastel-green-ink" />
-              <h3 className="text-base font-medium text-ink">Validated Strengths</h3>
+              <h3 className="text-base font-medium text-ink">Assessment Data</h3>
             </div>
             <div className="flex flex-col gap-4">
-              {strongSkills.length === 0 && <p className="text-sm text-muted">No strong skills identified yet — take the assessment to build your profile.</p>}
-              {strongSkills.map((item) => (
+              {assessedSkills.length === 0 && <p className="text-sm text-muted">No assessment data yet — take the assessment to build your profile.</p>}
+              {assessedSkills.map((item) => (
                 <div key={item.name}>
                   <div className="flex justify-between mb-1.5">
                     <span className="text-sm text-ink">{item.name}</span>
