@@ -91,13 +91,13 @@ export default function Landing() {
         <section className="w-full py-20 px-6 md:px-10 border-t border-hairline" id="how-it-works">
           <div ref={stepsHeaderRef} className="reveal text-center mb-16 max-w-5xl mx-auto">
             <h2 className="font-sans text-4xl md:text-5xl font-bold text-ink tracking-tight">
-              A structured pathway
+              A Structured Pathway
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {STEPS.map((step) => (
-              <StepCard key={step.number} step={step} />
+            {STEPS.map((step, index) => (
+              <StepCard key={step.number} step={step} index={index} />
             ))}
           </div>
         </section>
@@ -114,7 +114,7 @@ export default function Landing() {
   );
 }
 
-function StepCard({ step }) {
+function StepCard({ step, index = 0 }) {
   const ref = useScrollReveal();
   const Icon = step.icon;
 
@@ -122,6 +122,7 @@ function StepCard({ step }) {
     <div
       ref={ref}
       className="reveal border border-hairline rounded-xl p-8 bg-white hover:shadow-lift transition-shadow flex flex-col gap-4"
+      style={{ transitionDelay: `${index * 120}ms` }}
     >
       <div className="flex items-center justify-between">
         <span className={`w-10 h-10 rounded-md flex items-center justify-center ${step.tint}`}>
