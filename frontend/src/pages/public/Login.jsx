@@ -76,7 +76,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4">
+    <div
+      className="min-h-screen p-2.5 md:p-4"
+      style={{ background: "linear-gradient(135deg, #060B24 0%, #0B1C6B 35%, #1E3FE0 62%, #050814 100%)" }}
+    >
+      <div className="bg-white rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] flex items-center justify-center text-charcoal antialiased px-4 py-12">
       <main className="w-full max-w-sm">
         {/* Wordmark */}
         <div className="text-center mb-10">
@@ -228,6 +232,7 @@ export default function Login() {
           <p className="text-xs text-muted">© 2026 SkillBridge Collaboration Portal.</p>
         </div>
       </main>
+      </div>
     </div>
   );
 }

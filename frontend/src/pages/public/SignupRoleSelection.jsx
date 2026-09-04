@@ -124,11 +124,15 @@ export default function SignupRoleSelection() {
   };
 
   return (
-    <div className="bg-canvas text-charcoal min-h-screen flex flex-col antialiased">
+    <div
+      className="min-h-screen p-2.5 md:p-4"
+      style={{ background: "linear-gradient(135deg, #060B24 0%, #0B1C6B 35%, #1E3FE0 62%, #050814 100%)" }}
+    >
+    <div className="bg-white rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] text-charcoal flex flex-col antialiased overflow-hidden">
       <main className="flex-grow flex items-center justify-center py-16 px-4">
         <div className="max-w-[560px] w-full">
           <div className="text-center mb-10">
-            <h1 className="font-editorial text-3xl text-ink tracking-tight mb-2">Create your account</h1>
+            <h1 className="font-sans font-bold text-3xl text-ink tracking-tight mb-2">Create your account</h1>
             <p className="text-muted">Join SkillBridge to collaborate and innovate.</p>
           </div>
 
@@ -271,6 +275,7 @@ export default function SignupRoleSelection() {
           </a>
         </div>
       </footer>
+    </div>
     </div>
   );
 }
