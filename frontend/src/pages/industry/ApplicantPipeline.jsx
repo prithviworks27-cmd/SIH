@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
@@ -7,7 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getPipeline, moveStage, rejectCandidate, PIPELINE_STAGES } from "../../services/pipelineService";
 import { startConversation } from "../../services/messagesService";
-import { UsersThree, ArrowRight, XCircle, EnvelopeSimple, CaretDown } from "@phosphor-icons/react";
+import { UsersThree, ArrowRight, XCircle, EnvelopeSimple } from "@phosphor-icons/react";
 
 // Rejected candidates are dropped off the board entirely rather than shown
 // as their own pill — the Reject action (below) still works exactly as
@@ -20,18 +20,14 @@ export default function ApplicantPipeline() {
   const [entries, setEntries] = useState(undefined);
   const [movingId, setMovingId] = useState(null);
   const [contactingId, setContactingId] = useState(null);
-  const [collapsedStages, setCollapsedStages] = useState(() => new Set(STAGES));
+  const [openStage, setOpenStage] = useState(null);
 
   useEffect(() => {
     getPipeline().then(setEntries);
   }, []);
 
   const toggleStage = (stage) => {
-    setCollapsedStages((prev) => {
-      const next = new Set(prev);
-      next.has(stage) ? next.delete(stage) : next.add(stage);
-      return next;
-    });
+    setOpenStage((prev) => (prev === stage ? null : stage));
   };
 
   const handleAdvance = async (entry) => {
@@ -91,14 +87,17 @@ export default function ApplicantPipeline() {
       )}
 
       {entries && entries.length > 0 && (
-        <div className="flex flex-wrap items-start gap-3">
-          {STAGES.map((stage) => {
-            const stageEntries = entries.filter((e) => e.stage === stage);
-            const isCollapsed = collapsedStages.has(stage);
+        <>
+          {/* Pill row — fixed in place, never reflows regardless of what's
+              expanded below it. */}
+          <div className="flex flex-wrap gap-3">
+            {STAGES.map((stage) => {
+              const stageEntries = entries.filter((e) => e.stage === stage);
+              const isCollapsed = openStage !== stage;
 
-            return (
-              <Fragment key={stage}>
+              return (
                 <button
+                  key={stage}
                   onClick={() => toggleStage(stage)}
                   className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 transition-colors ${
                     isCollapsed ? "border-hairline bg-white hover:bg-bone" : "border-ink bg-ink text-white hover:bg-[#333333]"
@@ -112,23 +111,31 @@ export default function ApplicantPipeline() {
                   >
                     {stageEntries.length}
                   </span>
-                  <CaretDown size={14} className={`transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} />
                 </button>
+              );
+            })}
+          </div>
 
-                {/* w-0 while collapsed keeps this out of the wrapped pill row
-                    entirely; switching to w-full on expand forces a line
-                    break so the panel lands directly under the pill row it
-                    opened from. Smooth height animation via the
-                    grid-template-rows 0fr/1fr trick — no JS height
-                    measurement, works with dynamic content. */}
-                <div className={isCollapsed ? "w-0 h-0 overflow-hidden" : "w-full"}>
-                  <div
-                    className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
-                      isCollapsed ? "grid-rows-[0fr]" : "grid-rows-[1fr]"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="pt-1 pb-2">
+          {/* Data area — every expanded stage's candidates open here, below
+              the whole pill row, in stage order. A collapsed stage takes up
+              no space at all (grid-rows-[0fr]), so this adds nothing to the
+              page until something is actually open. Smooth height animation
+              via the grid-template-rows 0fr/1fr trick — no JS height
+              measurement, works with dynamic content. */}
+          <div className="flex flex-col">
+            {STAGES.map((stage) => {
+              const stageEntries = entries.filter((e) => e.stage === stage);
+              const isCollapsed = openStage !== stage;
+
+              return (
+                <div
+                  key={stage}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                    isCollapsed ? "grid-rows-[0fr]" : "grid-rows-[1fr]"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="pt-4 pb-2">
                       {stageEntries.length === 0 ? (
                         <div className="text-sm text-muted border border-dashed border-hairline rounded-xl py-8 text-center">
                           Empty
@@ -177,14 +184,13 @@ export default function ApplicantPipeline() {
                           })}
                         </div>
                       )}
-                      </div>
                     </div>
                   </div>
                 </div>
-              </Fragment>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </DashboardLayout>
   );

@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChartLineUp, Handshake, RocketLaunch, ArrowUpRight } from "@phosphor-icons/react";
 import useScrollReveal from "../../hooks/useScrollReveal";
 import logo from "../../assets/logo.png";
 import { AntiMetalButton } from "../../components/ui/anti-metal-button";
+import PathwayPill from "../../components/common/PathwayPill";
 
 const STEPS = [
   {
@@ -31,7 +33,7 @@ const STEPS = [
 export default function Landing() {
   const navigate = useNavigate();
   const heroRef = useScrollReveal();
-  const stepsHeaderRef = useScrollReveal();
+  const [pathwayOpen, setPathwayOpen] = useState(false);
 
   return (
     <div
@@ -89,19 +91,26 @@ export default function Landing() {
 
         {/* How it works — bento grid */}
         <section className="w-full py-20 px-6 md:px-10 border-t border-hairline" id="how-it-works">
-          <div ref={stepsHeaderRef} className="reveal text-center mb-16 space-y-3 max-w-5xl mx-auto">
-            <h2 className="font-editorial text-3xl md:text-4xl text-ink tracking-tight">
-              A structured pathway
-            </h2>
-            <p className="text-muted max-w-xl mx-auto leading-relaxed">
-              Three steps take a student from coursework to a verified industry placement.
-            </p>
+          <div className="flex justify-center mb-10">
+            <PathwayPill
+              steps={STEPS}
+              expanded={pathwayOpen}
+              onClick={() => setPathwayOpen((open) => !open)}
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {STEPS.map((step) => (
-              <StepCard key={step.number} step={step} />
-            ))}
+          <div
+            className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${
+              pathwayOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto pb-2">
+                {STEPS.map((step, index) => (
+                  <StepCard key={step.number} step={step} index={index} visible={pathwayOpen} />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -117,14 +126,15 @@ export default function Landing() {
   );
 }
 
-function StepCard({ step }) {
-  const ref = useScrollReveal();
+function StepCard({ step, index = 0, visible = true }) {
   const Icon = step.icon;
 
   return (
     <div
-      ref={ref}
-      className="reveal border border-hairline rounded-xl p-8 bg-white hover:shadow-lift transition-shadow flex flex-col gap-4"
+      className={`border border-hairline rounded-xl p-8 bg-white hover:shadow-lift flex flex-col gap-4 transition-[opacity,transform,box-shadow] duration-500 ease-out ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+      }`}
+      style={{ transitionDelay: visible ? `${index * 120}ms` : "0ms" }}
     >
       <div className="flex items-center justify-between">
         <span className={`w-10 h-10 rounded-md flex items-center justify-center ${step.tint}`}>
@@ -132,8 +142,8 @@ function StepCard({ step }) {
         </span>
         <span className="font-mono text-xs text-muted">{step.number}</span>
       </div>
-      <h3 className="text-lg font-medium text-ink">{step.title}</h3>
-      <p className="text-sm text-muted leading-relaxed">{step.body}</p>
+      <h3 className="text-xl font-bold text-ink">{step.title}</h3>
+      <p className="text-base font-medium text-charcoal/80 leading-relaxed">{step.body}</p>
     </div>
   );
 }

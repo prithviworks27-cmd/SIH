@@ -57,9 +57,11 @@ function NavIcon({ name, ...props }) {
   return <Icon {...props} />;
 }
 
-function navLinkClass({ isActive }) {
-  return `group flex items-center gap-3 px-3 py-2 rounded-md text-sm cursor-pointer transition-colors duration-150 ${
+function navLinkClass({ isActive }, mobileOpen, delayMs) {
+  return `group flex items-center gap-3 px-3 py-2 rounded-md text-sm cursor-pointer ${
     isActive ? "text-ink font-medium bg-bone" : "text-muted hover:bg-bone hover:text-ink"
+  } transition-[color,background-color,opacity,transform] duration-300 ease-out md:!opacity-100 md:!translate-x-0 ${
+    mobileOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
   }`;
 }
 
@@ -83,10 +85,19 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
         </button>
       </header>
 
+      {/* Backdrop — fades in behind the drawer on mobile, click to close */}
+      <div
+        onClick={() => setMobileOpen(false)}
+        aria-hidden="true"
+        className={`md:hidden fixed inset-0 bg-ink/30 z-20 transition-opacity duration-300 ease-out ${
+          mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
       <aside
-        className={`${
-          mobileOpen ? "flex" : "hidden"
-        } md:flex flex-col bg-canvas border-r border-hairline fixed left-0 top-0 h-screen w-64 py-8 px-4 z-30 overflow-y-auto`}
+        className={`flex flex-col bg-canvas border-r border-hairline fixed left-0 top-0 h-screen w-64 py-8 px-4 z-30 overflow-y-auto transition-transform duration-300 ease-out ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         <div className="flex items-center justify-between gap-2 mb-8 px-2">
           <div>
@@ -99,8 +110,14 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
         </div>
 
         <nav className="flex-1 space-y-0.5">
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
+          {navItems.map((item, i) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={(state) => navLinkClass(state, mobileOpen, i)}
+              style={{ transitionDelay: mobileOpen ? `${i * 40}ms` : "0ms" }}
+              onClick={() => setMobileOpen(false)}
+            >
               <NavIcon name={item.icon} size={18} weight="regular" className="transition-transform duration-150 group-hover:scale-110" />
               <span>{item.label}</span>
             </NavLink>
@@ -108,15 +125,24 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
         </nav>
 
         <div className="mt-auto border-t border-hairline pt-4 space-y-0.5">
-          {footerNavItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkClass} onClick={() => setMobileOpen(false)}>
+          {footerNavItems.map((item, i) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={(state) => navLinkClass(state, mobileOpen, navItems.length + i)}
+              style={{ transitionDelay: mobileOpen ? `${(navItems.length + i) * 40}ms` : "0ms" }}
+              onClick={() => setMobileOpen(false)}
+            >
               <NavIcon name={item.icon} size={18} weight="regular" className="transition-transform duration-150 group-hover:scale-110" />
               <span>{item.label}</span>
             </NavLink>
           ))}
           <button
             onClick={handleLogout}
-            className="group w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink cursor-pointer transition-colors duration-150"
+            style={{ transitionDelay: mobileOpen ? `${(navItems.length + footerNavItems.length) * 40}ms` : "0ms" }}
+            className={`group w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink cursor-pointer transition-[color,background-color,opacity,transform] duration-300 ease-out md:!opacity-100 md:!translate-x-0 ${
+              mobileOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
+            }`}
             title="Log out"
           >
             <SignOut size={18} className="transition-transform duration-150 group-hover:scale-110" />
