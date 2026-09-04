@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
+import CertificationStatusBadge from "../../components/common/CertificationStatusBadge";
 import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
 import { getPortfolio } from "../../services/portfolioService";
@@ -26,6 +27,21 @@ export default function EmployerTrustLayer() {
 
   const verifiedSkillCount = skillData.strongSkills.filter((s) => s.trustLevel !== "Self-Declared").length;
   const projectVerifiedCount = skillData.strongSkills.filter((s) => s.trustLevel === "Project-Verified").length;
+  const verifiedCertCount = portfolio.certifications.filter((c) => c.verificationStatus === "verified").length;
+  const pendingCertCount = portfolio.certifications.filter((c) => c.verificationStatus === "pending").length;
+
+  // Certification detail reflects the REAL per-certification review state
+  // (portfolio_certifications.verification_status) instead of the old
+  // blanket "Self-reported, uploaded to portfolio" — which was inaccurate
+  // since nothing was ever actually uploaded before file upload existed.
+  // "met" only counts an admin-approved certification as a real check —
+  // an unreviewed self-report doesn't clear this bar.
+  let certDetail = "No certifications added yet";
+  if (portfolio.certifications.length > 0) {
+    if (verifiedCertCount > 0) certDetail = `${verifiedCertCount} admin-verified via uploaded certificate file`;
+    else if (pendingCertCount > 0) certDetail = `${pendingCertCount} awaiting admin review`;
+    else certDetail = "Self-reported — no file uploaded for review yet";
+  }
 
   const checks = [
     { label: "Identity Verified", met: !!user?.email, detail: user?.email },
@@ -35,7 +51,11 @@ export default function EmployerTrustLayer() {
       met: projectVerifiedCount > 0,
       detail: "Via Proof-of-Skill Challenge",
     },
-    { label: `${portfolio.certifications.length} Certification${portfolio.certifications.length === 1 ? "" : "s"}`, met: portfolio.certifications.length > 0, detail: "Self-reported, uploaded to portfolio" },
+    {
+      label: `${verifiedCertCount} of ${portfolio.certifications.length} Certification${portfolio.certifications.length === 1 ? "" : "s"} Verified`,
+      met: verifiedCertCount > 0,
+      detail: certDetail,
+    },
     { label: `${portfolio.projects.length} Verified Project${portfolio.projects.length === 1 ? "" : "s"}`, met: portfolio.projects.length > 0, detail: "Listed in Digital Portfolio" },
     { label: "Communication & Soft Skills", met: false, detail: "Self-reported — not independently verified" },
   ];

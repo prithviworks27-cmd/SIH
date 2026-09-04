@@ -1,16 +1,34 @@
 import { getSkillProfile } from "./skillsService";
 import { getInternshipById, getInternships } from "./internshipsService";
-import { getStudentEvidence } from "./portfolioService";
+import { getStudentEvidence, getProfileCompleteness } from "./portfolioService";
+import { getPreferences } from "./preferencesService";
 import { calculateMatch, DEFAULT_WEIGHTS } from "./matchingEngine";
 
 // Assembles the full student picture the engine scores against: verified
-// skills (assessments/skill tests) plus portfolio evidence (projects,
-// certifications, internships). Before portfolio evidence was wired in, the
-// engine used fixed baselines for those dimensions — now adding a project or
-// internship genuinely changes match percentages.
+// skills (assessments/skill tests), portfolio evidence (projects,
+// certifications, internships), real education/location data from Settings
+// (degree/branch/graduationYear/preferredLocation), and overall profile
+// completeness. Every dimension the engine scores now reads real student
+// data — a fresh profile with nothing filled in just degrades to the
+// engine's documented graceful defaults (unknown education criteria trust
+// the recruiter's flag, no location preference scores locations as a full
+// match, 0% completeness) rather than crashing.
 async function getStudentForMatching() {
-  const [{ profile }, evidence] = await Promise.all([getSkillProfile(), getStudentEvidence()]);
-  return { skills: profile, ...evidence };
+  const [{ profile }, evidence, prefs, completeness] = await Promise.all([
+    getSkillProfile(),
+    getStudentEvidence(),
+    getPreferences(),
+    getProfileCompleteness(),
+  ]);
+  return {
+    skills: profile,
+    ...evidence,
+    degree: prefs.degree || null,
+    branch: prefs.branch || null,
+    graduationYear: prefs.graduationYear || null,
+    preferredLocation: prefs.preferredLocation || null,
+    profileCompleteness: completeness.percent,
+  };
 }
 
 // Bridges the student's real skill profile + an opportunity into the shared

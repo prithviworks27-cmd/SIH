@@ -5,8 +5,20 @@ import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import { getMatchForOpportunity } from "../../services/matchService";
 import { applyToOpportunity, getApplications, hasAppliedTo } from "../../services/applicationsService";
+import { getSavedOpportunityIds, saveOpportunity, unsaveOpportunity, isOpportunitySaved } from "../../services/savedOpportunitiesService";
 import { parseLocation } from "../../utils/locationUtils";
-import { ArrowLeft, Buildings, CheckCircle, MapPin, CalendarBlank, Money, Clock, MagnifyingGlass, Globe } from "@phosphor-icons/react";
+import {
+  ArrowLeft,
+  Buildings,
+  CheckCircle,
+  MapPin,
+  CalendarBlank,
+  Money,
+  Clock,
+  MagnifyingGlass,
+  Globe,
+  BookmarkSimple,
+} from "@phosphor-icons/react";
 
 export default function InternshipJobDetail() {
   const { jobId } = useParams();
@@ -15,14 +27,19 @@ export default function InternshipJobDetail() {
   const [applied, setApplied] = useState(false);
   const [applying, setApplying] = useState(false);
   const [applyError, setApplyError] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let active = true;
     setData(undefined);
-    Promise.all([getMatchForOpportunity(jobId), getApplications()]).then(([result, applications]) => {
+    Promise.all([getMatchForOpportunity(jobId), getApplications(), getSavedOpportunityIds()]).then(([result, applications, savedIds]) => {
       if (!active) return;
       setData(result);
-      if (result) setApplied(hasAppliedTo(result.opportunity.id, applications));
+      if (result) {
+        setApplied(hasAppliedTo(result.opportunity.id, applications));
+        setSaved(isOpportunitySaved(result.opportunity.id, savedIds));
+      }
     });
     return () => {
       active = false;
@@ -40,6 +57,22 @@ export default function InternshipJobDetail() {
       setApplyError(err.message);
     } finally {
       setApplying(false);
+    }
+  };
+
+  const handleToggleSave = async () => {
+    if (!data) return;
+    setSaving(true);
+    try {
+      if (saved) {
+        await unsaveOpportunity(data.opportunity.id);
+        setSaved(false);
+      } else {
+        await saveOpportunity(data.opportunity.id);
+        setSaved(true);
+      }
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -89,13 +122,24 @@ export default function InternshipJobDetail() {
                 Why this match?
               </Link>
               {applyError && <p className="text-xs text-pastel-red-ink">{applyError}</p>}
-              <button
-                onClick={handleApply}
-                disabled={applied || applying}
-                className="bg-ink text-white px-6 py-2.5 rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all w-full md:w-auto disabled:opacity-60"
-              >
-                {applied ? "Applied ✓" : applying ? "Applying…" : "Apply Now"}
-              </button>
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <button
+                  onClick={handleToggleSave}
+                  disabled={saving}
+                  title={saved ? "Remove from saved" : "Save for later"}
+                  className="inline-flex items-center gap-1.5 border border-hairline text-charcoal px-4 py-2.5 rounded-md text-sm hover:bg-bone transition-colors disabled:opacity-60"
+                >
+                  <BookmarkSimple size={16} weight={saved ? "fill" : "regular"} />
+                  {saved ? "Saved ✓" : "Save"}
+                </button>
+                <button
+                  onClick={handleApply}
+                  disabled={applied || applying}
+                  className="flex-1 bg-ink text-white px-6 py-2.5 rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-60"
+                >
+                  {applied ? "Applied ✓" : applying ? "Applying…" : "Apply Now"}
+                </button>
+              </div>
             </div>
           </header>
 

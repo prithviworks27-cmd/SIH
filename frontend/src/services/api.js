@@ -190,6 +190,23 @@ export const aiAdvisorAPI = {
 
     return data;
   },
+  // Persisted conversation history — not rate-limited, just a read.
+  getHistory: async () => {
+    const response = await fetch(`${API_BASE_URL}/ai-advisor/history`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      const err = new Error(data.error || "Could not load conversation history");
+      err.status = response.status;
+      throw err;
+    }
+
+    return data;
+  },
 };
 
 // Generic authenticated JSON request helper for the full-migration endpoints
@@ -230,14 +247,72 @@ export const studentStateAPI = {
 
   getEnrolledCourseIds: () => request("/student/enrollments"),
   enrollInCourse: (courseId) => request("/student/enrollments", { method: "POST", body: { courseId } }),
+
+  getSavedOpportunityIds: () => request("/student/saved-opportunities"),
+  saveOpportunity: (opportunityId) => request("/student/saved-opportunities", { method: "POST", body: { opportunityId } }),
+  unsaveOpportunity: (opportunityId) => request(`/student/saved-opportunities/${opportunityId}`, { method: "DELETE" }),
 };
 
 // Portfolio — see backend/src/routes/portfolioRoutes.js
 export const portfolioAPI = {
   getPortfolio: () => request("/portfolio"),
   saveBasics: (basics) => request("/portfolio/basics", { method: "POST", body: basics }),
-  seed: (portfolio) => request("/portfolio/seed", { method: "POST", body: portfolio }),
+  // Creates an empty portfolio_basics row for a first-time user — no fake
+  // demo content, replaces the old /seed endpoint.
+  init: (basics) => request("/portfolio/init", { method: "POST", body: basics ?? {} }),
+
+  createProject: (fields) => request("/portfolio/projects", { method: "POST", body: fields }),
+  updateProject: (id, fields) => request(`/portfolio/projects/${id}`, { method: "PATCH", body: fields }),
+  deleteProject: (id) => request(`/portfolio/projects/${id}`, { method: "DELETE" }),
+
+  createCertification: (fields) => request("/portfolio/certifications", { method: "POST", body: fields }),
+  updateCertification: (id, fields) => request(`/portfolio/certifications/${id}`, { method: "PATCH", body: fields }),
+  deleteCertification: (id) => request(`/portfolio/certifications/${id}`, { method: "DELETE" }),
+  // multipart/form-data — can't go through the generic JSON request() helper.
+  uploadCertificateFile: async (id, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await fetch(`${API_BASE_URL}/portfolio/certifications/${id}/file`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const err = new Error(data.error || "Failed to upload certificate file");
+      err.status = response.status;
+      throw err;
+    }
+    return data;
+  },
+
+  createInternship: (fields) => request("/portfolio/internships", { method: "POST", body: fields }),
+  updateInternship: (id, fields) => request(`/portfolio/internships/${id}`, { method: "PATCH", body: fields }),
+  deleteInternship: (id) => request(`/portfolio/internships/${id}`, { method: "DELETE" }),
+
+  createAchievement: (fields) => request("/portfolio/achievements", { method: "POST", body: fields }),
+  updateAchievement: (id, fields) => request(`/portfolio/achievements/${id}`, { method: "PATCH", body: fields }),
+  deleteAchievement: (id) => request(`/portfolio/achievements/${id}`, { method: "DELETE" }),
+
+  // Admin/institution review queue.
+  getPendingCertifications: () => request("/portfolio/certifications/pending-review"),
+  reviewCertification: (id, status) => request(`/portfolio/certifications/${id}/review`, { method: "PATCH", body: { status } }),
 };
+
+// Public portfolio — unauthenticated, backs /passport/:userId. Not using the
+// generic request() helper's credentials:"include" is fine either way since
+// this route ignores auth, but a separate unauthenticated fetch keeps intent
+// clear and avoids sending cookies unnecessarily to a public page.
+export async function getPublicPortfolio(userId) {
+  const response = await fetch(`${API_BASE_URL}/portfolio/public/${userId}`);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const err = new Error(data.error || "Portfolio not found");
+    err.status = response.status;
+    throw err;
+  }
+  return data;
+}
 
 // Applications — see backend/src/routes/applicationsRoutes.js
 export const applicationsAPI = {
@@ -251,8 +326,16 @@ export const applicationsAPI = {
 
 // Messages — see backend/src/routes/messagesRoutes.js
 export const messagesAPI = {
-  getConversationState: () => request("/messages"),
-  sendMessage: (conversationId, text) => request("/messages/send", { method: "POST", body: { conversationId, text } }),
+  getConversations: () => request("/messages"),
+  // Opens/returns the conversation between studentId and industryId without
+  // sending a message — used by the industry Contact button and the
+  // apply-triggered auto-create (server-side; not called from here).
+  startConversation: (studentId, industryId, opportunityId) =>
+    request("/messages/start", { method: "POST", body: { studentId, industryId, opportunityId } }),
+  // Either conversationId (existing thread) or studentId+industryId (create
+  // on first message) must be provided.
+  sendMessage: ({ conversationId, studentId, industryId, opportunityId, text }) =>
+    request("/messages/send", { method: "POST", body: { conversationId, studentId, industryId, opportunityId, text } }),
   markConversationRead: (conversationId) => request("/messages/read", { method: "POST", body: { conversationId } }),
 };
 
@@ -262,6 +345,10 @@ export const industryAPI = {
   saveCompanyProfile: (fields) => request("/industry/company-profile", { method: "POST", body: fields }),
 
   getPostedOpportunities: () => request("/industry/opportunities"),
+  // Scoped to the logged-in recruiter's own postings — used by Manage
+  // Opportunities/the dashboard/Candidates pages, which want "MY listings",
+  // not every recruiter's (that's what getPostedOpportunities is for).
+  getMyOpportunities: () => request("/industry/my-opportunities"),
   createOpportunity: (fields) => request("/industry/opportunities", { method: "POST", body: fields }),
   updateOpportunityStatus: (id, status) => request(`/industry/opportunities/${id}/status`, { method: "PATCH", body: { status } }),
 

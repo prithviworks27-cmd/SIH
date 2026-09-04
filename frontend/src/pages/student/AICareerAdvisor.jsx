@@ -50,6 +50,7 @@ export default function AICareerAdvisor() {
   const [readiness, setReadiness] = useState(undefined);
   const [skillProfile, setSkillProfile] = useState(undefined);
   const [messages, setMessages] = useState([]);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -58,13 +59,21 @@ export default function AICareerAdvisor() {
   useEffect(() => {
     getTargetRoleReadiness().then(setReadiness);
     getSkillProfile().then(setSkillProfile);
+    // Render the persisted conversation on reopen instead of always starting
+    // empty — a fetch failure just leaves the chat empty (same as before
+    // this existed), not an error state, since a fresh chat is still usable.
+    aiAdvisorAPI
+      .getHistory()
+      .then(({ messages: history }) => setMessages(history.map((m) => ({ role: m.role, content: m.content }))))
+      .catch((err) => console.warn("Could not load AI advisor history:", err.message))
+      .finally(() => setHistoryLoaded(true));
   }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
 
-  const loading = readiness === undefined || skillProfile === undefined;
+  const loading = readiness === undefined || skillProfile === undefined || !historyLoaded;
 
   const buildContext = () => {
     if (!readiness) return {};

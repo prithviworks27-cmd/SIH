@@ -6,7 +6,8 @@ import EmptyState from "../../components/common/EmptyState";
 import WhyThisMatch from "../../components/common/WhyThisMatch";
 import { getMatchForOpportunity } from "../../services/matchService";
 import { applyToOpportunity, getApplications, hasAppliedTo } from "../../services/applicationsService";
-import { ArrowLeft, MagnifyingGlass } from "@phosphor-icons/react";
+import { getSavedOpportunityIds, saveOpportunity, unsaveOpportunity, isOpportunitySaved } from "../../services/savedOpportunitiesService";
+import { ArrowLeft, MagnifyingGlass, BookmarkSimple } from "@phosphor-icons/react";
 
 export default function ExplainableMatchBreakdown() {
   const { jobId } = useParams();
@@ -15,14 +16,19 @@ export default function ExplainableMatchBreakdown() {
   const [applied, setApplied] = useState(false);
   const [applying, setApplying] = useState(false);
   const [applyError, setApplyError] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let active = true;
     setData(undefined);
-    Promise.all([getMatchForOpportunity(jobId), getApplications()]).then(([result, applications]) => {
+    Promise.all([getMatchForOpportunity(jobId), getApplications(), getSavedOpportunityIds()]).then(([result, applications, savedIds]) => {
       if (!active) return;
       setData(result);
-      if (result) setApplied(hasAppliedTo(result.opportunity.id, applications));
+      if (result) {
+        setApplied(hasAppliedTo(result.opportunity.id, applications));
+        setSaved(isOpportunitySaved(result.opportunity.id, savedIds));
+      }
     });
     return () => {
       active = false;
@@ -40,6 +46,22 @@ export default function ExplainableMatchBreakdown() {
       setApplyError(err.message);
     } finally {
       setApplying(false);
+    }
+  };
+
+  const handleToggleSave = async () => {
+    if (!data) return;
+    setSaving(true);
+    try {
+      if (saved) {
+        await unsaveOpportunity(data.opportunity.id);
+        setSaved(false);
+      } else {
+        await saveOpportunity(data.opportunity.id);
+        setSaved(true);
+      }
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -85,10 +107,12 @@ export default function ExplainableMatchBreakdown() {
           <div className="mt-6 flex flex-col md:flex-row justify-end items-stretch md:items-center gap-3">
             {applyError && <p className="text-sm text-pastel-red-ink md:mr-auto">{applyError}</p>}
             <button
-              className="border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors"
-              onClick={() => navigate("/internships")}
+              className="inline-flex items-center gap-1.5 border border-hairline text-charcoal text-sm px-6 py-2.5 rounded-md hover:bg-bone transition-colors disabled:opacity-60"
+              onClick={handleToggleSave}
+              disabled={saving}
             >
-              Save for Later
+              <BookmarkSimple size={16} weight={saved ? "fill" : "regular"} />
+              {saved ? "Saved ✓" : saving ? "Saving…" : "Save for Later"}
             </button>
             <button
               className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-60"
