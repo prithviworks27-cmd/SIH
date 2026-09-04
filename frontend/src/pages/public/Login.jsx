@@ -76,7 +76,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center text-charcoal antialiased px-4 py-12">
       <main className="w-full max-w-sm">
         {/* Wordmark */}
         <div className="text-center mb-10">

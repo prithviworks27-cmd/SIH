@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
-import { industryNavItems, industryFooterNavItems } from "../../config/industryNavConfig";
 import { getCandidates } from "../../services/candidatesService";
 import { getMyOpportunities } from "../../services/opportunitiesService";
 import { calculateMatch } from "../../services/matchingEngine";
@@ -34,7 +32,7 @@ export default function CandidatesList() {
   const sortedRows = rows ? [...rows].sort((a, b) => (b.match?.overallScore ?? 0) - (a.match?.overallScore ?? 0)) : rows;
 
   return (
-    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+    <>
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
           <h2 className="font-editorial text-3xl text-ink tracking-tight">Candidates</h2>
@@ -91,6 +89,6 @@ export default function CandidatesList() {
           ))}
         </div>
       )}
-    </DashboardLayout>
+    </>
   );
 }

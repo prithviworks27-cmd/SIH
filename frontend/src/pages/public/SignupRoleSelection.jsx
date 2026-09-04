@@ -124,11 +124,11 @@ export default function SignupRoleSelection() {
   };
 
   return (
-    <div className="bg-canvas text-charcoal min-h-screen flex flex-col antialiased">
+    <div className="min-h-screen bg-white text-charcoal flex flex-col antialiased">
       <main className="flex-grow flex items-center justify-center py-16 px-4">
         <div className="max-w-[560px] w-full">
           <div className="text-center mb-10">
-            <h1 className="font-editorial text-3xl text-ink tracking-tight mb-2">Create your account</h1>
+            <h1 className="font-sans font-bold text-3xl text-ink tracking-tight mb-2">Create your account</h1>
             <p className="text-muted">Join SkillBridge to collaborate and innovate.</p>
           </div>
 

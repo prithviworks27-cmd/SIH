@@ -1,7 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import IndustryProfileGate from "./components/common/IndustryProfileGate";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import { industryNavItems, industryFooterNavItems } from "./config/industryNavConfig";
 import { useAuth } from "./hooks/useAuth";
 import { getPostLoginRedirect } from "./utils/roleRedirect";
 import LoadingState from "./components/common/LoadingState";
@@ -78,6 +80,18 @@ function RootRoute() {
   }
 
   return <Landing />;
+}
+
+// Persistent layout route for the industry section — mounted once and kept
+// alive across /industry/* navigation via <Outlet/>, instead of each page
+// re-mounting its own <DashboardLayout> (and thereby its own Sidebar +
+// MessagesBar, refetching conversations from scratch every click).
+function IndustryLayout() {
+  return (
+    <DashboardLayout navItems={industryNavItems} footerNavItems={industryFooterNavItems} title="Industry Portal" subtitle="Talent & Recruitment">
+      <Outlet />
+    </DashboardLayout>
+  );
 }
 
 function App() {
@@ -335,76 +349,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/industry/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <IndustryDashboard />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
-          {/* Not gated — this is the page a recruiter uses to complete their
-              profile if they land here via nav instead of the onboarding flow. */}
-          <Route
-            path="/industry/profile"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <CompanyProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/industry/opportunities"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <ManageOpportunities />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/industry/opportunities/create"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <PostOpportunity />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/industry/applications"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <ApplicantPipeline />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/industry/candidates"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <CandidatesList />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/industry/candidates/:candidateId"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <CandidateDetail />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
+          {/* Messages keeps its own bespoke full-height layout (ConversationInbox
+              renders its own Sidebar, no MessagesBar) rather than joining the
+              persistent IndustryLayout below — left as a standalone route. */}
           <Route
             path="/industry/messages"
             element={
@@ -415,26 +362,32 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Everything below shares one persistent DashboardLayout instance
+              (sidebar + MessagesBar mount once, not per page) via IndustryLayout's
+              <Outlet/>, instead of each page re-mounting its own. */}
           <Route
-            path="/industry/skill-programs"
             element={
               <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <SkillPrograms />
-                </IndustryProfileGate>
+                <IndustryLayout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/industry/settings"
-            element={
-              <ProtectedRoute allowedRoles={INDUSTRY_ROLES}>
-                <IndustryProfileGate>
-                  <IndustrySettings />
-                </IndustryProfileGate>
-              </ProtectedRoute>
-            }
-          />
+          >
+            {/* Not gated — this is the page a recruiter uses to complete their
+                profile if they land here via nav instead of the onboarding flow. */}
+            <Route path="/industry/profile" element={<CompanyProfile />} />
+
+            <Route element={<IndustryProfileGate><Outlet /></IndustryProfileGate>}>
+              <Route path="/industry/dashboard" element={<IndustryDashboard />} />
+              <Route path="/industry/opportunities" element={<ManageOpportunities />} />
+              <Route path="/industry/opportunities/create" element={<PostOpportunity />} />
+              <Route path="/industry/applications" element={<ApplicantPipeline />} />
+              <Route path="/industry/candidates" element={<CandidatesList />} />
+              <Route path="/industry/candidates/:candidateId" element={<CandidateDetail />} />
+              <Route path="/industry/skill-programs" element={<SkillPrograms />} />
+              <Route path="/industry/settings" element={<IndustrySettings />} />
+            </Route>
+          </Route>
 
           {/* Institution Admin */}
           <Route

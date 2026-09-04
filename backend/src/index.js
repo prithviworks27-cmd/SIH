@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import compression from "compression";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import assessmentRoutes from "./routes/assessmentRoutes.js";
@@ -31,6 +32,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(compression());
 // Company logos are sent as base64 data URLs during onboarding; a 2MB image
 // expands beyond 2MB in JSON, so keep enough headroom for the encoded payload.
 app.use(express.json({ limit: "4mb", strict: true }));

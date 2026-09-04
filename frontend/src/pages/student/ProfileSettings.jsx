@@ -130,7 +130,7 @@ export default function ProfileSettings() {
   // standalone redirect-only button.
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/");
   };
 
   const [firstName = "", lastName = ""] = (user?.name || "").split(/\s+/, 2);
