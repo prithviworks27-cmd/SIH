@@ -4,6 +4,7 @@ import { ChartLineUp, Handshake, RocketLaunch, ArrowUpRight } from "@phosphor-ic
 import useScrollReveal from "../../hooks/useScrollReveal";
 import logo from "../../assets/logo.png";
 import { AntiMetalButton } from "../../components/ui/anti-metal-button";
+import AmbientBrandGlow from "../../components/ui/ambient-brand-glow";
 import PathwayPill from "../../components/common/PathwayPill";
 
 const STEPS = [
@@ -37,6 +38,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col text-charcoal antialiased">
+      <AmbientBrandGlow>
         {/* Nav */}
         <header className="w-full">
           <div className="flex justify-between items-center px-6 md:px-10 py-6">
@@ -84,6 +86,7 @@ export default function Landing() {
             onClick={() => navigate("/signup")}
           />
         </section>
+      </AmbientBrandGlow>
 
         {/* How it works — bento grid */}
         <section className="w-full py-20 px-6 md:px-10 border-t border-hairline" id="how-it-works">

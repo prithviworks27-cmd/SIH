@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { getPostLoginRedirect } from "../../utils/roleRedirect";
 import { EnvelopeSimple, LockSimple, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
 import logo from "../../assets/logo.png";
+import SpotlightGrainBackground from "../../components/ui/spotlight-grain-background";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center text-charcoal antialiased px-4 py-12">
+    <SpotlightGrainBackground className="min-h-screen flex items-center justify-center text-charcoal antialiased px-4 py-12">
       <main className="w-full max-w-sm">
         {/* Wordmark */}
         <div className="text-center mb-10">
@@ -228,6 +229,6 @@ export default function Login() {
           <p className="text-xs text-muted">© 2026 SkillBridge Collaboration Portal.</p>
         </div>
       </main>
-    </div>
+    </SpotlightGrainBackground>
   );
 }
