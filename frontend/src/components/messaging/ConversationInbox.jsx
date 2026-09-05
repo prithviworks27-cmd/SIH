@@ -36,7 +36,7 @@ function ConversationAvatar({ conversation, size = 48 }) {
 // emptyStateLabel lets each caller phrase "no conversations yet" for its
 // own audience ("Apply to opportunities..." vs "Message an applicant...").
 export default function ConversationInbox({ navItems, footerNavItems, emptyStateLabel }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [conversations, setConversations] = useState(undefined);
   const [activeId, setActiveId] = useState(null);
   const [search, setSearch] = useState("");
@@ -55,7 +55,6 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
       if (requested) {
         setActiveId(requested.id);
         setMobileShowThread(true);
-        setSearchParams({}, { replace: true });
         await markConversationRead(requested.id);
         setConversations(await getConversations());
       } else {
