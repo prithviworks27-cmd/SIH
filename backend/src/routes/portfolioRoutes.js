@@ -12,6 +12,8 @@ import {
   updateCertification,
   deleteCertification,
   uploadCertificateFile,
+  uploadAvatar,
+  removeAvatar,
   getPendingCertifications,
   reviewCertification,
   createInternship,
@@ -30,12 +32,21 @@ const router = express.Router();
 // since uploadCertificateFile streams straight to Supabase Storage.
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
+// Profile pictures — smaller cap (2MB) than certificate files, image-only.
+const uploadAvatarFile = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => cb(null, file.mimetype.startsWith("image/")),
+});
+
 // Public — no authMiddleware. Registered before "/" only for readability;
 // "/public/:userId" doesn't collide with "/" regardless of order.
 router.get("/public/:userId", getPublicPortfolio);
 
 router.get("/", authMiddleware, getPortfolio);
 router.post("/basics", authMiddleware, savePortfolioBasics);
+router.post("/avatar", authMiddleware, uploadAvatarFile.single("file"), uploadAvatar);
+router.delete("/avatar", authMiddleware, removeAvatar);
 // Replaces the old /seed endpoint — creates an empty portfolio_basics row
 // for a first-time user instead of writing fake demo projects/certifications/
 // internships/achievements into the child tables.

@@ -314,6 +314,26 @@ export const portfolioAPI = {
   // demo content, replaces the old /seed endpoint.
   init: (basics) => request("/portfolio/init", { method: "POST", body: basics ?? {} }),
 
+  // multipart/form-data — can't go through the generic JSON request() helper.
+  uploadAvatar: async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await fetch(`${API_BASE_URL}/portfolio/avatar`, {
+      method: "POST",
+      headers: getMultipartHeaders(),
+      credentials: "include",
+      body: formData,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const err = new Error(data.error || "Failed to upload photo");
+      err.status = response.status;
+      throw err;
+    }
+    return data;
+  },
+  removeAvatar: () => request("/portfolio/avatar", { method: "DELETE" }),
+
   createProject: (fields) => request("/portfolio/projects", { method: "POST", body: fields }),
   updateProject: (id, fields) => request(`/portfolio/projects/${id}`, { method: "PATCH", body: fields }),
   deleteProject: (id) => request(`/portfolio/projects/${id}`, { method: "DELETE" }),

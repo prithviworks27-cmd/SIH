@@ -76,6 +76,21 @@ export async function savePortfolioBasics(basics) {
   return resolveMock(next, { delay: 500 });
 }
 
+// Uploads/removes the student's profile picture. No avatar is ever set by
+// default — portfolio_basics.avatar_url starts null and only these two
+// actions ever change it (see backend uploadAvatar/removeAvatar).
+export async function uploadAvatar(file) {
+  const { avatarUrl } = await portfolioAPI.uploadAvatar(file);
+  const current = loadStoredLocally() ?? EMPTY_PORTFOLIO;
+  persistLocally({ ...current, avatarUrl });
+  return avatarUrl;
+}
+export async function removeAvatar() {
+  await portfolioAPI.removeAvatar();
+  const current = loadStoredLocally() ?? EMPTY_PORTFOLIO;
+  persistLocally({ ...current, avatarUrl: "" });
+}
+
 // --- Projects / Certifications / Internships / Achievements CRUD --------
 // Each mutation deliberately does NOT fall back to a local-only write on
 // backend failure (same reasoning as opportunitiesService.createOpportunity)
