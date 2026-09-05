@@ -17,6 +17,43 @@
 -- are now the ONLY source for both, no mock fallback layered on top.
 
 -- ============================================================
+-- STUDENT: dynamic assessment question bank
+-- Run the CSV import in assessment_questions_schema.sql after this table exists.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS assessment_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  skill_name VARCHAR(255) NOT NULL,
+  level VARCHAR(20) NOT NULL CHECK (level IN ('beginner', 'intermediate', 'advanced')),
+  question_type VARCHAR(10) NOT NULL CHECK (question_type IN ('mcq', 'text', 'code')),
+  prompt TEXT NOT NULL,
+  options JSONB,
+  correct_answer TEXT NOT NULL,
+  explanation TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_assessment_questions_skill ON assessment_questions(skill_name);
+CREATE INDEX IF NOT EXISTS idx_assessment_questions_skill_level ON assessment_questions(skill_name, level);
+
+ALTER TABLE skill_test_results
+  ADD COLUMN IF NOT EXISTS level_breakdown JSONB,
+  ADD COLUMN IF NOT EXISTS question_review JSONB;
+
+CREATE TABLE IF NOT EXISTS ai_skill_analyses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  latest_run_at TIMESTAMP NOT NULL,
+  analysis JSONB NOT NULL,
+  based_on JSONB NOT NULL DEFAULT '[]',
+  provider VARCHAR(50) NOT NULL,
+  model TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (user_id, latest_run_at)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_skill_analyses_user ON ai_skill_analyses(user_id, created_at DESC);
+
+-- ============================================================
 -- STUDENT: target role selection (careerRoleService.js)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS student_target_role (

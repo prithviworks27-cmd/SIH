@@ -19,6 +19,9 @@ export default function SkillAssessment() {
   // an explicit "Retake" choice instead (Issue 6).
   const [previousCompletedAt, setPreviousCompletedAt] = useState(undefined);
   const [forceRetake, setForceRetake] = useState(false);
+  const [showRetakeWarning, setShowRetakeWarning] = useState(false);
+  const [showRules, setShowRules] = useState(false);
+  const [agreedToRules, setAgreedToRules] = useState(false);
 
   useEffect(() => {
     // getAssessmentQuestions() only supplies the skill picker's sections/list
@@ -43,7 +46,7 @@ export default function SkillAssessment() {
     );
   }
 
-  if (previousCompletedAt && !forceRetake) {
+  if (previousCompletedAt && !forceRetake && !showRetakeWarning) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center">
@@ -57,16 +60,42 @@ export default function SkillAssessment() {
             </p>
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => navigate("/skill-profile/gap-report")}
+                onClick={() => setShowRetakeWarning(true)}
                 className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all cursor-pointer"
               >
-                View My Skill Profile
+                Retake Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (showRetakeWarning && !forceRetake) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center">
+          <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
+            <ClockCounterClockwise size={32} className="text-ink mx-auto mb-4" />
+            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-3">Retake this assessment?</h1>
+            <p className="text-muted mb-8">
+              Your previous test result will be deleted. After you complete this test, your new result will replace it and be updated in the Assessment section.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => setForceRetake(true)}
+                className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all cursor-pointer"
+              >
+                Continue and Retake Test
               </button>
               <button
-                onClick={() => setForceRetake(true)}
+                type="button"
+                onClick={() => setShowRetakeWarning(false)}
                 className="w-full border border-hairline text-charcoal text-sm px-4 py-2.5 rounded-md hover:bg-bone transition-colors cursor-pointer"
               >
-                Retake Assessment
+                Cancel
               </button>
             </div>
           </div>
@@ -103,9 +132,73 @@ export default function SkillAssessment() {
       setError("Please select at least one skill before continuing.");
       return;
     }
+    setError("");
+    setAgreedToRules(false);
+    setShowRules(true);
+  };
+
+  const startSkillTests = () => {
+    if (!agreedToRules) return;
     sessionStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(selectedSkills));
     navigate("/skill-tests/dynamic/run", { state: { selectedSkills } });
   };
+
+  if (showRules) {
+    return (
+      <DashboardLayout>
+        <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
+          <div className="mb-8">
+            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Are you ready to take the test?</h1>
+            <p className="text-muted">Please read and accept the rules before starting your skill assessment.</p>
+          </div>
+
+          <div className="border border-hairline rounded-lg p-5 bg-bone">
+            <h2 className="text-base font-medium text-ink mb-4">Rules and conditions</h2>
+            <ul className="list-disc pl-5 space-y-3 text-sm text-charcoal">
+              <li>Each selected skill has a 20-question objective assessment.</li>
+              <li>The assessment is timed. The timer continues across all selected skills.</li>
+              <li>Stay in fullscreen and keep this browser tab active while taking the test.</li>
+              <li>Leaving fullscreen or switching tabs counts as a warning.</li>
+              <li>After 3 warnings, the assessment will be submitted automatically.</li>
+              <li>Only answered questions can be evaluated, so review your answers before submitting.</li>
+            </ul>
+          </div>
+
+          <p className="text-sm text-muted mt-6">
+            Selected skills: <span className="text-ink font-medium">{selectedSkills.join(", ")}</span>
+          </p>
+
+          <label className="flex items-start gap-3 mt-6 text-sm text-ink cursor-pointer">
+            <input
+              className="mt-0.5 w-4 h-4 text-ink border-hairline focus:ring-ink"
+              type="checkbox"
+              checked={agreedToRules}
+              onChange={(event) => setAgreedToRules(event.target.checked)}
+            />
+            <span>I have read and agree to follow these rules and conditions.</span>
+          </label>
+
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-8 pt-4 border-t border-hairline">
+            <button
+              type="button"
+              onClick={() => setShowRules(false)}
+              className="px-4 py-2 border border-hairline text-charcoal rounded-md text-sm hover:bg-bone transition-colors"
+            >
+              Back to Skills
+            </button>
+            <button
+              type="button"
+              onClick={startSkillTests}
+              disabled={!agreedToRules}
+              className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Agree and Start Test
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -149,11 +242,15 @@ export default function SkillAssessment() {
 
         {error && <p className="text-sm text-pastel-red-ink mt-6">{error}</p>}
 
-        <div className="flex justify-end mt-8 pt-4 border-t border-hairline">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8 pt-4 border-t border-hairline">
+          <p className="text-sm text-muted">
+            {selectedSkills.length === 0 ? "Select at least one skill to begin." : `${selectedSkills.length} skill${selectedSkills.length === 1 ? "" : "s"} selected.`}
+          </p>
           <button
             type="button"
             onClick={beginSkillTests}
-            className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all"
+            disabled={selectedSkills.length === 0}
+            className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Start Skill Tests
           </button>

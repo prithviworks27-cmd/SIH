@@ -64,7 +64,7 @@ export default function StudentDashboard() {
     setAnalysisLoading(true);
     setAnalysisError("");
     try {
-      const data = await aiAdvisorAPI.analyzeLatestRun();
+      const data = await aiAdvisorAPI.analyzeLatestRun(true);
       setSkillAnalysis(data);
     } catch (err) {
       setAnalysisError(err.message || "Something went wrong analyzing your results.");
@@ -128,10 +128,10 @@ export default function StudentDashboard() {
             </button>
             <button
               type="button"
-              onClick={() => setShowSkillGapReport(true)}
+              onClick={() => startAssessment(true)}
               className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] transition-colors self-start sm:self-auto"
             >
-              View skill gap report
+              Retake the test
             </button>
           </div>
         </section>
@@ -288,6 +288,31 @@ export default function StudentDashboard() {
                   </div>
                 </section>
 
+                {skillAnalysis.analysis.questionReview?.length > 0 && (
+                  <section>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Code size={18} className="text-pastel-blue-ink" />
+                      <h3 className="text-base font-medium text-ink">Question-by-Question Review</h3>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      {skillAnalysis.analysis.questionReview.map((review, i) => (
+                        <div key={i} className="border border-hairline rounded-lg p-4">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <p className="text-sm font-medium text-ink">{i + 1}. {review.question}</p>
+                            <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full ${
+                              review.result === "correct" ? "bg-pastel-green text-pastel-green-ink" : "bg-pastel-red text-pastel-red-ink"
+                            }`}>
+                              {review.result === "correct" ? "Correct" : "Review"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted capitalize mb-1">{review.skill} · {review.level}</p>
+                          <p className="text-sm text-charcoal">{review.review}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
                 <section>
                   <div className="flex items-center gap-2 mb-3">
                     <TrendDown size={18} className="text-pastel-red-ink" />
@@ -333,15 +358,6 @@ export default function StudentDashboard() {
               </div>
             )}
 
-            <div className="flex justify-end mt-8 pt-4 border-t border-hairline">
-              <button
-                type="button"
-                onClick={() => setShowSkillAnalysis(false)}
-                className="border border-hairline text-charcoal text-sm px-4 py-2 rounded-md hover:bg-bone transition-colors"
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
       )}

@@ -21,6 +21,7 @@ export function useExamProctoring({ active, onMaxStrikes }) {
   const [strikes, setStrikes] = useState(0);
   const [warning, setWarning] = useState(null); // { reason, strikeNumber } | null
   const [fullscreenBlocked, setFullscreenBlocked] = useState(false);
+  const maxStrikeHandledRef = useRef(false);
   const onMaxStrikesRef = useRef(onMaxStrikes);
   onMaxStrikesRef.current = onMaxStrikes;
 
@@ -29,7 +30,10 @@ export function useExamProctoring({ active, onMaxStrikes }) {
       const next = prev + 1;
       if (next >= MAX_STRIKES) {
         setWarning(null);
-        onMaxStrikesRef.current();
+        if (!maxStrikeHandledRef.current) {
+          maxStrikeHandledRef.current = true;
+          onMaxStrikesRef.current();
+        }
       } else {
         setWarning({ reason, strikeNumber: next });
       }
@@ -67,6 +71,28 @@ export function useExamProctoring({ active, onMaxStrikes }) {
       if (document.hidden) registerStrike("visibility");
     };
 
+    // Best-effort screenshot deterrence. Browsers cannot observe or block
+    // every OS-level capture tool, but common screenshot shortcuts and the
+    // context menu can be blocked and counted as exam warnings.
+    const handleKeyDown = (event) => {
+      const key = event.key.toLowerCase();
+      const isScreenshotShortcut =
+        event.key === "PrintScreen" ||
+        (event.ctrlKey && event.shiftKey && (key === "s" || key === "4")) ||
+        (event.metaKey && event.shiftKey && ["3", "4", "5"].includes(key)) ||
+        (event.ctrlKey && key === "p");
+
+      if (isScreenshotShortcut) {
+        event.preventDefault();
+        registerStrike("screenshot");
+      }
+    };
+
+    const handleContextMenu = (event) => {
+      event.preventDefault();
+      registerStrike("screenshot");
+    };
+
     // Native close/refresh confirmation — separate from the strike system
     // per the constraint above. Most browsers ignore the custom message and
     // show their own fixed text, but returnValue must still be set to
@@ -79,12 +105,16 @@ export function useExamProctoring({ active, onMaxStrikes }) {
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
     document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("contextmenu", handleContextMenu);
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("contextmenu", handleContextMenu);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
