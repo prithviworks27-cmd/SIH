@@ -4,6 +4,7 @@
 
 body {
   font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 500;
 }
 
 /* Apple-inspired restraint: one confident accent for keyboard focus, and a

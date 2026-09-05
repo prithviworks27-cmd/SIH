@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Sidebar from "../layout/Sidebar";
+import AmbientBrandGlow from "../ui/ambient-brand-glow";
 import LoadingState from "../common/LoadingState";
 import { getConversations, sendMessage, markConversationRead } from "../../services/messagesService";
+import { initialsOf, avatarGradientFor } from "../../utils/avatarColor";
 import {
   MagnifyingGlass,
-  Buildings,
   Paperclip,
   PaperPlaneTilt,
   DotsThreeVertical,
@@ -13,14 +15,14 @@ import {
   ChatCircleDots,
 } from "@phosphor-icons/react";
 
-function ConversationAvatar({ conversation, size = 44 }) {
-  const dimension = `${size / 4}rem`;
+function ConversationAvatar({ conversation, size = 48 }) {
+  const dimension = `${size / 16}rem`;
   return (
     <div
-      className="rounded-lg bg-bone flex items-center justify-center text-muted flex-shrink-0"
-      style={{ width: dimension, height: dimension }}
+      className="rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0"
+      style={{ width: dimension, height: dimension, fontSize: size * 0.36, backgroundImage: avatarGradientFor(conversation.name) }}
     >
-      <Buildings size={size * 0.45} />
+      {initialsOf(conversation.name)}
     </div>
   );
 }
@@ -34,6 +36,7 @@ function ConversationAvatar({ conversation, size = 44 }) {
 // emptyStateLabel lets each caller phrase "no conversations yet" for its
 // own audience ("Apply to opportunities..." vs "Message an applicant...").
 export default function ConversationInbox({ navItems, footerNavItems, emptyStateLabel }) {
+  const [searchParams] = useSearchParams();
   const [conversations, setConversations] = useState(undefined);
   const [activeId, setActiveId] = useState(null);
   const [search, setSearch] = useState("");
@@ -43,10 +46,23 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    getConversations().then((list) => {
-      setConversations(list);
-      setActiveId(list[0]?.id ?? null);
+    getConversations().then(async (list) => {
+      // A direct link (e.g. "Message" on an application row) can request a
+      // specific conversation via ?conversation=<id> — fall back to the
+      // first conversation if it's absent or doesn't match anything.
+      const requestedId = searchParams.get("conversation");
+      const requested = requestedId && list.find((c) => c.id === requestedId);
+      if (requested) {
+        setActiveId(requested.id);
+        setMobileShowThread(true);
+        await markConversationRead(requested.id);
+        setConversations(await getConversations());
+      } else {
+        setConversations(list);
+        setActiveId(list[0]?.id ?? null);
+      }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const active = conversations?.find((c) => c.id === activeId);
@@ -80,27 +96,27 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
   const unreadCount = conversations?.filter((c) => c.unread).length ?? 0;
 
   return (
-    <div className="bg-canvas text-charcoal flex min-h-screen">
+    <AmbientBrandGlow className="text-charcoal min-h-screen">
       <Sidebar navItems={navItems} footerNavItems={footerNavItems} />
-      <main className="md:ml-64 flex-1 flex flex-col h-screen overflow-hidden">
+      <main className="md:ml-56 flex-1 flex flex-col h-screen overflow-hidden">
         <div className="flex-1 flex w-full bg-white h-full border-t md:border-t-0 border-hairline">
           {/*Left Column: Conversation List*/}
           <div
-            className={`w-full md:w-[350px] lg:w-[400px] flex-shrink-0 md:border-r border-hairline flex-col bg-white ${
+            className={`w-full md:w-[280px] lg:w-[320px] flex-shrink-0 md:border-r border-hairline flex-col bg-white ${
               mobileShowThread ? "hidden md:flex" : "flex"
             }`}
           >
             <div className="p-6 border-b border-hairline">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-editorial text-2xl text-ink">Messages</h2>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="font-sans font-bold text-2xl text-ink tracking-tight">Messages</h2>
                 {unreadCount > 0 && (
-                  <span className="bg-ink text-white text-xs font-medium px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                  <span className="bg-bone text-ink text-xs font-semibold px-2.5 py-1 rounded-full">{unreadCount} new</span>
                 )}
               </div>
               <div className="relative">
-                <MagnifyingGlass size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                <MagnifyingGlass size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
                 <input
-                  className="w-full pl-9 pr-4 py-2 border border-hairline bg-white rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
+                  className="w-full pl-10 pr-4 py-2.5 border border-hairline bg-white rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
                   placeholder="Search conversations..."
                   type="text"
                   value={search}
@@ -125,14 +141,14 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
                   <button
                     key={conv.id}
                     onClick={() => handleSelectConversation(conv.id)}
-                    className={`w-full text-left px-5 py-4 border-b border-hairline cursor-pointer flex gap-3 items-center transition-colors duration-150 ${
+                    className={`w-full text-left px-6 py-4 border-b border-hairline cursor-pointer flex gap-3.5 items-center transition-colors duration-150 ${
                       conv.id === activeId ? "bg-bone" : "hover:bg-bone"
                     }`}
                   >
                     <ConversationAvatar conversation={conv} />
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline gap-2 mb-0.5">
-                        <h3 className={`text-sm truncate ${conv.unread ? "text-ink font-semibold" : "text-ink font-medium"}`}>
+                        <h3 className={`text-[15px] truncate ${conv.unread ? "text-ink font-bold" : "text-ink font-semibold"}`}>
                           {conv.name}
                         </h3>
                         {lastMessage && (
@@ -149,7 +165,9 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
                         </p>
                       )}
                     </div>
-                    {conv.unread && <div className="w-2.5 h-2.5 rounded-full bg-pastel-blue-ink flex-shrink-0" aria-label="Unread" />}
+                    {conv.unread && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-accent ring-2 ring-white flex-shrink-0" aria-label="Unread" />
+                    )}
                   </button>
                 );
               })}
@@ -277,6 +295,6 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
           </div>
         </div>
       </main>
-    </div>
+    </AmbientBrandGlow>
   );
 }

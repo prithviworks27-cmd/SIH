@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import ApplicationStatus from "../../components/common/ApplicationStatus";
 import { getApplications } from "../../services/applicationsService";
-import { FileText } from "@phosphor-icons/react";
+import { FileText, ChatCircleDots } from "@phosphor-icons/react";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
@@ -79,6 +80,7 @@ export default function MyApplications() {
                   <th className="p-4 font-medium">Role / Program</th>
                   <th className="p-4 font-medium">Date Applied</th>
                   <th className="p-4 font-medium">Status</th>
+                  <th className="p-4 font-medium">Message</th>
                 </tr>
               </thead>
               <tbody className="text-sm text-charcoal divide-y divide-hairline">
@@ -95,6 +97,19 @@ export default function MyApplications() {
                     <td className="p-4 text-muted">{formatDate(app.dateApplied)}</td>
                     <td className="p-4">
                       <ApplicationStatus status={app.status} />
+                    </td>
+                    <td className="p-4">
+                      {app.conversationId ? (
+                        <Link
+                          to={`/messages?conversation=${app.conversationId}`}
+                          className="inline-flex items-center gap-1.5 border border-hairline text-ink text-xs font-medium px-3 py-1.5 rounded-full hover:bg-bone transition-colors"
+                        >
+                          <ChatCircleDots size={14} />
+                          Message
+                        </Link>
+                      ) : (
+                        <span className="text-xs text-muted">—</span>
+                      )}
                     </td>
                   </tr>
                 ))}
