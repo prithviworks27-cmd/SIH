@@ -106,7 +106,7 @@ export default function InternshipJobDetail() {
           <header className="bg-white border border-hairline rounded-xl p-8 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center gap-6">
               <div>
-                <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">{job.title}</h1>
+                <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">{job.title}</h1>
                 <p className="text-muted flex items-center gap-2">
                   <Buildings size={18} />
                   {job.company}

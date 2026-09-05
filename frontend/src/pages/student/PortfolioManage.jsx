@@ -483,7 +483,7 @@ export default function PortfolioManage() {
     <DashboardLayout>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Manage Portfolio</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Manage Portfolio</h2>
           <p className="text-muted mt-2">Add, edit, or remove your projects, certifications, internships, and achievements.</p>
         </div>
         <Link to="/portfolio" className="py-2 px-6 border border-hairline rounded-md text-charcoal text-sm hover:bg-bone transition-colors">

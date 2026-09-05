@@ -83,7 +83,7 @@ export default function CandidateDetail() {
               {candidate.avatarInitial}
             </div>
             <div>
-              <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">{candidate.name}</h1>
+              <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">{candidate.name}</h1>
               <p className="text-muted">
                 {candidate.institution} · {candidate.year}
               </p>

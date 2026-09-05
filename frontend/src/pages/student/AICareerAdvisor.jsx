@@ -118,7 +118,7 @@ export default function AICareerAdvisor() {
   return (
     <DashboardLayout contentClassName="!max-w-3xl">
       <header className="mb-6 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1 flex items-center gap-2">
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1 flex items-center gap-2">
           <Sparkle size={26} className="text-ink" weight="fill" />
           AI Career Advisor
         </h1>

@@ -36,7 +36,7 @@ export default function CertificateReview() {
   return (
     <DashboardLayout navItems={adminNavItems} footerNavItems={[]} title="Institution Portal" subtitle="Admin Analytics">
       <header className="mb-10 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Certificate Review</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Certificate Review</h1>
         <p className="text-muted">
           Certifications students have attached a file to, awaiting manual approval. Automated issuer verification and QR
           scanning are planned for a future release — this queue is a manual review only.

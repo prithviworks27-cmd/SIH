@@ -50,7 +50,7 @@ export default function PublicPortfolio() {
                   <img className="w-24 h-24 rounded-full object-cover border border-hairline" alt={data.name} src={data.basics.avatarUrl} />
                 )}
                 <div>
-                  <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">{data.name}</h1>
+                  <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">{data.name}</h1>
                   {(data.basics?.headline || data.basics?.institution) && (
                     <p className="text-muted mb-2">
                       {data.basics?.headline}

@@ -32,7 +32,7 @@ export default function MySkills() {
     <DashboardLayout>
       <header className="mb-8 border-b border-hairline pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">My Skills</h1>
+          <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">My Skills</h1>
           <p className="text-muted">Every skill you've self-rated or verified through an assessment.</p>
         </div>
         <div className="flex gap-3">

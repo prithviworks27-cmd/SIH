@@ -24,7 +24,7 @@ export default function FacultyDashboard() {
   return (
     <DashboardLayout navItems={academicianNavItems} footerNavItems={academicianFooterNavItems} title="Faculty Portal" subtitle="Student Mentorship">
       <header className="mb-10">
-        <h1 className="font-editorial text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Faculty"}</h1>
+        <h1 className="font-geist text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Faculty"}</h1>
         <p className="text-muted leading-relaxed">Monitor your students' skill readiness and progress toward placement.</p>
       </header>
 

@@ -42,7 +42,7 @@ export default function SkillAnalytics() {
   return (
     <DashboardLayout navItems={adminNavItems} footerNavItems={[]} title="Institution Portal" subtitle="Admin Analytics">
       <header className="mb-10 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Skill Analytics</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Skill Analytics</h1>
         <p className="text-muted">Where student skills fall short of what industry is actually asking for.</p>
       </header>
 

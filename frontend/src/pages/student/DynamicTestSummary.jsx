@@ -34,7 +34,7 @@ export default function DynamicTestSummary() {
         <div className="w-full max-w-2xl bg-white border border-hairline rounded-xl p-10">
           <div className="text-center mb-8">
             <span className="text-3xl mb-2 block">{passedCount === results.length ? "🎉" : "📋"}</span>
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">Assessments Completed</h1>
+            <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">Assessments Completed</h1>
             <p className="text-muted">
               {results.length} skill{results.length > 1 ? "s" : ""} tested · {passedCount} verified · {averageScore}% average score
             </p>

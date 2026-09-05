@@ -72,7 +72,7 @@ export default function CompanyProfile() {
     <>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Company Profile</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Company Profile</h2>
           <p className="text-muted mt-2">This is what students and academicians see about your organization.</p>
         </div>
         <button

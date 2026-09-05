@@ -39,6 +39,9 @@ export default {
       fontFamily: {
         editorial: ["Newsreader", "serif"],
         mono: ["JetBrains Mono", "monospace"],
+        /* Page-title headers only (the "Welcome back, ..." style h1/h2s) —
+           big display numbers keep font-editorial. */
+        geist: ["Geist Sans", "sans-serif"],
       },
     },
   },

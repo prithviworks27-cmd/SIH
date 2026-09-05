@@ -19,7 +19,7 @@ export default function RecommendedLearningPaths() {
   return (
     <DashboardLayout>
       <header className="mb-10">
-        <h2 className="font-editorial text-3xl text-ink tracking-tight mb-2">Learning &amp; Skill Development</h2>
+        <h2 className="font-geist text-3xl text-ink tracking-tight mb-2">Learning &amp; Skill Development</h2>
         <p className="text-muted max-w-2xl leading-relaxed">
           Explore learning paths for every technical and soft skill in your profile. Paths linked to your current gaps
           appear first so you can improve your role readiness faster.

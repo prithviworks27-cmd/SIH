@@ -41,7 +41,7 @@ export default function Notifications() {
     <DashboardLayout>
       <header className="mb-10 flex justify-between items-end border-b border-hairline pb-6">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Notifications</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Notifications</h2>
           <p className="text-muted mt-2">Your recent activity and updates.</p>
         </div>
         <button

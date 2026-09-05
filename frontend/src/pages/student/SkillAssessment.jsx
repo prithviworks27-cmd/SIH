@@ -91,7 +91,7 @@ export default function SkillAssessment() {
         <div className="flex items-center justify-center">
           <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
             <ClockCounterClockwise size={32} className="text-ink mx-auto mb-4" />
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">You've already completed this assessment</h1>
+            <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">You've already completed this assessment</h1>
             <p className="text-muted mb-8">
               Last completed on{" "}
               {new Date(previousCompletedAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}. Your skill
@@ -117,7 +117,7 @@ export default function SkillAssessment() {
         <div className="flex items-center justify-center">
           <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
             <ClockCounterClockwise size={32} className="text-ink mx-auto mb-4" />
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-3">Retake this assessment?</h1>
+            <h1 className="font-geist text-2xl text-ink tracking-tight mb-3">Retake this assessment?</h1>
             <p className="text-muted mb-8">
               Your previous test result will be deleted. After you complete this test, your new result will replace it and be updated in the Assessment section.
             </p>
@@ -187,7 +187,7 @@ export default function SkillAssessment() {
       <DashboardLayout>
         <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
           <div className="mb-8">
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Are you ready to take the test?</h1>
+            <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">Are you ready to take the test?</h1>
             <p className="text-muted">Please read and accept the rules before starting your skill assessment.</p>
           </div>
 
@@ -260,7 +260,7 @@ export default function SkillAssessment() {
     <DashboardLayout>
       <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
         <div className="mb-8">
-          <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">Which skills do you know?</h1>
+          <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">Which skills do you know?</h1>
           <p className="text-muted">
             Select the technical skills you have started learning or using. You'll take a 20-question assessment for each one to verify
             your level.

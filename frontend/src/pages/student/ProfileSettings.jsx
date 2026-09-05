@@ -138,7 +138,7 @@ export default function ProfileSettings() {
   return (
     <DashboardLayout>
       <header className="mb-10">
-        <h2 className="font-editorial text-3xl text-ink tracking-tight">Settings</h2>
+        <h2 className="font-geist text-3xl text-ink tracking-tight">Settings</h2>
         <p className="text-muted mt-2">Manage your profile, account, privacy, and security preferences.</p>
       </header>
 

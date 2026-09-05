@@ -6,7 +6,7 @@ export default function IndustrySettings() {
   return (
     <>
       <header className="mb-10">
-        <h2 className="font-editorial text-3xl text-ink tracking-tight">Account Settings</h2>
+        <h2 className="font-geist text-3xl text-ink tracking-tight">Account Settings</h2>
         <p className="text-muted mt-2">Manage your recruiter account.</p>
       </header>
 

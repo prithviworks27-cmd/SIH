@@ -80,7 +80,7 @@ export default function CourseDetail() {
                     <GraduationCap size={14} /> {course.level}
                   </span>
                 </div>
-                <h1 className="font-editorial text-3xl text-ink tracking-tight mb-3">{course.title}</h1>
+                <h1 className="font-geist text-3xl text-ink tracking-tight mb-3">{course.title}</h1>
                 <p className="text-muted flex items-center gap-2">
                   <Buildings size={18} className="text-ink" />
                   Provided by {course.department ? `${course.department}, ` : ""}

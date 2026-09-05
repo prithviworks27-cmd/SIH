@@ -47,7 +47,7 @@ export default function StudentDetail() {
           </button>
 
           <header className="bg-white border border-hairline rounded-xl p-8 mb-6">
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">{student.name}</h1>
+            <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">{student.name}</h1>
             <p className="text-muted">
               {student.institution} · {student.year}
             </p>

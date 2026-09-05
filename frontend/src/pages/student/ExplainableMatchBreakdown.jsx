@@ -92,7 +92,7 @@ export default function ExplainableMatchBreakdown() {
           <div className="bg-white border border-hairline rounded-xl p-8 flex flex-col gap-8">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">{data.opportunity.title}</h1>
+                <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">{data.opportunity.title}</h1>
                 <p className="text-muted">{data.opportunity.company}</p>
                 <div className="flex gap-2 mt-3">
                   <span className="bg-bone text-charcoal px-2.5 py-1 rounded-full text-xs">{data.opportunity.location}</span>
