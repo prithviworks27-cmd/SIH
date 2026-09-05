@@ -17,6 +17,24 @@ CREATE TABLE IF NOT EXISTS skill_test_results (
   completed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE skill_test_results
+  ADD COLUMN IF NOT EXISTS level_breakdown JSONB,
+  ADD COLUMN IF NOT EXISTS question_review JSONB;
+
+CREATE TABLE IF NOT EXISTS ai_skill_analyses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  latest_run_at TIMESTAMP NOT NULL,
+  analysis JSONB NOT NULL,
+  based_on JSONB NOT NULL DEFAULT '[]',
+  provider VARCHAR(50) NOT NULL,
+  model TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (user_id, latest_run_at)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_skill_analyses_user ON ai_skill_analyses(user_id, created_at DESC);
+
 CREATE INDEX IF NOT EXISTS idx_skill_test_results_user ON skill_test_results(user_id);
 CREATE INDEX IF NOT EXISTS idx_skill_test_results_user_test ON skill_test_results(user_id, test_id);
 

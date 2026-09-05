@@ -10,7 +10,7 @@
 // in that combined list — [{ skillName, startIndex }], sorted by startIndex,
 // rendered as numbered exam sections since a multi-skill run genuinely is
 // one. Omit it (or pass a single-skill list) for a plain ungrouped grid.
-export default function TestNavigatorSidebar({ questionCount, current, answeredIds, questionIds, onJumpTo, skillBoundaries }) {
+export default function TestNavigatorSidebar({ questionCount, current, answeredIds, skippedIds = new Set(), questionIds, onJumpTo, skillBoundaries }) {
   // Precompute which index starts a new skill label, so the render loop
   // below can interleave labels with tiles in a single pass.
   const labelAtIndex = new Map((skillBoundaries || []).map((b) => [b.startIndex, b.skillName]));
@@ -41,18 +41,21 @@ export default function TestNavigatorSidebar({ questionCount, current, answeredI
               <div className="grid grid-cols-5 gap-2">
                 {block.tiles.map(({ id, index }) => {
                   const isAnswered = answeredIds.has(id);
+                  const isSkipped = skippedIds.has(id) && !isAnswered;
                   const isCurrent = index === current;
                   return (
                     <button
                       key={id}
                       type="button"
                       onClick={() => onJumpTo(index)}
-                      title={isAnswered ? "Answered" : "Not answered"}
+                      title={isAnswered ? "Answered" : isSkipped ? "Skipped" : "Not answered"}
                       className={`h-9 w-9 rounded-full text-xs font-medium transition-all flex items-center justify-center mx-auto ${
                         isCurrent
                           ? "bg-ink text-white"
                           : isAnswered
                           ? "bg-pastel-green-ink text-white hover:opacity-90"
+                          : isSkipped
+                          ? "bg-pastel-yellow-ink text-white hover:opacity-90"
                           : "border border-hairline text-muted hover:border-ink hover:text-ink"
                       }`}
                     >
@@ -67,6 +70,9 @@ export default function TestNavigatorSidebar({ questionCount, current, answeredI
         <div className="flex items-center gap-4 mt-5 pt-4 border-t border-hairline text-xs text-muted">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-pastel-green-ink" /> Answered
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-pastel-yellow-ink" /> Skipped
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full border border-hairline" /> Unanswered

@@ -34,7 +34,7 @@ function dynamicTestId(skillName) {
 // of any existing score (a retake shouldn't lower an already-verified score).
 // Returns { result, profile } ready to send straight back to the client, or
 // throws so callers can turn that into a 500 with their own log message.
-async function persistTestResult(userId, { testId, skillName, total, correct, scorePercent, passingScore, passed, levelBreakdown = null }) {
+async function persistTestResult(userId, { testId, skillName, total, correct, scorePercent, passingScore, passed, levelBreakdown = null, questionReview = null }) {
   const completedAt = new Date().toISOString();
 
   const { data: result, error: insertError } = await supabase
@@ -52,6 +52,7 @@ async function persistTestResult(userId, { testId, skillName, total, correct, sc
       // Per-level (beginner/intermediate/advanced) score breakdown — only
       // dynamic tests compute this; static SKILL_TESTS attempts pass null.
       level_breakdown: levelBreakdown,
+      question_review: questionReview,
     })
     .select()
     .single();
@@ -295,8 +296,15 @@ export const getDynamicTest = async (req, res) => {
       .order("level", { ascending: true });
 
     if (error) {
-      console.error("Fetch dynamic test questions error:", error);
-      return res.status(500).json({ error: "Failed to load assessment questions" });
+      console.error("Fetch dynamic test questions error:", {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
+      return res.status(503).json({
+        error: "The assessment question bank is unavailable. Please ask an administrator to run the assessment_questions database migration.",
+      });
     }
 
     if (!data || data.length === 0) {
@@ -360,8 +368,15 @@ export const submitDynamicTest = async (req, res) => {
       .eq("skill_name", skillName);
 
     if (error) {
-      console.error("Fetch dynamic test answer key error:", error);
-      return res.status(500).json({ error: "Failed to load assessment questions" });
+      console.error("Fetch dynamic test answer key error:", {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
+      return res.status(503).json({
+        error: "The assessment question bank is unavailable. Please ask an administrator to run the assessment_questions database migration.",
+      });
     }
 
     if (!questions || questions.length === 0) {
@@ -388,6 +403,33 @@ export const submitDynamicTest = async (req, res) => {
       return { questionId: q.id, level, correct: isCorrect };
     });
 
+    const questionIds = questions.map((q) => q.id);
+    const { data: questionDetails, error: detailsError } = await supabase
+      .from("assessment_questions")
+      .select("id, level, question_type, prompt, correct_answer, explanation")
+      .in("id", questionIds);
+    if (detailsError) {
+      console.error("Fetch assessment review details error:", detailsError);
+      return res.status(500).json({ error: "Failed to prepare assessment review" });
+    }
+
+    const reviewById = new Map((questionDetails || []).map((q) => [q.id, q]));
+    const questionReview = questions.map((q) => {
+      const detail = reviewById.get(q.id) || q;
+      const submittedAnswer = answers[q.id] ?? "";
+      const result = breakdown.find((item) => item.questionId === q.id);
+      return {
+        questionId: q.id,
+        level: q.level,
+        questionType: q.question_type,
+        prompt: detail.prompt,
+        submittedAnswer,
+        correctAnswer: detail.correct_answer,
+        explanation: detail.explanation,
+        correct: result?.correct ?? false,
+      };
+    });
+
     const LEVEL_ORDER = ["beginner", "intermediate", "advanced"];
     const levelBreakdown = LEVEL_ORDER.filter((level) => levelTotals[level]).map((level) => ({
       level,
@@ -411,6 +453,7 @@ export const submitDynamicTest = async (req, res) => {
         passingScore: DYNAMIC_TEST_PASSING_SCORE,
         passed,
         levelBreakdown,
+        questionReview,
       });
     } catch (persistError) {
       console.error("Persist dynamic test result error:", persistError);

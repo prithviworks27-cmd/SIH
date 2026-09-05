@@ -245,8 +245,9 @@ export const aiAdvisorAPI = {
   // Analyzes the student's most recently completed skill-test run (see
   // assessmentController.submitDynamicTest / aiAdvisorController.analyzeLatestSkillRun)
   // — strengths, weaknesses, and an improvement roadmap grounded in real scores.
-  analyzeLatestRun: async () => {
-    const response = await fetch(`${API_BASE_URL}/ai-advisor/analyze-latest-run`, {
+  analyzeLatestRun: async (generate = true) => {
+    const query = generate ? "?generate=true" : "";
+    const response = await fetch(`${API_BASE_URL}/ai-advisor/analyze-latest-run${query}`, {
       method: "GET",
       headers: getHeaders(),
       credentials: "include",

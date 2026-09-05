@@ -5,7 +5,8 @@ import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 import SkillTestCard from "../../components/common/SkillTestCard";
 import { getSkillTests, getAssessmentHistory } from "../../services/skillTestService";
-import { MagnifyingGlass, ClockCounterClockwise, CheckCircle, XCircle, Trophy } from "@phosphor-icons/react";
+import { MagnifyingGlass, ClockCounterClockwise, CheckCircle, XCircle, Trophy, Sparkle, CircleNotch } from "@phosphor-icons/react";
+import { aiAdvisorAPI } from "../../services/api";
 
 const CATEGORY_FILTERS = ["All", "Technical Skill", "Soft Skill"];
 
@@ -15,11 +16,23 @@ export default function SkillTests() {
   const [history, setHistory] = useState(undefined);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [skillAnalysis, setSkillAnalysis] = useState(undefined);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
 
   useEffect(() => {
     getSkillTests().then(setTests);
     getAssessmentHistory().then(setHistory);
+    aiAdvisorAPI.analyzeLatestRun(false).then(setSkillAnalysis).catch(() => setSkillAnalysis(null));
   }, []);
+
+  const generateAnalysis = async () => {
+    setAnalysisLoading(true);
+    try {
+      setSkillAnalysis(await aiAdvisorAPI.analyzeLatestRun(true));
+    } finally {
+      setAnalysisLoading(false);
+    }
+  };
 
   const filteredTests = useMemo(() => {
     if (!tests) return tests;
@@ -37,6 +50,8 @@ export default function SkillTests() {
         <p className="text-muted">Pass a skill test to verify it on your profile — employers see Assessment Verified skills as trusted.</p>
       </header>
 
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem] gap-8 items-start">
+        <div>
       {/*Search / filter across all 12 domains*/}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
@@ -166,6 +181,70 @@ export default function SkillTests() {
           </div>
         )}
       </section>
+        </div>
+
+        <aside className="lg:sticky lg:top-6 bg-white border border-hairline rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkle size={18} className="text-pastel-blue-ink" />
+            <h2 className="text-base font-medium text-ink">Latest AI Review</h2>
+          </div>
+          <p className="text-xs text-muted mb-5">Saved from your latest completed assessment.</p>
+
+          {skillAnalysis === undefined && (
+            <div className="flex items-center gap-2 text-sm text-muted py-4">
+              <CircleNotch size={16} className="animate-spin" /> Loading review…
+            </div>
+          )}
+          {skillAnalysis === null && (
+            <div>
+              <p className="text-sm text-muted mb-4">No saved AI review exists for your latest assessment.</p>
+              <button
+                type="button"
+                onClick={generateAnalysis}
+                disabled={analysisLoading}
+                className="w-full bg-ink text-white text-sm px-3 py-2 rounded-md hover:bg-[#333333] transition-colors disabled:opacity-60"
+              >
+                {analysisLoading ? "Generating…" : "Generate AI Analysis"}
+              </button>
+            </div>
+          )}
+          {skillAnalysis && (
+            <div className="flex flex-col gap-5">
+              {skillAnalysis.basedOn?.map((result) => (
+                <div key={result.skillName} className="flex items-center justify-between text-sm border-b border-hairline pb-2">
+                  <span className="text-charcoal truncate pr-2">{result.skillName}</span>
+                  <span className="font-medium text-ink">{result.scorePercent}%</span>
+                </div>
+              ))}
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted mb-2">Strong points</p>
+                <ul className="flex flex-col gap-2">
+                  {skillAnalysis.analysis.strengths.slice(0, 3).map((item, index) => (
+                    <li key={index} className="text-sm text-charcoal"><span className="font-medium text-ink">{item.skill}:</span> {item.note}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted mb-2">Weak points</p>
+                <ul className="flex flex-col gap-2">
+                  {skillAnalysis.analysis.weaknesses.slice(0, 3).map((item, index) => (
+                    <li key={index} className="text-sm text-charcoal"><span className="font-medium text-ink">{item.skill}:</span> {item.note}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted mb-2">Roadmap</p>
+                <ol className="list-decimal list-inside flex flex-col gap-2">
+                  {skillAnalysis.analysis.roadmap.slice(0, 4).map((step, index) => (
+                    <li key={index} className="text-sm text-charcoal">{step.title}</li>
+                  ))}
+                </ol>
+              </div>
+              <p className="text-[11px] text-muted">Provider: {skillAnalysis.provider} · {skillAnalysis.stored ? "Saved" : "Generated"}</p>
+            </div>
+          )}
+        </aside>
+      </div>
     </DashboardLayout>
   );
 }

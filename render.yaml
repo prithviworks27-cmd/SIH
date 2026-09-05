@@ -24,9 +24,17 @@ services:
         sync: false
       - key: GEMINI_MODEL
         value: gemini-3.8-flash
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: GROQ_MODELS
+        value: openai/gpt-oss-20b,openai/gpt-oss-120b,qwen/qwen3.6-27b,qwen/qwen3.8-27b,groq/compound-mini,groq/compound
       - key: OPENROUTER_API_KEY
         sync: false
       - key: OPENROUTER_MODEL
         value: nvidia/nemotron-3-super-120b-a12b:free
+      - key: OPENROUTER_MODELS
+        value: nvidia/nemotron-3-super-120b-a12b:free,deepseek/deepseek-r1-0528:free,meta-llama/llama-3.3-70b-instruct:free,google/gemma-3-27b-it:free
       - key: FRONTEND_URL
         value: https://skill-bridge-nine-phi.vercel.app,https://skill-bridge-delta-six.vercel.app,https://sih-one-amber.vercel.app

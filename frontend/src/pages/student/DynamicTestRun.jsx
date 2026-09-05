@@ -8,6 +8,7 @@ import TestNavigatorSidebar from "../../components/common/TestNavigatorSidebar";
 import { ArrowLeft, ArrowRight, ClockCountdown, SealWarning, Warning, ArrowsOutSimple } from "@phosphor-icons/react";
 import { getDynamicTestForAttempt, submitDynamicSkillTest } from "../../services/skillTestService";
 import { useExamProctoring } from "../../hooks/useExamProctoring";
+import useCameraProctoring from "../../hooks/useCameraProctoring";
 
 const QUEUE_STORAGE_KEY = "dynamicTestQueue";
 
@@ -46,12 +47,15 @@ export default function DynamicTestRun() {
   });
 
   const [items, setItems] = useState(undefined); // flat [{ skillName, question }] across all skills, or null on failure
+  const [loadError, setLoadError] = useState("");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [skippedIds, setSkippedIds] = useState(() => new Set());
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [confirmingSubmit, setConfirmingSubmit] = useState(false);
+  const [autoSubmitting, setAutoSubmitting] = useState(false);
   // Deliberately leaving the test (Exit button, or a successful submit) sets
   // this immediately, synchronously before any navigation/fullscreen-exit
   // side effect runs — exitFullscreen()'s fullscreenchange event fires
@@ -72,7 +76,14 @@ export default function DynamicTestRun() {
   // guard yet while `items` is still undefined/null.
   const proctoring = useExamProctoring({
     active: Boolean(items) && items.length > 0 && !submitting && !leavingDeliberately,
-    onMaxStrikes: () => submitRef.current(),
+    onMaxStrikes: () => {
+      setAutoSubmitting(true);
+      submitRef.current();
+    },
+  });
+  const camera = useCameraProctoring({
+    active: Boolean(items) && items.length > 0 && !submitting && !leavingDeliberately,
+    onViolation: (reason) => proctoring.registerViolation(reason),
   });
 
   useEffect(() => {
@@ -92,6 +103,7 @@ export default function DynamicTestRun() {
       })
       .catch((err) => {
         console.error("Could not load combined skill test run:", err.message);
+        setLoadError(err.message || "Unable to load the assessment questions.");
         setItems(null);
       });
     // selectedSkills is captured once via useState's lazy initializer above
@@ -130,10 +142,18 @@ export default function DynamicTestRun() {
     return (
       <DashboardLayout hideSidebar>
         <EmptyState
-          title="Assessment not found"
-          description="No skills were selected, or the question bank isn't set up for them yet."
-          actionLabel="Back to Assessments"
-          onAction={() => navigate("/skill-tests")}
+          title={loadError ? "Could not load assessment" : "Assessment not found"}
+          description={
+            loadError || "No skills were selected, or the question bank isn't set up for them yet."
+          }
+          actionLabel={loadError ? "Try Again" : "Back to Assessments"}
+          onAction={() => {
+            if (loadError) {
+              window.location.reload();
+              return;
+            }
+            navigate("/skill-tests");
+          }}
         />
       </DashboardLayout>
     );
@@ -168,6 +188,11 @@ export default function DynamicTestRun() {
 
   const handleSelect = (value) => {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
+    setSkippedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(question.id);
+      return next;
+    });
     setError("");
   };
 
@@ -177,7 +202,17 @@ export default function DynamicTestRun() {
 
   const handleNext = () => {
     if (!selectedValue) {
-      setError("Please answer before continuing.");
+      setSkippedIds((prev) => new Set(prev).add(question.id));
+    }
+    setError("");
+    setCurrent((c) => c + 1);
+  };
+
+  const handleSkip = () => {
+    setSkippedIds((prev) => new Set(prev).add(question.id));
+    setError("");
+    if (isLastQuestion) {
+      setConfirmingSubmit(true);
       return;
     }
     setCurrent((c) => c + 1);
@@ -188,6 +223,7 @@ export default function DynamicTestRun() {
   // — see assessmentController.submitDynamicTest), then shows one combined
   // summary once every skill has been submitted.
   const finalizeSubmit = async (currentAnswers) => {
+    if (submitting) return;
     setSubmitting(true);
     try {
       const results = await Promise.all(
@@ -206,6 +242,7 @@ export default function DynamicTestRun() {
     } catch {
       setError("Something went wrong submitting your assessment. Please try again.");
       setSubmitting(false);
+      setAutoSubmitting(false);
       setConfirmingSubmit(false);
     }
   };
@@ -215,9 +252,9 @@ export default function DynamicTestRun() {
   // happen on a single accidental click.
   const handleSubmitClick = () => {
     if (!selectedValue) {
-      setError("Please answer before submitting.");
-      return;
+      setSkippedIds((prev) => new Set(prev).add(question.id));
     }
+    setError("");
     setConfirmingSubmit(true);
   };
 
@@ -228,6 +265,25 @@ export default function DynamicTestRun() {
 
   return (
     <DashboardLayout hideSidebar>
+      <video ref={camera.videoRef} muted playsInline className="fixed bottom-3 right-3 z-30 w-28 h-20 object-cover rounded-md border border-white/50 shadow-lg opacity-80" />
+      {camera.status === "blocked" && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-pastel-red text-pastel-red-ink text-sm px-4 py-3 rounded-lg shadow-xl">
+          {camera.cameraError}
+        </div>
+      )}
+      {camera.status === "loading" && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-ink text-white text-sm px-4 py-3 rounded-lg shadow-xl">
+          Starting camera monitoring…
+        </div>
+      )}
+      {autoSubmitting && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white border border-hairline rounded-xl px-6 py-5 text-center shadow-xl">
+            <p className="text-sm font-medium text-ink">Three warnings reached</p>
+            <p className="text-sm text-muted mt-1">Submitting your assessment automatically…</p>
+          </div>
+        </div>
+      )}
       {/* Exam bar: bleeds edge-to-edge past DashboardLayout's content padding
           (negative margins cancel px-4 md:px-10) and sticks to the top, the
           way a real proctored test's chrome stays fixed regardless of scroll. */}
@@ -284,25 +340,35 @@ export default function DynamicTestRun() {
               <ArrowLeft size={16} />
               Previous
             </button>
-            {isLastQuestion ? (
+            <div className="flex items-center gap-2">
               <button
-                className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+                className="px-4 py-2 border border-hairline rounded-md text-charcoal text-sm hover:bg-bone transition-colors disabled:opacity-40 disabled:pointer-events-none"
                 type="button"
-                onClick={handleSubmitClick}
-                disabled={submitting}
+                onClick={handleSkip}
+                disabled={Boolean(selectedValue) || submitting}
               >
-                {submitting ? "Submitting…" : "Review & Submit"}
+                Skip
               </button>
-            ) : (
-              <button
-                className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2"
-                type="button"
-                onClick={handleNext}
-              >
-                Next
-                <ArrowRight size={16} />
-              </button>
-            )}
+              {isLastQuestion ? (
+                <button
+                  className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+                  type="button"
+                  onClick={handleSubmitClick}
+                  disabled={submitting}
+                >
+                  {submitting ? "Submitting…" : "Review & Submit"}
+                </button>
+              ) : (
+                <button
+                  className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2"
+                  type="button"
+                  onClick={handleNext}
+                >
+                  Next
+                  <ArrowRight size={16} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -310,6 +376,7 @@ export default function DynamicTestRun() {
           questionCount={total}
           current={current}
           answeredIds={answeredIds}
+          skippedIds={skippedIds}
           questionIds={items.map((it) => it.question.id)}
           skillBoundaries={skillBoundaries}
           onJumpTo={(index) => {
@@ -385,9 +452,9 @@ export default function DynamicTestRun() {
         </div>
       )}
 
-      {/* Strike warning: fires when the student exits fullscreen or
-          switches away from the tab — one shared counter for both, since to
-          a proctor they're the same signal ("left the test screen"). The
+        {/* Strike warning: fires when the student exits fullscreen, switches
+          tabs, or uses a detected screenshot shortcut/context menu — one
+          shared counter for all of them. The
           3rd strike skips this dialog entirely and auto-submits instead
           (see useExamProctoring's onMaxStrikes). */}
       {proctoring.warning && (
@@ -402,6 +469,10 @@ export default function DynamicTestRun() {
             <p className="text-sm text-muted mb-6">
               {proctoring.warning.reason === "fullscreen"
                 ? "You exited fullscreen. Leaving the test screen is tracked during an assessment."
+                : proctoring.warning.reason === "screenshot"
+                ? "Screenshot or print capture is not allowed during the assessment."
+                : ["camera-missing", "multiple-faces", "eye-gaze"].includes(proctoring.warning.reason)
+                ? "Camera monitoring detected that your eyes may not be directed toward the screen. Keep one face centered and look at the test."
                 : "You switched away from the test tab. Leaving the test screen is tracked during an assessment."}{" "}
               {proctoring.maxStrikes - proctoring.warning.strikeNumber === 1
                 ? "One more warning will auto-submit your test."
