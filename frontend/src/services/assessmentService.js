@@ -119,8 +119,6 @@ export async function getStoredSkillProfileOrDemo() {
     return resolveMock(localBase);
   }
 
-  if (backendEntries.length === 0) return resolveMock(localBase);
-
   const backendByName = new Map(backendEntries.map((e) => [e.skill_name, e]));
   const profile = localBase.profile.map((s) => {
     const backendEntry = backendByName.get(s.name);
@@ -148,11 +146,23 @@ export async function getStoredSkillProfileOrDemo() {
   // assessment as completed, using the most recent entry's timestamp —
   // localBase.completedAt stays as a fallback for accounts that still only
   // have the legacy localStorage-only self-rating data.
-  const mostRecentUpdate = backendEntries.reduce(
+  const mostRecentProfileUpdate = backendEntries.reduce(
     (latest, e) => (e.last_updated && (!latest || e.last_updated > latest) ? e.last_updated : latest),
     null
   );
-  const completedAt = mostRecentUpdate ?? localBase.completedAt;
+  let mostRecentTestCompletion = null;
+  try {
+    const { results } = await assessmentAPI.getSkillTestResults();
+    mostRecentTestCompletion = results.reduce(
+      (latest, result) =>
+        result.completed_at && (!latest || result.completed_at > latest) ? result.completed_at : latest,
+      null
+    );
+  } catch (err) {
+    console.warn("Could not load test completion date:", err.message);
+  }
+
+  const completedAt = mostRecentTestCompletion ?? mostRecentProfileUpdate ?? localBase.completedAt;
 
   const merged = { profile, overallMatchPercent, completedAt };
   return resolveMock(merged);

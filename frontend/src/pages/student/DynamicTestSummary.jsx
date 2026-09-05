@@ -1,7 +1,9 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import EmptyState from "../../components/common/EmptyState";
-import { CheckCircle, XCircle, Trophy } from "@phosphor-icons/react";
+import { CheckCircle, XCircle, Trophy, Sparkle, CircleNotch } from "@phosphor-icons/react";
+import { aiAdvisorAPI } from "../../services/api";
 
 // Shown once, after every skill queued from SkillAssessment's Step 1 picker
 // has been submitted — a single combined summary instead of a result screen
@@ -11,6 +13,20 @@ export default function DynamicTestSummary() {
   const location = useLocation();
   const navigate = useNavigate();
   const results = location.state?.results ?? [];
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState("");
+
+  const generateAnalysis = async () => {
+    setAnalysisLoading(true);
+    setAnalysisError("");
+    try {
+      await aiAdvisorAPI.analyzeLatestRun(true);
+      navigate("/skill-tests");
+    } catch (error) {
+      setAnalysisError(error.message || "Could not generate the AI analysis.");
+      setAnalysisLoading(false);
+    }
+  };
 
   if (results.length === 0) {
     return (
@@ -86,12 +102,25 @@ export default function DynamicTestSummary() {
             </div>
           )}
 
-          <button
-            onClick={() => navigate("/skill-profile/gap-report")}
-            className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all"
-          >
-            View My Skill Profile
-          </button>
+          {analysisError && <p className="text-sm text-pastel-red-ink mb-3">{analysisError}</p>}
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={generateAnalysis}
+              disabled={analysisLoading}
+              className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {analysisLoading ? <CircleNotch size={16} className="animate-spin" /> : <Sparkle size={16} />}
+              {analysisLoading ? "Generating AI Analysis…" : "Generate AI Analysis"}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/skill-profile/gap-report")}
+              className="w-full border border-hairline text-charcoal text-sm px-4 py-2.5 rounded-md hover:bg-bone transition-colors"
+            >
+              View My Skill Profile
+            </button>
+          </div>
         </div>
       </div>
     </DashboardLayout>
