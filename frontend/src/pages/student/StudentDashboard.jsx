@@ -113,8 +113,7 @@ export default function StudentDashboard() {
       {skillProfile?.completedAt && (
         <section className="mb-10 bg-white border border-hairline rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-wide text-muted mb-1">Assessment complete</p>
-            <h2 className="text-lg font-medium text-ink">Your skill gap report is ready</h2>
+            <h2 className="text-lg font-medium text-ink">Skill Gap Report</h2>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
             <button
@@ -124,7 +123,7 @@ export default function StudentDashboard() {
               className="border border-hairline text-charcoal text-sm px-4 py-2.5 rounded-md hover:bg-bone transition-colors self-start sm:self-auto disabled:opacity-60 flex items-center gap-2"
             >
               {analysisLoading ? <CircleNotch size={16} className="animate-spin" /> : <Sparkle size={16} />}
-              {analysisLoading ? "Analyzing…" : "Analyze My Results"}
+              {analysisLoading ? "Analyzing…" : "Analysis"}
             </button>
             <button
               type="button"
