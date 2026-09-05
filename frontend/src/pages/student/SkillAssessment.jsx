@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
@@ -22,6 +22,9 @@ export default function SkillAssessment() {
   const [showRetakeWarning, setShowRetakeWarning] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [agreedToRules, setAgreedToRules] = useState(false);
+  const [cameraAccess, setCameraAccess] = useState("idle");
+  const cameraStreamRef = useRef(null);
+  const cameraPreviewRef = useRef(null);
 
   useEffect(() => {
     // getAssessmentQuestions() only supplies the skill picker's sections/list
@@ -37,6 +40,42 @@ export default function SkillAssessment() {
     }
     if (searchParams.get("retake") === "true") setForceRetake(true);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!showRules) return undefined;
+
+    let cancelled = false;
+    const requestCameraAccess = async () => {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraAccess("denied");
+        return;
+      }
+      try {
+        setCameraAccess("loading");
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        cameraStreamRef.current = stream;
+        if (cameraPreviewRef.current) {
+          cameraPreviewRef.current.srcObject = stream;
+          await cameraPreviewRef.current.play();
+        }
+        setCameraAccess("granted");
+      } catch {
+        setCameraAccess("denied");
+      }
+    };
+
+    requestCameraAccess();
+    return () => {
+      cancelled = true;
+      cameraStreamRef.current?.getTracks().forEach((track) => track.stop());
+      cameraStreamRef.current = null;
+      if (cameraPreviewRef.current) cameraPreviewRef.current.srcObject = null;
+    };
+  }, [showRules]);
 
   if (!questions || previousCompletedAt === undefined) {
     return (
@@ -164,6 +203,23 @@ export default function SkillAssessment() {
             </ul>
           </div>
 
+          <div className="flex items-center gap-4 mt-6 p-4 border border-hairline rounded-lg">
+            <video ref={cameraPreviewRef} muted playsInline className="w-24 h-16 object-cover rounded-md bg-ink" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-ink">Camera access required</p>
+              <p className="text-xs text-muted mt-1">
+                  {cameraAccess === "loading"
+                    ? "Requesting camera permission…"
+                    : cameraAccess === "granted"
+                    ? "Camera connected. Face and approximate eye-direction monitoring will run during the test."
+                    : cameraAccess === "denied"
+                    ? "Camera access was denied. Allow it in your browser settings, then reload this page."
+                    : "Allow camera access to continue."}
+              </p>
+            </div>
+            {cameraAccess === "granted" && <span className="text-xs font-medium text-pastel-green-ink">Ready</span>}
+          </div>
+
           <p className="text-sm text-muted mt-6">
             Selected skills: <span className="text-ink font-medium">{selectedSkills.join(", ")}</span>
           </p>
@@ -189,7 +245,7 @@ export default function SkillAssessment() {
             <button
               type="button"
               onClick={startSkillTests}
-              disabled={!agreedToRules}
+              disabled={!agreedToRules || cameraAccess !== "granted"}
               className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Agree and Start Test

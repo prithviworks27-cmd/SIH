@@ -8,6 +8,7 @@ import TestNavigatorSidebar from "../../components/common/TestNavigatorSidebar";
 import { ArrowLeft, ArrowRight, ClockCountdown, SealWarning, Warning, ArrowsOutSimple } from "@phosphor-icons/react";
 import { getDynamicTestForAttempt, submitDynamicSkillTest } from "../../services/skillTestService";
 import { useExamProctoring } from "../../hooks/useExamProctoring";
+import useCameraProctoring from "../../hooks/useCameraProctoring";
 
 const QUEUE_STORAGE_KEY = "dynamicTestQueue";
 
@@ -79,6 +80,10 @@ export default function DynamicTestRun() {
       setAutoSubmitting(true);
       submitRef.current();
     },
+  });
+  const camera = useCameraProctoring({
+    active: Boolean(items) && items.length > 0 && !submitting && !leavingDeliberately,
+    onViolation: (reason) => proctoring.registerViolation(reason),
   });
 
   useEffect(() => {
@@ -260,6 +265,17 @@ export default function DynamicTestRun() {
 
   return (
     <DashboardLayout hideSidebar>
+      <video ref={camera.videoRef} muted playsInline className="fixed bottom-3 right-3 z-30 w-28 h-20 object-cover rounded-md border border-white/50 shadow-lg opacity-80" />
+      {camera.status === "blocked" && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-pastel-red text-pastel-red-ink text-sm px-4 py-3 rounded-lg shadow-xl">
+          {camera.cameraError}
+        </div>
+      )}
+      {camera.status === "loading" && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-ink text-white text-sm px-4 py-3 rounded-lg shadow-xl">
+          Starting camera monitoring…
+        </div>
+      )}
       {autoSubmitting && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white border border-hairline rounded-xl px-6 py-5 text-center shadow-xl">
@@ -455,6 +471,8 @@ export default function DynamicTestRun() {
                 ? "You exited fullscreen. Leaving the test screen is tracked during an assessment."
                 : proctoring.warning.reason === "screenshot"
                 ? "Screenshot or print capture is not allowed during the assessment."
+                : ["camera-missing", "multiple-faces", "eye-gaze"].includes(proctoring.warning.reason)
+                ? "Camera monitoring detected that your eyes may not be directed toward the screen. Keep one face centered and look at the test."
                 : "You switched away from the test tab. Leaving the test screen is tracked during an assessment."}{" "}
               {proctoring.maxStrikes - proctoring.warning.strikeNumber === 1
                 ? "One more warning will auto-submit your test."

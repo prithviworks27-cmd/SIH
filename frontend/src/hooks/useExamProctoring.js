@@ -141,6 +141,7 @@ export function useExamProctoring({ active, onMaxStrikes }) {
   };
 
   const dismissWarning = () => setWarning(null);
+  const registerViolation = (reason) => registerStrike(reason);
 
-  return { strikes, maxStrikes: MAX_STRIKES, warning, dismissWarning, fullscreenBlocked, resumeFullscreen };
+  return { strikes, maxStrikes: MAX_STRIKES, warning, dismissWarning, fullscreenBlocked, resumeFullscreen, registerViolation };
 }
