@@ -80,7 +80,7 @@ export default function LearningPathStudy() {
 
         <header className="border-b border-hairline pb-6 mb-8">
           <p className="text-xs uppercase tracking-wide text-muted mb-2">Personal study plan</p>
-          <h1 className="font-editorial text-3xl text-ink tracking-tight mb-2">{path.skillName}</h1>
+          <h1 className="font-geist text-3xl text-ink tracking-tight mb-2">{path.skillName}</h1>
           <p className="text-muted max-w-2xl">{path.title}. Choose how you want to study and follow the generated plan at your own pace.</p>
         </header>
 

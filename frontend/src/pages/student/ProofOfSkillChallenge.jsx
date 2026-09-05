@@ -54,7 +54,7 @@ export default function ProofOfSkillChallenge() {
       <DashboardLayout>
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center gap-4 py-16">
           <SealCheck size={40} className={result.passing ? "text-pastel-green-ink" : "text-pastel-red-ink"} weight="fill" />
-          <h1 className="font-editorial text-2xl text-ink tracking-tight">
+          <h1 className="font-geist text-2xl text-ink tracking-tight">
             {result.passing ? "Challenge Passed" : "Not Quite — Try Again"}
           </h1>
           <p className="text-muted max-w-md leading-relaxed">
@@ -90,7 +90,7 @@ export default function ProofOfSkillChallenge() {
         {/*Header Section*/}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-hairline pb-6">
           <div>
-            <h1 className="font-editorial text-2xl text-ink tracking-tight mb-2">{DATA_CLEANING_CHALLENGE.title}</h1>
+            <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">{DATA_CLEANING_CHALLENGE.title}</h1>
             <p className="text-muted max-w-2xl leading-relaxed">{DATA_CLEANING_CHALLENGE.description}</p>
           </div>
           <div className="mt-4 md:mt-0 flex items-center gap-2 bg-bone py-2 px-4 rounded-md">

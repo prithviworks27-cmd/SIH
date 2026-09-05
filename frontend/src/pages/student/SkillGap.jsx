@@ -32,7 +32,7 @@ export default function SkillGap() {
   return (
     <DashboardLayout>
       <header className="mb-8 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Skill Gap</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Skill Gap</h1>
         <p className="text-muted">See exactly which skills stand between you and your target role.</p>
       </header>
 

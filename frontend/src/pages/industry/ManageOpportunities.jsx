@@ -44,7 +44,7 @@ export default function ManageOpportunities() {
     <>
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Opportunities</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Opportunities</h2>
           <p className="text-muted mt-2">Manage the roles you've posted.</p>
         </div>
         <Link

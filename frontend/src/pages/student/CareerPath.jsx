@@ -76,7 +76,7 @@ export default function CareerPath() {
   return (
     <DashboardLayout>
       <header className="mb-8 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Career Path</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Career Path</h1>
         <p className="text-muted">See which roles you're closest to, and what it takes to get there.</p>
       </header>
 
@@ -109,7 +109,7 @@ export default function CareerPath() {
         <div className="lg:col-span-5 flex flex-col gap-6">
           <section className="bg-white border border-hairline rounded-xl p-8">
             <p className="text-xs uppercase tracking-wide text-muted mb-1">Selected Role</p>
-            <h2 className="font-editorial text-2xl text-ink tracking-tight mb-4">{readiness.role.title}</h2>
+            <h2 className="font-geist text-2xl text-ink tracking-tight mb-4">{readiness.role.title}</h2>
             <div className="flex items-end gap-2 mb-1">
               <span className="font-editorial text-4xl text-ink tracking-tight">{readiness.readinessPercent}%</span>
               <span className="text-sm text-muted mb-1">Readiness</span>

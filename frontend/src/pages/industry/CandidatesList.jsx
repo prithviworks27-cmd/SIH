@@ -35,7 +35,7 @@ export default function CandidatesList() {
     <>
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Candidates</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Candidates</h2>
           <p className="text-muted mt-2">Ranked by match against a selected opportunity.</p>
         </div>
         <div className="w-full md:w-72">

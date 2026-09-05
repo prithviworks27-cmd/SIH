@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import LoadingState from "../../components/common/LoadingState";
-import { FloppyDisk } from "@phosphor-icons/react";
+import { FloppyDisk, UserCircle, UploadSimple, Trash } from "@phosphor-icons/react";
 import { useAuth } from "../../hooks/useAuth";
-import { getPortfolio, savePortfolioBasics } from "../../services/portfolioService";
+import { getPortfolio, savePortfolioBasics, uploadAvatar, removeAvatar } from "../../services/portfolioService";
 
 const inputClass =
   "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
@@ -15,16 +15,20 @@ export default function DigitalPortfolioEdit() {
   const [form, setForm] = useState(undefined);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarBusy, setAvatarBusy] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
 
   useEffect(() => {
-    getPortfolio().then((p) =>
+    getPortfolio().then((p) => {
       setForm({
         headline: p.headline,
         institution: p.institution,
         expectedGraduation: p.expectedGraduation,
         bio: p.bio,
-      })
-    );
+      });
+      setAvatarUrl(p.avatarUrl || "");
+    });
   }, []);
 
   if (!form) {
@@ -51,12 +55,44 @@ export default function DigitalPortfolioEdit() {
     }
   };
 
+  // Uploads immediately on selection (same pattern as certificate files)
+  // rather than deferring to Save Changes, so the photo is never lost if the
+  // student navigates away before saving the rest of the form.
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setAvatarBusy(true);
+    setAvatarError("");
+    try {
+      const url = await uploadAvatar(file);
+      setAvatarUrl(url);
+    } catch (err) {
+      setAvatarError(err.message || "Could not upload this photo.");
+    } finally {
+      setAvatarBusy(false);
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    setAvatarBusy(true);
+    setAvatarError("");
+    try {
+      await removeAvatar();
+      setAvatarUrl("");
+    } catch (err) {
+      setAvatarError(err.message || "Could not remove this photo.");
+    } finally {
+      setAvatarBusy(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       {/*Page Header*/}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Edit Portfolio</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Edit Portfolio</h2>
           <p className="text-muted mt-2">Manage your academic and professional profile visible to industry partners.</p>
         </div>
         <div className="flex gap-3 w-full md:w-auto">
@@ -76,6 +112,41 @@ export default function DigitalPortfolioEdit() {
           </button>
         </div>
       </div>
+      {/*Profile Picture*/}
+      <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
+        <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Profile Picture</h3>
+        <div className="flex items-center gap-5">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" className="w-20 h-20 rounded-full object-cover border border-hairline flex-shrink-0" />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-bone border border-hairline flex items-center justify-center flex-shrink-0">
+              <UserCircle size={36} className="text-muted" />
+            </div>
+          )}
+          <div className="flex flex-col gap-2">
+            <p className="text-xs text-muted">No profile picture is shown by default — upload one if you'd like.</p>
+            <div className="flex items-center gap-3">
+              <label className="inline-flex items-center gap-1.5 text-sm border border-hairline rounded-md px-3 py-1.5 hover:bg-bone transition-colors cursor-pointer disabled:opacity-60">
+                <UploadSimple size={14} />
+                {avatarBusy ? "Uploading…" : avatarUrl ? "Replace photo" : "Upload photo"}
+                <input type="file" accept="image/*" className="hidden" disabled={avatarBusy} onChange={handleAvatarChange} />
+              </label>
+              {avatarUrl && (
+                <button
+                  onClick={handleAvatarRemove}
+                  disabled={avatarBusy}
+                  className="inline-flex items-center gap-1.5 text-sm text-pastel-red-ink hover:underline disabled:opacity-60"
+                >
+                  <Trash size={14} />
+                  Remove
+                </button>
+              )}
+            </div>
+            {avatarError && <p className="text-xs text-pastel-red-ink">{avatarError}</p>}
+          </div>
+        </div>
+      </section>
+
       {/*Basic Info Form*/}
       <section className="bg-white border border-hairline rounded-xl p-8">
         <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Basic Information</h3>

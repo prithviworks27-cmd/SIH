@@ -46,7 +46,7 @@ export default function SkillTests() {
   return (
     <DashboardLayout>
       <header className="mb-8 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">My Assessments</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">My Assessments</h1>
         <p className="text-muted">Pass a skill test to verify it on your profile — employers see Assessment Verified skills as trusted.</p>
       </header>
 

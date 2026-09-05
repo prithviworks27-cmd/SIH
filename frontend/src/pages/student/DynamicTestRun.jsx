@@ -293,7 +293,7 @@ export default function DynamicTestRun() {
             <p className="text-[11px] uppercase tracking-[0.14em] text-[#9a9a9a] mb-0.5">
               Section {sectionNumber} of {skillBoundaries.length} · Skill Assessment
             </p>
-            <h1 className="font-editorial text-xl tracking-tight truncate">{item.skillName}</h1>
+            <h1 className="font-geist text-xl tracking-tight truncate">{item.skillName}</h1>
           </div>
 
           <div className="flex items-center gap-5 flex-shrink-0">

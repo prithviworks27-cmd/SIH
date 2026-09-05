@@ -115,7 +115,7 @@ export default function CourseCatalog() {
       {/*Header*/}
       <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-hairline pb-6">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight mb-2">Course Catalog</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight mb-2">Course Catalog</h2>
           <p className="text-muted max-w-2xl leading-relaxed">
             Discover curated learning paths and advanced modules provided by leading institutional partners.
           </p>

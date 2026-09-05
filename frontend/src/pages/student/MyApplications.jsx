@@ -32,7 +32,7 @@ export default function MyApplications() {
       {/*Header*/}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Application History</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Application History</h2>
           <p className="text-muted mt-1.5">Review and track the status of your submitted applications.</p>
         </div>
         <div className="w-full md:w-56">

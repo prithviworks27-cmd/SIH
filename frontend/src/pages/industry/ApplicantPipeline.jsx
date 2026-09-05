@@ -74,7 +74,7 @@ export default function ApplicantPipeline() {
   return (
     <>
       <header className="mb-10 border-b border-hairline pb-6">
-        <h2 className="font-editorial text-3xl text-ink tracking-tight">Applicant Pipeline</h2>
+        <h2 className="font-geist text-3xl text-ink tracking-tight">Applicant Pipeline</h2>
         <p className="text-muted mt-2">Move candidates through your recruitment stages.</p>
       </header>
 

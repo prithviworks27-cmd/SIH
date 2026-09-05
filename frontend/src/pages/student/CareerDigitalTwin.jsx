@@ -44,7 +44,7 @@ export default function CareerDigitalTwin() {
   return (
     <DashboardLayout>
       <header className="mb-10 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Career Digital Twin</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Career Digital Twin</h1>
         <p className="text-muted">A model of your career readiness, and where it could go.</p>
       </header>
 

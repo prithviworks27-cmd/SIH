@@ -89,7 +89,7 @@ export default function CompanyOnboarding() {
           <div className="w-12 h-12 rounded-full bg-white border border-hairline flex items-center justify-center mx-auto mb-4">
             <Buildings size={22} className="text-ink" />
           </div>
-          <h1 className="font-editorial text-3xl text-ink tracking-tight mb-2">Tell us about your company</h1>
+          <h1 className="font-geist text-3xl text-ink tracking-tight mb-2">Tell us about your company</h1>
           <p className="text-muted">
             Welcome{user?.name ? `, ${user.name}` : ""} — this is what students and academicians will see about your
             organization. You can edit it anytime from Company Profile.

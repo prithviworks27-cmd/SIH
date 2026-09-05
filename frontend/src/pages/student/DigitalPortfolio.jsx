@@ -8,7 +8,7 @@ import SkillEvidencePanel from "../../components/common/SkillEvidencePanel";
 import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
 import { getPortfolio, getAssessmentResults } from "../../services/portfolioService";
-import { ShareNetwork, X, SealCheck, DownloadSimple } from "@phosphor-icons/react";
+import { ShareNetwork, X, SealCheck, DownloadSimple, UserCircle } from "@phosphor-icons/react";
 
 export default function DigitalPortfolio() {
   const { user } = useAuth();
@@ -66,9 +66,19 @@ export default function DigitalPortfolio() {
       {/*Profile Header*/}
       <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-          <img className="w-28 h-28 rounded-full object-cover border border-hairline" alt={user?.name || "Student"} src={portfolio.avatarUrl} />
+          {portfolio.avatarUrl ? (
+            <img
+              className="w-28 h-28 rounded-full object-cover border border-hairline flex-shrink-0"
+              alt={user?.name || "Student"}
+              src={portfolio.avatarUrl}
+            />
+          ) : (
+            <div className="w-28 h-28 rounded-full bg-bone border border-hairline flex items-center justify-center flex-shrink-0">
+              <UserCircle size={48} className="text-muted" />
+            </div>
+          )}
           <div>
-            <h2 className="font-editorial text-3xl text-ink tracking-tight mb-1">{user?.name || "Student"}</h2>
+            <h2 className="font-geist text-3xl text-ink tracking-tight mb-1">{user?.name || "Student"}</h2>
             <p className="text-muted mb-2">
               {portfolio.headline} · {portfolio.institution}
             </p>

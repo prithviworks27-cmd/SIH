@@ -78,7 +78,7 @@ export default function StudentDashboard() {
     <DashboardLayout>
       {/*Welcome Header*/}
       <header className="mb-10">
-        <h1 className="font-editorial text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Student"}</h1>
+        <h1 className="font-geist text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Student"}</h1>
         <p className="text-muted leading-relaxed">Here is a summary of your academic progress and opportunities.</p>
       </header>
 
@@ -86,7 +86,7 @@ export default function StudentDashboard() {
         <section className="mb-10 bg-ink text-white rounded-xl p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
             <p className="text-xs uppercase tracking-wide text-[#cfcfcf] mb-2">Start here</p>
-            <h2 className="font-editorial text-2xl tracking-tight mb-2">Give your skills a starting point</h2>
+            <h2 className="font-geist text-2xl tracking-tight mb-2">Give your skills a starting point</h2>
             <p className="text-sm text-[#cfcfcf] max-w-xl leading-relaxed">
               Complete your skill assessment to see your strengths, identify gaps, and get more relevant opportunities.
             </p>
@@ -149,7 +149,7 @@ export default function StudentDashboard() {
             <div className="flex items-start justify-between gap-4 border-b border-hairline pb-4 mb-6">
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted mb-1">Assessment results</p>
-                <h2 id="skill-gap-report-title" className="font-editorial text-2xl text-ink tracking-tight">Skill Gap Report</h2>
+                <h2 id="skill-gap-report-title" className="font-geist text-2xl text-ink tracking-tight">Skill Gap Report</h2>
               </div>
               <button
                 type="button"
@@ -228,7 +228,7 @@ export default function StudentDashboard() {
             <div className="flex items-start justify-between gap-4 border-b border-hairline pb-4 mb-6">
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted mb-1">AI Skill Analysis</p>
-                <h2 id="skill-analysis-title" className="font-editorial text-2xl text-ink tracking-tight">
+                <h2 id="skill-analysis-title" className="font-geist text-2xl text-ink tracking-tight">
                   Your Latest Assessment Results
                 </h2>
               </div>

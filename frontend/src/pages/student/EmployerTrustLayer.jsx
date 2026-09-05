@@ -65,7 +65,7 @@ export default function EmployerTrustLayer() {
   return (
     <DashboardLayout>
       <header className="mb-10 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Employer Trust Layer</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Employer Trust Layer</h1>
         <p className="text-muted">What an employer sees when they verify your profile.</p>
       </header>
 

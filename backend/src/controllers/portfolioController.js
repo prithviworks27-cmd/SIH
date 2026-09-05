@@ -164,6 +164,72 @@ export const savePortfolioBasics = async (req, res) => {
   }
 };
 
+// POST /api/portfolio/avatar — multipart upload handled by multer
+// (memoryStorage, see portfolioRoutes.js), stored in the "avatars" Supabase
+// Storage bucket under {userId}/{timestamp}-{filename}, then upserted into
+// portfolio_basics.avatar_url. No profile picture is ever set by default —
+// this is the only path that writes a non-null avatar_url.
+export const uploadAvatar = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+    if (!req.file) return res.status(400).json({ error: "No file provided" });
+
+    const safeName = req.file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const storagePath = `${userId}/${Date.now()}-${safeName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(storagePath, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
+
+    if (uploadError) {
+      console.error("Upload avatar error:", uploadError);
+      return res.status(500).json({ error: `Failed to upload photo: ${uploadError.message}` });
+    }
+
+    const { data: publicUrlData } = supabase.storage.from("avatars").getPublicUrl(storagePath);
+
+    const { error } = await supabase
+      .from("portfolio_basics")
+      .upsert({ user_id: userId, avatar_url: publicUrlData.publicUrl, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+
+    if (error) {
+      console.error("Save avatar url error:", error);
+      return res.status(500).json({ error: "Failed to save photo" });
+    }
+
+    res.status(200).json({ avatarUrl: publicUrlData.publicUrl });
+  } catch (error) {
+    console.error("Upload avatar error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// DELETE /api/portfolio/avatar — clears avatar_url so the portfolio goes
+// back to showing no profile picture (the default state). Doesn't bother
+// deleting the old Storage object — same lightweight approach as
+// certificate re-uploads, which also never clean up the previous file.
+export const removeAvatar = async (req, res) => {
+  try {
+    const userId = await resolveUserId(req);
+    if (!userId) return res.status(404).json({ error: "User not found" });
+
+    const { error } = await supabase
+      .from("portfolio_basics")
+      .upsert({ user_id: userId, avatar_url: null, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+
+    if (error) {
+      console.error("Remove avatar error:", error);
+      return res.status(500).json({ error: "Failed to remove photo" });
+    }
+
+    res.status(200).json({ avatarUrl: null });
+  } catch (error) {
+    console.error("Remove avatar error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 // POST /api/portfolio/init — replaces the old seedPortfolio. A brand-new
 // user has no portfolio_basics row yet; this creates an EMPTY one (no fake
 // DEFAULT_PORTFOLIO projects/certifications/internships/achievements are

@@ -20,7 +20,7 @@ export default function StudentManagement() {
   return (
     <DashboardLayout navItems={adminNavItems} footerNavItems={[]} title="Institution Portal" subtitle="Admin Analytics">
       <header className="mb-10 border-b border-hairline pb-6">
-        <h1 className="font-editorial text-3xl text-ink tracking-tight mb-1">Student Management</h1>
+        <h1 className="font-geist text-3xl text-ink tracking-tight mb-1">Student Management</h1>
         <p className="text-muted">Every student's skill verification and readiness at a glance.</p>
       </header>
 

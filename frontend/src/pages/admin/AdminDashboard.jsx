@@ -17,7 +17,7 @@ export default function AdminDashboard() {
   return (
     <DashboardLayout navItems={adminNavItems} footerNavItems={[]} title="Institution Portal" subtitle="Admin Analytics">
       <header className="mb-10">
-        <h1 className="font-editorial text-4xl text-ink tracking-tight mb-2">Institution Overview</h1>
+        <h1 className="font-geist text-4xl text-ink tracking-tight mb-2">Institution Overview</h1>
         <p className="text-muted leading-relaxed">Placement, engagement, and skill demand across your student body.</p>
       </header>
 

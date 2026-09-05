@@ -49,7 +49,7 @@ export default function SkillTestResult() {
           ) : (
             <span className="text-3xl mb-2 block">📋</span>
           )}
-          <h1 className="font-editorial text-2xl text-ink tracking-tight mb-1">Assessment Completed</h1>
+          <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">Assessment Completed</h1>
           <p className="text-muted mb-8">{title}</p>
 
           <div className="mb-6">

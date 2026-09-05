@@ -62,7 +62,7 @@ export default function SkillPrograms() {
     <>
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
         <div>
-          <h2 className="font-editorial text-3xl text-ink tracking-tight">Skill Development Programs</h2>
+          <h2 className="font-geist text-3xl text-ink tracking-tight">Skill Development Programs</h2>
           <p className="text-muted mt-2 max-w-xl">
             "We need candidates but nobody is ready" — define a week-by-week program to turn students into
             industry-ready candidates for your open roles.

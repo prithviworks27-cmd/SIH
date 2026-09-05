@@ -33,7 +33,7 @@ export default function IndustryDashboard() {
   return (
     <>
       <header className="mb-10">
-        <h1 className="font-editorial text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Partner"}</h1>
+        <h1 className="font-geist text-4xl text-ink tracking-tight mb-2">Welcome back, {user?.name || "Partner"}</h1>
         <p className="text-muted leading-relaxed">Here's an overview of your recruitment pipeline.</p>
       </header>
 

@@ -115,7 +115,7 @@ export default function PostOpportunity() {
   return (
     <>
       <header className="mb-10">
-        <h2 className="font-editorial text-3xl text-ink tracking-tight">Post an Opportunity</h2>
+        <h2 className="font-geist text-3xl text-ink tracking-tight">Post an Opportunity</h2>
         <p className="text-muted mt-2">Define the role and required skills — matched candidates appear the moment it's published.</p>
       </header>
 
