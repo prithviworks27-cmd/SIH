@@ -78,11 +78,11 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
   return (
     <>
       {/* Mobile top bar */}
-      <header className="md:hidden flex items-center justify-between p-4 border-b border-hairline bg-white/70 backdrop-blur-md sticky top-0 z-20">
-        <h1 className="font-sans font-bold text-xl text-ink tracking-tight">{title}</h1>
+      <header className="md:hidden flex items-center gap-2 p-4 border-b border-hairline bg-white/70 backdrop-blur-md sticky top-0 z-20">
         <button onClick={() => setMobileOpen(true)} className="icon-btn p-2" aria-label="Open menu" title="Open menu">
           <List size={20} />
         </button>
+        <h1 className="font-sans font-bold text-xl text-ink tracking-tight">{title}</h1>
       </header>
 
       {/* Backdrop — fades in behind the drawer on mobile, click to close */}

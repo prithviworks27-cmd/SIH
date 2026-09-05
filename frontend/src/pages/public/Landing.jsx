@@ -43,7 +43,7 @@ export default function Landing() {
         <header className="w-full">
           <div className="flex justify-between items-center px-6 md:px-10 py-6">
             <Link to="/" className="flex items-center">
-              <img src={logo} alt="SkillBridge" className="w-20 h-20 rounded-full object-cover" />
+              <img src={logo} alt="SkillBridge" className="w-16 h-16 rounded-full object-cover" />
             </Link>
 
             <nav className="flex items-center gap-8">
