@@ -8,7 +8,7 @@ import SkillEvidencePanel from "../../components/common/SkillEvidencePanel";
 import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
 import { getPortfolio, getAssessmentResults } from "../../services/portfolioService";
-import { ShareNetwork, X, SealCheck, DownloadSimple, UserCircle } from "@phosphor-icons/react";
+import { X, SealCheck, DownloadSimple, UserCircle, ArrowRight, PencilSimple } from "@phosphor-icons/react";
 
 export default function DigitalPortfolio() {
   const { user } = useAuth();
@@ -43,46 +43,75 @@ export default function DigitalPortfolio() {
 
   return (
     <DashboardLayout>
-      {/*Top Bar / Actions*/}
-      <div className="flex justify-between items-center mb-6">
-        <div />
-        <div className="flex gap-3">
-          <Link to="/portfolio/manage" className="border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors">
-            Manage Entries
-          </Link>
-          <Link to="/portfolio/edit" className="border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors">
-            Edit Portfolio
-          </Link>
-          <button
-            onClick={() => setShareModalOpen(true)}
-            className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-[#333333] active:scale-[0.98] transition-all flex items-center gap-2"
-          >
-            <ShareNetwork size={16} />
-            Share Portfolio
-          </button>
-        </div>
-      </div>
+      {/*Hero — headline/bio + actions on the left, faux-window profile
+         card on the right, mirroring the public Skill Passport hero so a
+         student's own dashboard and their shared link feel like one system.*/}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-6">
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 border-t border-pastel-blue-ink" />
+            <span className="text-xs uppercase tracking-wide text-pastel-blue-ink font-mono">
+              {portfolio.headline || "your skill passport"}
+            </span>
+          </div>
+          <h2 className="font-geist font-bold text-3xl md:text-4xl text-ink tracking-tight leading-[1.05] mb-4">
+            {user?.name || "Student"} builds skills that ship.
+          </h2>
+          {portfolio.bio && <p className="text-charcoal/80 leading-relaxed max-w-md mb-2">{portfolio.bio}</p>}
+          {portfolio.institution && <p className="text-sm text-muted mb-6">{portfolio.institution}</p>}
 
-      {/*Profile Header*/}
-      <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
-        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-          {portfolio.avatarUrl ? (
-            <img
-              className="w-28 h-28 rounded-full object-cover border border-hairline flex-shrink-0"
-              alt={user?.name || "Student"}
-              src={portfolio.avatarUrl}
-            />
-          ) : (
-            <div className="w-28 h-28 rounded-full bg-bone border border-hairline flex items-center justify-center flex-shrink-0">
-              <UserCircle size={48} className="text-muted" />
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setShareModalOpen(true)}
+              className="flex items-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-6 hover:bg-[#333333] active:scale-[0.98] transition-all"
+            >
+              Share Portfolio
+              <ArrowRight size={15} weight="bold" />
+            </button>
+            <Link
+              to="/portfolio/edit"
+              className="flex items-center gap-2 border border-hairline text-sm font-medium text-ink rounded-md py-2.5 px-6 hover:bg-bone transition-colors"
+            >
+              <PencilSimple size={15} />
+              Edit Portfolio
+            </Link>
+            <Link to="/portfolio/manage" className="text-sm text-muted hover:text-ink transition-colors">
+              Manage entries
+            </Link>
+          </div>
+        </div>
+
+        {/* Faux-window profile card */}
+        <div className="border border-hairline rounded-xl bg-white shadow-lift overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-hairline bg-bone">
+            <span className="text-xs font-mono text-muted">profile</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-hairline" />
+              <span className="w-2 h-2 rounded-full bg-hairline" />
+              <span className="w-2 h-2 rounded-full bg-hairline" />
             </div>
-          )}
-          <div>
-            <h2 className="font-geist text-3xl text-ink tracking-tight mb-1">{user?.name || "Student"}</h2>
-            <p className="text-muted mb-2">
-              {portfolio.headline} · {portfolio.institution}
-            </p>
-            <p className="text-charcoal max-w-2xl leading-relaxed">{portfolio.bio}</p>
+          </div>
+          <div className="p-8 flex flex-col items-center text-center">
+            {portfolio.avatarUrl ? (
+              <img
+                className="w-28 h-28 rounded-full object-cover border border-hairline"
+                alt={user?.name || "Student"}
+                src={portfolio.avatarUrl}
+              />
+            ) : (
+              <div className="w-28 h-28 rounded-full bg-bone border border-hairline flex items-center justify-center">
+                <UserCircle size={48} className="text-muted" />
+              </div>
+            )}
+            <p className="font-geist text-lg text-ink mt-4">{user?.name || "Student"}</p>
+            {portfolio.headline && <p className="text-sm text-muted mt-0.5">{portfolio.headline}</p>}
+          </div>
+          <div className="flex items-center justify-between px-6 py-3 border-t border-hairline text-xs text-muted">
+            <span>{portfolio.institution || "SkillBridge"}</span>
+            <span className="flex items-center gap-1.5 text-pastel-green-ink">
+              <span className="w-1.5 h-1.5 rounded-full bg-pastel-green-ink" />
+              verified
+            </span>
           </div>
         </div>
       </section>
