@@ -116,7 +116,7 @@ export default function Landing() {
         {/* Footer */}
         <footer className="border-t border-hairline mt-auto">
           <div className="px-6 md:px-10 py-8 flex flex-col items-center gap-1">
-            <span className="font-editorial italic text-base text-ink">SkillBridge</span>
+            <span className="font-geist text-base text-ink">SkillBridge</span>
             <span className="text-xs text-muted">© 2026 SkillBridge Collaboration Portal.</span>
           </div>
         </footer>
