@@ -140,6 +140,31 @@ export default function DigitalPortfolio() {
           </div>
         </section>
 
+        {/*Projects*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Projects
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-1">
+            {portfolio.projects.map((project) => (
+              <div key={project.id} className="border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow">
+                <div className="flex justify-between items-start mb-1 gap-2">
+                  <h4 className="text-sm font-medium text-ink">{project.title}</h4>
+                  <SkillTrustBadge trustLevel={project.trustLevel} />
+                </div>
+                <p className="text-sm text-muted mb-3 leading-relaxed">{project.description}</p>
+                <div className="flex gap-1.5 flex-wrap">
+                  {project.skills.map((skill) => (
+                    <span key={skill} className="bg-bone text-charcoal px-2 py-0.5 rounded text-xs">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/*Certifications*/}
         <section className="bg-white border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
@@ -188,31 +213,6 @@ export default function DigitalPortfolio() {
               ))}
             </ul>
           )}
-        </section>
-
-        {/*Projects*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
-          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
-            Projects
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-1">
-            {portfolio.projects.map((project) => (
-              <div key={project.id} className="border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow">
-                <div className="flex justify-between items-start mb-1 gap-2">
-                  <h4 className="text-sm font-medium text-ink">{project.title}</h4>
-                  <SkillTrustBadge trustLevel={project.trustLevel} />
-                </div>
-                <p className="text-sm text-muted mb-3 leading-relaxed">{project.description}</p>
-                <div className="flex gap-1.5 flex-wrap">
-                  {project.skills.map((skill) => (
-                    <span key={skill} className="bg-bone text-charcoal px-2 py-0.5 rounded text-xs">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
         </section>
 
         {/*Internships*/}
