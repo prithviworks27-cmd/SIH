@@ -24,7 +24,9 @@ export default function DigitalPortfolioEdit() {
       setForm({
         headline: p.headline,
         institution: p.institution,
-        expectedGraduation: p.expectedGraduation,
+        // Older entries were saved as "YYYY-MM" by the previous month picker —
+        // keep only the year for the new year-only field.
+        expectedGraduation: (p.expectedGraduation || "").slice(0, 4),
         bio: p.bio,
       });
       setAvatarUrl(p.avatarUrl || "");
@@ -164,8 +166,18 @@ export default function DigitalPortfolioEdit() {
             <input className={inputClass} type="text" value={form.institution} onChange={handleChange("institution")} />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Expected Graduation</label>
-            <input className={inputClass} type="month" value={form.expectedGraduation} onChange={handleChange("expectedGraduation")} />
+            <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Graduated in</label>
+            <input
+              className={inputClass}
+              type="number"
+              inputMode="numeric"
+              placeholder="2027"
+              min="1950"
+              max="2100"
+              step="1"
+              value={form.expectedGraduation}
+              onChange={handleChange("expectedGraduation")}
+            />
           </div>
           <div className="md:col-span-2">
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Bio / Summary</label>

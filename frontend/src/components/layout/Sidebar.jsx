@@ -19,7 +19,6 @@ import {
   Users,
   UsersThree,
   ChartBar,
-  Sparkle,
   BookOpen,
   Target,
   GitBranch,
@@ -27,6 +26,33 @@ import {
   Robot,
   ShieldCheck,
 } from "@phosphor-icons/react";
+
+// Custom colored mark for AI Advisor — a chatbot face flanked by gradient
+// code-chevrons, kept in full color rather than following currentColor like
+// the rest of the nav icons, per an explicit design reference.
+function AIAdvisorIcon({ size = 18, className }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <defs>
+        <linearGradient id="aiAdvisorLeftChevron" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#6C6BF5" />
+          <stop offset="100%" stopColor="#E8558B" />
+        </linearGradient>
+        <linearGradient id="aiAdvisorRightChevron" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E8558B" />
+          <stop offset="100%" stopColor="#6C6BF5" />
+        </linearGradient>
+      </defs>
+      <path d="M8.6 4.8 2.4 12l6.2 7.2 1.9-1.6L5.9 12l4.6-5.6-1.9-1.6Z" fill="url(#aiAdvisorLeftChevron)" />
+      <path d="M15.4 4.8 21.6 12l-6.2 7.2-1.9-1.6L18.1 12l-4.6-5.6 1.9-1.6Z" fill="url(#aiAdvisorRightChevron)" />
+      <rect x="8.8" y="9.4" width="6.4" height="5.4" rx="1.9" fill="#1A1A1A" />
+      <circle cx="12" cy="7.6" r="1" fill="#1A1A1A" />
+      <line x1="12" y1="8.6" x2="12" y2="9.4" stroke="#1A1A1A" strokeWidth="1" />
+      <circle cx="10.55" cy="12.1" r="0.75" fill="#F7F6F3" />
+      <circle cx="13.45" cy="12.1" r="0.75" fill="#F7F6F3" />
+    </svg>
+  );
+}
 
 const ICONS = {
   dashboard: SquaresFour,
@@ -43,7 +69,7 @@ const ICONS = {
   candidates: Users,
   applications: UsersThree,
   analytics: ChartBar,
-  sparkle: Sparkle,
+  sparkle: AIAdvisorIcon,
   courses: BookOpen,
   gap_report: Target,
   skill_graph: GitBranch,
