@@ -82,31 +82,31 @@ export default function DigitalPortfolio() {
         </div>
 
         {/* Faux-window profile card */}
-        <div className="border border-hairline rounded-xl bg-white shadow-lift overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-hairline bg-bone">
-            <span className="text-xs font-mono text-muted">profile</span>
+        <div className="w-[65%] mx-auto lg:mx-0 border border-hairline rounded-xl bg-white shadow-lift overflow-hidden">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-hairline bg-bone">
+            <span className="text-[13px] font-mono text-muted">profile</span>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-hairline" />
-              <span className="w-2 h-2 rounded-full bg-hairline" />
-              <span className="w-2 h-2 rounded-full bg-hairline" />
+              <span className="w-1.5 h-1.5 rounded-full bg-hairline" />
+              <span className="w-1.5 h-1.5 rounded-full bg-hairline" />
+              <span className="w-1.5 h-1.5 rounded-full bg-hairline" />
             </div>
           </div>
-          <div className="p-8 flex flex-col items-center text-center">
+          <div className="p-5 flex flex-col items-center text-center">
             {portfolio.avatarUrl ? (
               <img
-                className="w-28 h-28 rounded-full object-cover border border-hairline"
+                className="w-[73px] h-[73px] rounded-full object-cover border border-hairline"
                 alt={user?.name || "Student"}
                 src={portfolio.avatarUrl}
               />
             ) : (
-              <div className="w-28 h-28 rounded-full bg-bone border border-hairline flex items-center justify-center">
-                <UserCircle size={48} className="text-muted" />
+              <div className="w-[73px] h-[73px] rounded-full bg-bone border border-hairline flex items-center justify-center">
+                <UserCircle size={31} className="text-muted" />
               </div>
             )}
-            <p className="font-geist text-lg text-ink mt-4">{user?.name || "Student"}</p>
+            <p className="font-geist text-lg text-ink mt-2.5">{user?.name || "Student"}</p>
             {portfolio.headline && <p className="text-sm text-muted mt-0.5">{portfolio.headline}</p>}
           </div>
-          <div className="flex items-center justify-between px-6 py-3 border-t border-hairline text-xs text-muted">
+          <div className="flex items-center justify-between px-4 py-2 border-t border-hairline text-[13px] text-muted">
             <span>{portfolio.institution || "SkillBridge"}</span>
             <span className="flex items-center gap-1.5 text-pastel-green-ink">
               <span className="w-1.5 h-1.5 rounded-full bg-pastel-green-ink" />
@@ -116,145 +116,156 @@ export default function DigitalPortfolio() {
         </div>
       </section>
 
-      {/*Bento Grid Layout for Sections*/}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/*Left Column: Skills & Certifications*/}
-        <div className="lg:col-span-1 flex flex-col gap-6">
-          {/*Verified Skills*/}
-          <section className="bg-white border border-hairline rounded-xl p-6">
-            <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Skills &amp; Trust Levels</h3>
-            <div className="flex flex-col gap-3">
-              {displayedSkills.map((skill, i) => (
-                <button
-                  key={skill.name}
-                  onClick={() => setSelectedSkill(skill)}
-                  className={`flex justify-between items-center py-2 text-left hover:opacity-70 transition-opacity ${
-                    i < displayedSkills.length - 1 ? "border-b border-hairline" : ""
-                  }`}
-                >
-                  <span className="text-sm font-medium text-charcoal">{skill.name}</span>
-                  <SkillTrustBadge trustLevel={skill.trustLevel} />
-                </button>
-              ))}
-            </div>
-          </section>
-          {/*Certifications*/}
-          <section className="bg-white border border-hairline rounded-xl p-6">
-            <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Certifications</h3>
-            <ul className="flex flex-col gap-4">
-              {portfolio.certifications.length === 0 && <p className="text-sm text-muted">No certifications added yet.</p>}
-              {portfolio.certifications.map((cert) => (
-                <li key={cert.id} className="border-b border-hairline pb-4 last:border-b-0 last:pb-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                    <p className="text-sm text-ink">{cert.title}</p>
-                    <CertificationStatusBadge status={cert.verificationStatus} />
-                  </div>
-                  <p className="text-xs text-muted mt-0.5">
-                    {cert.issuer}
-                    {cert.date && ` • ${new Date(cert.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}`}
-                  </p>
+      {/*All sections stacked in a single column, each with its header
+         set in a rounded-rectangle chip rather than an underline.*/}
+      <div className="flex flex-col gap-6">
+        {/*Verified Skills*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Skills &amp; Trust Levels
+          </h3>
+          <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
+            {displayedSkills.map((skill, i) => (
+              <button
+                key={skill.name}
+                onClick={() => setSelectedSkill(skill)}
+                className={`flex justify-between items-center py-2 text-left hover:opacity-70 transition-opacity ${
+                  i < displayedSkills.length - 1 ? "border-b border-hairline" : ""
+                }`}
+              >
+                <span className="text-sm font-medium text-charcoal">{skill.name}</span>
+                <SkillTrustBadge trustLevel={skill.trustLevel} />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/*Certifications*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Certifications
+          </h3>
+          <ul className="flex flex-col gap-4 max-h-72 overflow-y-auto pr-1">
+            {portfolio.certifications.length === 0 && <p className="text-sm text-muted">No certifications added yet.</p>}
+            {portfolio.certifications.map((cert) => (
+              <li key={cert.id} className="border-b border-hairline pb-4 last:border-b-0 last:pb-0">
+                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                  <p className="text-sm text-ink">{cert.title}</p>
+                  <CertificationStatusBadge status={cert.verificationStatus} />
+                </div>
+                <p className="text-xs text-muted mt-0.5">
+                  {cert.issuer}
+                  {cert.date && ` • ${new Date(cert.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}`}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/*Assessment Results — the scores behind the verified badges*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Assessment Results
+          </h3>
+          {assessments.length === 0 ? (
+            <p className="text-sm text-muted">
+              No assessments passed yet.{" "}
+              <Link to="/skill-tests" className="text-ink hover:underline">
+                Take an assessment
+              </Link>{" "}
+              to add verified evidence here.
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
+              {assessments.map((a) => (
+                <li key={a.testId} className="flex items-center justify-between gap-3 border-b border-hairline pb-3 last:border-b-0 last:pb-0">
+                  <span className="flex items-center gap-2 text-sm text-charcoal">
+                    <SealCheck size={16} weight="fill" className="text-pastel-green-ink shrink-0" />
+                    {a.title}
+                  </span>
+                  <span className="text-sm text-ink font-medium">{a.scorePercent}%</span>
                 </li>
               ))}
             </ul>
-          </section>
-          {/*Assessment Results — the scores behind the verified badges*/}
-          <section className="bg-white border border-hairline rounded-xl p-6">
-            <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Assessment Results</h3>
-            {assessments.length === 0 ? (
-              <p className="text-sm text-muted">
-                No assessments passed yet.{" "}
-                <Link to="/skill-tests" className="text-ink hover:underline">
-                  Take an assessment
-                </Link>{" "}
-                to add verified evidence here.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {assessments.map((a) => (
-                  <li key={a.testId} className="flex items-center justify-between gap-3 border-b border-hairline pb-3 last:border-b-0 last:pb-0">
-                    <span className="flex items-center gap-2 text-sm text-charcoal">
-                      <SealCheck size={16} weight="fill" className="text-pastel-green-ink shrink-0" />
-                      {a.title}
-                    </span>
-                    <span className="text-sm text-ink font-medium">{a.scorePercent}%</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </div>
-        {/*Right Column: Projects, Internships, Achievements*/}
-        <div className="lg:col-span-2 flex flex-col gap-6">
-          {/*Projects*/}
-          <section>
-            <h3 className="text-base font-medium text-ink mb-4">Projects</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {portfolio.projects.map((project) => (
-                <div key={project.id} className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow">
-                  <div className="flex justify-between items-start mb-1 gap-2">
-                    <h4 className="text-sm font-medium text-ink">{project.title}</h4>
-                    <SkillTrustBadge trustLevel={project.trustLevel} />
-                  </div>
-                  <p className="text-sm text-muted mb-3 leading-relaxed">{project.description}</p>
-                  <div className="flex gap-1.5 flex-wrap">
-                    {project.skills.map((skill) => (
-                      <span key={skill} className="bg-bone text-charcoal px-2 py-0.5 rounded text-xs">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-          {/*Internships & Achievements Grid*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/*Internships*/}
-            <section className="bg-white border border-hairline rounded-xl p-6">
-              <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Internships</h3>
-              <ul className="flex flex-col gap-4">
-                {portfolio.internships.length === 0 && <p className="text-sm text-muted">No internships added yet.</p>}
-                {portfolio.internships.map((item) => (
-                  <li key={item.id} className="border-b border-hairline pb-4 last:border-b-0 last:pb-0">
-                    <p className="text-sm text-ink">{item.role}</p>
-                    <p className="text-xs text-muted mt-0.5">
-                      {item.company} • {item.period}
-                    </p>
-                    {item.note && <p className="text-xs text-charcoal mt-1.5">{item.note}</p>}
-                  </li>
-                ))}
-              </ul>
-            </section>
-            {/*Achievements*/}
-            <section className="bg-white border border-hairline rounded-xl p-6">
-              <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Achievements</h3>
-              <ul className="flex flex-col gap-3 list-disc list-inside text-sm text-charcoal">
-                {portfolio.achievements.length === 0 && <p className="text-sm text-muted list-none">No achievements added yet.</p>}
-                {portfolio.achievements.map((item) => (
-                  <li key={item.id}>{item.description}</li>
-                ))}
-              </ul>
-            </section>
-          </div>
+          )}
+        </section>
 
-          {/*Resume — generated from the portfolio itself rather than uploaded,
-             so it can never drift out of sync with the verified evidence above.*/}
-          <section className="bg-white border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-base font-medium text-ink mb-1">Resume</h3>
-              <p className="text-sm text-muted">
-                Generated from your verified skills, projects, certifications and experience above.
-              </p>
-            </div>
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center justify-center gap-2 border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors whitespace-nowrap"
-            >
-              <DownloadSimple size={16} />
-              Download Resume
-            </button>
-          </section>
-        </div>
+        {/*Projects*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Projects
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-1">
+            {portfolio.projects.map((project) => (
+              <div key={project.id} className="border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow">
+                <div className="flex justify-between items-start mb-1 gap-2">
+                  <h4 className="text-sm font-medium text-ink">{project.title}</h4>
+                  <SkillTrustBadge trustLevel={project.trustLevel} />
+                </div>
+                <p className="text-sm text-muted mb-3 leading-relaxed">{project.description}</p>
+                <div className="flex gap-1.5 flex-wrap">
+                  {project.skills.map((skill) => (
+                    <span key={skill} className="bg-bone text-charcoal px-2 py-0.5 rounded text-xs">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/*Internships*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Internships
+          </h3>
+          <ul className="flex flex-col gap-4 max-h-64 overflow-y-auto pr-1">
+            {portfolio.internships.length === 0 && <p className="text-sm text-muted">No internships added yet.</p>}
+            {portfolio.internships.map((item) => (
+              <li key={item.id} className="border-b border-hairline pb-4 last:border-b-0 last:pb-0">
+                <p className="text-sm text-ink">{item.role}</p>
+                <p className="text-xs text-muted mt-0.5">
+                  {item.company} • {item.period}
+                </p>
+                {item.note && <p className="text-xs text-charcoal mt-1.5">{item.note}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/*Achievements*/}
+        <section className="bg-white border border-hairline rounded-xl p-6">
+          <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
+            Achievements
+          </h3>
+          <ul className="flex flex-col gap-3 list-disc list-inside text-sm text-charcoal max-h-64 overflow-y-auto pr-1">
+            {portfolio.achievements.length === 0 && <p className="text-sm text-muted list-none">No achievements added yet.</p>}
+            {portfolio.achievements.map((item) => (
+              <li key={item.id}>{item.description}</li>
+            ))}
+          </ul>
+        </section>
+
+        {/*Resume — generated from the portfolio itself rather than uploaded,
+           so it can never drift out of sync with the verified evidence above.*/}
+        <section className="bg-white border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-2">
+              Resume
+            </h3>
+            <p className="text-sm text-muted">
+              Generated from your verified skills, projects, certifications and experience above.
+            </p>
+          </div>
+          <button
+            onClick={() => window.print()}
+            className="inline-flex items-center justify-center gap-2 border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors whitespace-nowrap"
+          >
+            <DownloadSimple size={16} />
+            Download Resume
+          </button>
+        </section>
       </div>
 
       {selectedSkill && <SkillEvidencePanel skill={selectedSkill} portfolio={portfolio} onClose={() => setSelectedSkill(null)} />}
