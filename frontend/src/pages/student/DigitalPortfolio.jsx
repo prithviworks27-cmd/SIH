@@ -57,8 +57,7 @@ export default function DigitalPortfolio() {
           <h2 className="font-geist font-bold text-3xl md:text-4xl text-ink tracking-tight leading-[1.05] mb-4">
             {user?.name || "Student"} builds skills that ship.
           </h2>
-          {portfolio.bio && <p className="text-charcoal/80 leading-relaxed max-w-md mb-2">{portfolio.bio}</p>}
-          {portfolio.institution && <p className="text-sm text-muted mb-6">{portfolio.institution}</p>}
+          {portfolio.bio && <p className="text-charcoal/80 leading-relaxed max-w-md mb-6">{portfolio.bio}</p>}
 
           <div className="flex flex-wrap items-center gap-3">
             <button
@@ -104,7 +103,6 @@ export default function DigitalPortfolio() {
               </div>
             )}
             <p className="font-geist text-lg text-ink mt-2.5">{user?.name || "Student"}</p>
-            {portfolio.headline && <p className="text-sm text-muted mt-0.5">{portfolio.headline}</p>}
           </div>
           <div className="flex items-center justify-between px-4 py-2 border-t border-hairline text-[13px] text-muted">
             <span>{portfolio.institution || "SkillBridge"}</span>
