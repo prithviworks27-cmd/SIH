@@ -71,7 +71,7 @@ export default function InternshipJobListings() {
       <div className="flex flex-col md:flex-row gap-6">
         {/*Filter Sidebar (Left)*/}
         <div className="w-full md:w-64 flex-shrink-0">
-          <div className="bg-white border border-hairline rounded-xl p-5 md:sticky md:top-10">
+          <div className="bg-bone border border-hairline rounded-xl p-5 md:sticky md:top-10">
             <h2 className="text-sm font-medium text-ink mb-4">Filters</h2>
             <div className="mb-6 border-b border-hairline pb-4">
               <h3 className="text-xs uppercase tracking-wide text-muted mb-2">Skills</h3>
@@ -148,13 +148,13 @@ export default function InternshipJobListings() {
             <div className="flex items-center gap-1 bg-bone rounded-lg p-1">
               <button
                 onClick={() => setShowSavedOnly(false)}
-                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${!showSavedOnly ? "bg-white text-ink shadow-sm" : "text-muted"}`}
+                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${!showSavedOnly ? "bg-bone text-ink shadow-sm" : "text-muted"}`}
               >
                 All Opportunities
               </button>
               <button
                 onClick={() => setShowSavedOnly(true)}
-                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${showSavedOnly ? "bg-white text-ink shadow-sm" : "text-muted"}`}
+                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${showSavedOnly ? "bg-bone text-ink shadow-sm" : "text-muted"}`}
               >
                 Saved ({savedIds.size})
               </button>
@@ -188,7 +188,7 @@ export default function InternshipJobListings() {
                 <Link
                   key={job.id}
                   to={`/internships/${job.id}`}
-                  className="bg-white border border-hairline rounded-xl p-5 flex flex-col md:flex-row gap-4 items-start md:items-center hover:shadow-lift transition-shadow cursor-pointer"
+                  className="bg-bone border border-hairline rounded-xl p-5 flex flex-col md:flex-row gap-4 items-start md:items-center hover:shadow-lift transition-shadow cursor-pointer"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -260,7 +260,7 @@ export default function InternshipJobListings() {
                       >
                         <BookmarkSimple size={16} weight={savedIds.has(job.id) ? "fill" : "regular"} />
                       </button>
-                      <span className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-ink-hover transition-colors">View Details</span>
+                      <span className="bg-ink text-ink-contrast px-4 py-2 rounded-md text-sm hover:bg-ink-hover transition-colors">View Details</span>
                     </div>
                   </div>
                 </Link>

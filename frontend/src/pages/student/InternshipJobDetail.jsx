@@ -103,7 +103,7 @@ export default function InternshipJobDetail() {
             Back to Internships
           </button>
 
-          <header className="bg-white border border-hairline rounded-xl p-8 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <header className="bg-bone border border-hairline rounded-xl p-8 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center gap-6">
               <div>
                 <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">{job.title}</h1>
@@ -135,7 +135,7 @@ export default function InternshipJobDetail() {
                 <button
                   onClick={handleApply}
                   disabled={applied || applying}
-                  className="flex-1 bg-ink text-white px-6 py-2.5 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
+                  className="flex-1 bg-ink text-ink-contrast px-6 py-2.5 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
                 >
                   {applied ? "Applied ✓" : applying ? "Applying…" : "Apply Now"}
                 </button>
@@ -146,7 +146,7 @@ export default function InternshipJobDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {job.overview && (
-                <section className="bg-white border border-hairline rounded-xl p-8">
+                <section className="bg-bone border border-hairline rounded-xl p-8">
                   <h2 className="text-lg font-medium text-ink mb-4 border-b border-hairline pb-3">Overview</h2>
                   <div className="space-y-4 text-charcoal leading-relaxed">
                     {job.overview.map((paragraph, i) => (
@@ -166,7 +166,7 @@ export default function InternshipJobDetail() {
                 </section>
               )}
 
-              <section className="bg-white border border-hairline rounded-xl p-8">
+              <section className="bg-bone border border-hairline rounded-xl p-8">
                 <h2 className="text-lg font-medium text-ink mb-4 border-b border-hairline pb-3">Required Competencies</h2>
                 <div className="flex flex-wrap gap-2">
                   {job.skills.map((skill) => (
@@ -179,7 +179,7 @@ export default function InternshipJobDetail() {
             </div>
 
             <div className="space-y-6">
-              <aside className="bg-white border border-hairline rounded-xl p-6">
+              <aside className="bg-bone border border-hairline rounded-xl p-6">
                 <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Details</h3>
                 <ul className="space-y-4 text-sm">
                   <li className="flex items-start gap-3">
@@ -229,7 +229,7 @@ export default function InternshipJobDetail() {
               </aside>
 
               {job.aboutCompany && (
-                <aside className="bg-white border border-hairline rounded-xl p-6">
+                <aside className="bg-bone border border-hairline rounded-xl p-6">
                   <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">About the Partner</h3>
                   <p className="text-sm text-muted leading-relaxed">{job.aboutCompany}</p>
                 </aside>

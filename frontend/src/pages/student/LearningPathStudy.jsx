@@ -89,7 +89,7 @@ export default function LearningPathStudy() {
             type="button"
             onClick={() => generatePlan("modules")}
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm border transition-colors ${
-              mode === "modules" ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+              mode === "modules" ? "bg-ink text-ink-contrast border-ink" : "bg-bone text-charcoal border-hairline hover:border-ink"
             }`}
           >
             <BookOpen size={17} />
@@ -99,7 +99,7 @@ export default function LearningPathStudy() {
             type="button"
             onClick={() => setMode("roadmap")}
             className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm border transition-colors ${
-              mode === "roadmap" ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+              mode === "roadmap" ? "bg-ink text-ink-contrast border-ink" : "bg-bone text-charcoal border-hairline hover:border-ink"
             }`}
           >
             <MapTrifold size={17} />
@@ -116,7 +116,7 @@ export default function LearningPathStudy() {
               <span className="text-sm text-muted">{path.modules.length} modules · {path.duration}</span>
             </div>
             {displayedSteps.map((step, index) => (
-              <article key={step.title} className="bg-white border border-hairline rounded-xl p-5 flex items-start gap-4">
+              <article key={step.title} className="bg-bone border border-hairline rounded-xl p-5 flex items-start gap-4">
                 <span className="w-8 h-8 rounded-full bg-bone text-ink text-sm flex items-center justify-center shrink-0">{index + 1}</span>
                 <div>
                   <h3 className="text-base font-medium text-ink mb-1">{step.title}</h3>
@@ -135,7 +135,7 @@ export default function LearningPathStudy() {
                 type="button"
                 onClick={() => generatePlan("roadmap")}
                 disabled={generating}
-                className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60"
+                className="bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60"
               >
                 {generating ? "Generating…" : aiPlan ? "Regenerate roadmap" : "Generate roadmap"}
               </button>
@@ -148,7 +148,7 @@ export default function LearningPathStudy() {
               </div>
             )}
             {!aiPlan ? (
-              <div className="bg-white border border-hairline rounded-xl p-8 text-center">
+              <div className="bg-bone border border-hairline rounded-xl p-8 text-center">
                 <MapTrifold size={28} className="text-muted mx-auto mb-3" />
                 <h3 className="text-base font-medium text-ink mb-2">Your roadmap is not generated yet</h3>
                 <p className="text-sm text-muted">Generate a personalized beginner-to-advanced roadmap for {path.skillName} to see the topics and project plan here.</p>
@@ -156,8 +156,8 @@ export default function LearningPathStudy() {
             ) : (
               <div className="relative ml-4 border-l border-hairline pl-8 flex flex-col gap-7">
                 {displayedSteps.map((step, index) => (
-                  <article key={step.title} className="relative bg-white border border-hairline rounded-xl p-5">
-                    <span className="absolute -left-[2.55rem] top-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center">
+                  <article key={step.title} className="relative bg-bone border border-hairline rounded-xl p-5">
+                    <span className="absolute -left-[2.55rem] top-0 w-6 h-6 rounded-full bg-ink text-ink-contrast flex items-center justify-center">
                       {index + 1}
                     </span>
                     <p className="text-xs uppercase tracking-wide text-muted mb-1">Learn topic {index + 1}</p>
@@ -170,7 +170,7 @@ export default function LearningPathStudy() {
                   </article>
                 ))}
                 <article className="relative">
-                  <CheckCircle size={24} className="absolute -left-[2.55rem] top-0 bg-white text-pastel-green-ink" weight="fill" />
+                  <CheckCircle size={24} className="absolute -left-[2.55rem] top-0 bg-bone text-pastel-green-ink" weight="fill" />
                   <p className="text-xs uppercase tracking-wide text-muted mb-1">Final project</p>
                   <h3 className="text-base font-medium text-ink">{aiPlan.project?.title ?? `Apply your ${path.skillName} skills`}</h3>
                   <p className="text-sm text-muted">{aiPlan.project?.description ?? `${path.project.title}: ${path.project.description}`}</p>
@@ -190,7 +190,7 @@ export default function LearningPathStudy() {
                 href={resource.url}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-white border border-hairline rounded-xl p-4 hover:border-ink transition-colors"
+                className="bg-bone border border-hairline rounded-xl p-4 hover:border-ink transition-colors"
               >
                 <span className="text-sm font-medium text-ink">{resource.label}</span>
                 <span className="block text-xs text-muted mt-1">Open free resource ↗</span>

@@ -21,11 +21,11 @@ import {
 import { Plus, PencilSimple, Trash, X, UploadSimple, FilePdf } from "@phosphor-icons/react";
 
 const inputClass =
-  "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
+  "w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
 
 function SectionCard({ title, description, children }) {
   return (
-    <section className="bg-white border border-hairline rounded-xl p-6 md:p-8 mb-6">
+    <section className="bg-bone border border-hairline rounded-xl p-6 md:p-8 mb-6">
       <div className="mb-5">
         <h3 className="text-base font-medium text-ink">{title}</h3>
         {description && <p className="text-sm text-muted mt-1">{description}</p>}
@@ -96,10 +96,10 @@ function ProjectForm({ initial, onSave, onCancel }) {
       />
       {error && <p className="text-xs text-pastel-red-ink">{error}</p>}
       <div className="flex gap-2 justify-end">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-hairline rounded-md hover:bg-white transition-colors">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-hairline rounded-md hover:bg-bone transition-colors">
           Cancel
         </button>
-        <button type="submit" disabled={saving} className="px-4 py-2 text-sm bg-ink text-white rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60">
+        <button type="submit" disabled={saving} className="px-4 py-2 text-sm bg-ink text-ink-contrast rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60">
           {saving ? "Saving…" : "Save"}
         </button>
       </div>
@@ -197,10 +197,10 @@ function CertificationForm({ initial, onSave, onCancel }) {
       />
       {error && <p className="text-xs text-pastel-red-ink">{error}</p>}
       <div className="flex gap-2 justify-end">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-hairline rounded-md hover:bg-white transition-colors">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-hairline rounded-md hover:bg-bone transition-colors">
           Cancel
         </button>
-        <button type="submit" disabled={saving} className="px-4 py-2 text-sm bg-ink text-white rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60">
+        <button type="submit" disabled={saving} className="px-4 py-2 text-sm bg-ink text-ink-contrast rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60">
           {saving ? "Saving…" : "Save"}
         </button>
       </div>
@@ -341,10 +341,10 @@ function InternshipForm({ initial, onSave, onCancel }) {
       />
       {error && <p className="text-xs text-pastel-red-ink">{error}</p>}
       <div className="flex gap-2 justify-end">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-hairline rounded-md hover:bg-white transition-colors">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-hairline rounded-md hover:bg-bone transition-colors">
           Cancel
         </button>
-        <button type="submit" disabled={saving} className="px-4 py-2 text-sm bg-ink text-white rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60">
+        <button type="submit" disabled={saving} className="px-4 py-2 text-sm bg-ink text-ink-contrast rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60">
           {saving ? "Saving…" : "Save"}
         </button>
       </div>

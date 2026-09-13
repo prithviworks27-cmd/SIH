@@ -116,7 +116,7 @@ export default function CourseDetail() {
 
               {/*Syllabus*/}
               {course.syllabus && (
-                <section className="border border-hairline rounded-xl bg-white p-8">
+                <section className="border border-hairline rounded-xl bg-bone p-8">
                   <h2 className="text-lg font-medium text-ink mb-6 border-b border-hairline pb-3">Syllabus Overview</h2>
                   <ol className="flex flex-col">
                     {course.syllabus.map((item, i) => (
@@ -135,7 +135,7 @@ export default function CourseDetail() {
 
             {/*Sticky Sidebar / Action Area*/}
             <div className="lg:col-span-4">
-              <div className="sticky top-10 flex flex-col gap-3 border border-hairline bg-white p-6 rounded-xl">
+              <div className="sticky top-10 flex flex-col gap-3 border border-hairline bg-bone p-6 rounded-xl">
                 <div className="mb-2">
                   <div className="text-sm font-medium text-ink mb-1">{course.enrollmentStatus || "Enrollment Open"}</div>
                   {course.cohortStart && <div className="text-xs text-muted">Cohort begins {course.cohortStart}</div>}
@@ -143,7 +143,7 @@ export default function CourseDetail() {
                 <button
                   onClick={handleEnroll}
                   disabled={enrolled || enrolling}
-                  className="w-full bg-ink text-white text-sm py-2.5 px-4 rounded-md flex justify-center items-center gap-2 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
+                  className="w-full bg-ink text-ink-contrast text-sm py-2.5 px-4 rounded-md flex justify-center items-center gap-2 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
                 >
                   <CheckCircle size={16} />
                   {enrolled ? "Enrolled ✓" : enrolling ? "Enrolling…" : "Enroll in Course"}

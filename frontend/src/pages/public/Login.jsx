@@ -71,14 +71,14 @@ export default function Login() {
       <main className="w-full max-w-sm">
         {/* Card — wordmark and form live in one unified surface, with a
             soft lift shadow so it reads clearly against the ambient glow. */}
-        <div className="bg-white border border-hairline rounded-2xl shadow-lift p-8 md:p-10">
+        <div className="bg-bone border border-hairline rounded-2xl shadow-lift p-8 md:p-10">
           {/* Wordmark */}
           <div className="text-center mb-8">
             <h1
               className="font-sans font-black leading-[0.9] tracking-tight bg-clip-text text-transparent"
               style={{
                 fontSize: "clamp(1.8rem, 7vw, 2.5rem)",
-                backgroundImage: "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)",
+                backgroundImage: "var(--wordmark-gradient)",
               }}
             >
               SKILLBRIDGE
@@ -102,7 +102,7 @@ export default function Login() {
               </label>
               <div className="relative">
                 <input
-                  className="block w-full px-3 py-2.5 border border-hairline rounded-md bg-white text-charcoal focus:ring-0 focus:border-ink placeholder:text-muted text-sm outline-none transition-colors"
+                  className="block w-full px-3 py-2.5 border border-hairline rounded-md bg-bone text-charcoal focus:ring-0 focus:border-ink placeholder:text-muted text-sm outline-none transition-colors"
                   id="email"
                   name="email"
                   type="email"
@@ -122,7 +122,7 @@ export default function Login() {
               </label>
               <div className="relative">
                 <input
-                  className="block w-full px-3 py-2.5 border border-hairline rounded-md bg-white text-charcoal focus:ring-0 focus:border-ink placeholder:text-muted text-sm outline-none transition-colors"
+                  className="block w-full px-3 py-2.5 border border-hairline rounded-md bg-bone text-charcoal focus:ring-0 focus:border-ink placeholder:text-muted text-sm outline-none transition-colors"
                   id="password"
                   name="password"
                   type="password"
@@ -157,7 +157,7 @@ export default function Login() {
             {/* Submit */}
             <div className="pt-1">
               <button
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium text-white bg-ink hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium text-ink-contrast bg-ink hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={isSubmitting || loading}
               >
@@ -179,7 +179,7 @@ export default function Login() {
               <div className="w-full border-t border-hairline" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-3 bg-white text-xs text-muted">Need an account?</span>
+              <span className="px-3 bg-bone text-xs text-muted">Need an account?</span>
             </div>
           </div>
 

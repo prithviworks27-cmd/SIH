@@ -31,14 +31,14 @@ export default function FacultyDashboard() {
       {!students && <LoadingState label="Loading your students…" />}
 
       {students && students.length === 0 && (
-        <div className="bg-white border border-hairline rounded-xl p-10 text-center text-sm text-muted flex flex-col items-center gap-2">
+        <div className="bg-bone border border-hairline rounded-xl p-10 text-center text-sm text-muted flex flex-col items-center gap-2">
           <Users size={28} className="text-muted" />
           No students assigned to you yet.
         </div>
       )}
 
       {students && students.length > 0 && (
-        <section className="bg-white border border-hairline rounded-xl">
+        <section className="bg-bone border border-hairline rounded-xl">
           <div className="p-6 border-b border-hairline">
             <h2 className="text-lg font-medium text-ink">My Students</h2>
           </div>

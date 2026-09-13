@@ -140,7 +140,7 @@ export default function SignupRoleSelection() {
                     <div
                       key={role.id}
                       onClick={() => handleRoleSelect(role.id)}
-                      className={`border rounded-xl p-4 cursor-pointer transition-colors text-center flex flex-col items-center justify-center gap-2 bg-white ${
+                      className={`border rounded-xl p-4 cursor-pointer transition-colors text-center flex flex-col items-center justify-center gap-2 bg-bone ${
                         selectedRole === role.id ? "border-ink" : "border-hairline hover:border-charcoal"
                       }`}
                     >
@@ -159,7 +159,7 @@ export default function SignupRoleSelection() {
                   Full Name
                 </label>
                 <input
-                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
+                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
                   id="fullname"
                   name="fullname"
                   placeholder="Jane Doe"
@@ -175,7 +175,7 @@ export default function SignupRoleSelection() {
                   Work Email
                 </label>
                 <input
-                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
+                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
                   id="email"
                   name="email"
                   placeholder="jane@university.edu"
@@ -191,7 +191,7 @@ export default function SignupRoleSelection() {
                   Password
                 </label>
                 <input
-                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
+                  className="w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors"
                   id="password"
                   name="password"
                   placeholder="••••••••"
@@ -207,7 +207,7 @@ export default function SignupRoleSelection() {
 
             {/*Submit*/}
             <button
-              className="mx-auto flex items-center justify-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-10 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mx-auto flex items-center justify-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-10 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"
               disabled={isSubmitting || loading}
             >

@@ -123,7 +123,7 @@ export default function CourseCatalog() {
         <div className="relative">
           <MagnifyingGlass size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
-            className="pl-9 pr-4 py-2 border border-hairline rounded-md bg-white text-sm text-charcoal focus:border-ink focus:ring-0 outline-none w-64 transition-colors"
+            className="pl-9 pr-4 py-2 border border-hairline rounded-md bg-bone text-sm text-charcoal focus:border-ink focus:ring-0 outline-none w-64 transition-colors"
             placeholder="Search courses..."
             type="text"
             value={search}
@@ -136,7 +136,7 @@ export default function CourseCatalog() {
       <div className="flex flex-col md:flex-row gap-6">
         {/*Left Filter Sidebar*/}
         <aside className="w-full md:w-64 flex-shrink-0">
-          <div className="bg-white border border-hairline rounded-xl p-5">
+          <div className="bg-bone border border-hairline rounded-xl p-5">
             <h3 className="text-sm font-medium text-ink mb-4 border-b border-hairline pb-3">Filters</h3>
 
             <FilterGroup
@@ -161,7 +161,7 @@ export default function CourseCatalog() {
             <button
               onClick={() => setAppliedFilters(pendingFilters)}
               disabled={!hasPendingChanges}
-              className="w-full mt-6 bg-ink text-white text-sm py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+              className="w-full mt-6 bg-ink text-ink-contrast text-sm py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
             >
               Apply
             </button>
@@ -171,7 +171,7 @@ export default function CourseCatalog() {
         {/*Course List Area*/}
         <section className="flex-1 flex flex-col gap-4">
           {filteredCourses && (
-            <div className="flex justify-between items-center bg-white border border-hairline rounded-xl px-4 py-3">
+            <div className="flex justify-between items-center bg-bone border border-hairline rounded-xl px-4 py-3">
               <span className="text-sm text-muted">Showing {filteredCourses.length} results</span>
             </div>
           )}
@@ -183,7 +183,7 @@ export default function CourseCatalog() {
           )}
 
           {filteredCourses && filteredCourses.length > 0 && (
-            <div className="bg-white border border-hairline rounded-xl flex flex-col">
+            <div className="bg-bone border border-hairline rounded-xl flex flex-col">
               {filteredCourses.map((course) => {
                 const enrolled = enrolledIds.has(course.id);
                 return (
@@ -219,7 +219,7 @@ export default function CourseCatalog() {
                       <button
                         onClick={() => handleEnroll(course.id)}
                         disabled={enrolled || enrollingId === course.id}
-                        className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
+                        className="bg-ink text-ink-contrast px-4 py-2 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
                       >
                         {enrolled ? "Enrolled ✓" : enrollingId === course.id ? "Enrolling…" : "Enroll"}
                       </button>

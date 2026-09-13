@@ -9,6 +9,82 @@
   font-display: swap;
 }
 
+/* Theme tokens — light mode (default) is the original editorial-minimalism
+   palette; dark mode (".dark" on <html>, toggled by useDarkMode/ThemeToggle)
+   is the SIH_Website_Palette (RealtimeColors): Text #F0F1DF, Background
+   #181A0A, Primary #D2D69A, Secondary #4B742F, Accent #6BBC5C. Values are
+   space-separated RGB triples so Tailwind's rgb(var(...) / <alpha-value>)
+   color functions keep opacity modifiers (bg-canvas/50 etc) working. */
+:root {
+  --color-canvas: 251 251 250;
+  --color-bone: 247 246 243;
+  --color-ink: 17 17 17;
+  --color-ink-hover: 51 51 51;
+  --color-ink-contrast: 255 255 255;
+  --color-charcoal: 47 52 55;
+  --color-muted: 120 119 116;
+  --color-hairline: 234 234 234;
+  --color-pastel-red: 253 235 236;
+  --color-pastel-red-ink: 159 47 45;
+  --color-pastel-blue: 225 243 254;
+  --color-pastel-blue-ink: 31 108 159;
+  --color-pastel-green: 237 243 236;
+  --color-pastel-green-ink: 52 101 56;
+  --color-pastel-yellow: 251 243 219;
+  --color-pastel-yellow-ink: 149 100 0;
+  --color-accent: 31 108 159;
+
+  --shadow-color: 17 17 17;
+  --shadow-o1: 0.03;
+  --shadow-o2: 0.04;
+  --shadow-o3: 0.1;
+
+  --wordmark-gradient: linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%);
+  --glow-1: #4fadb0;
+  --glow-2: #7a6fe0;
+  --glow-3: #e4895c;
+  --portal-pending-gradient: linear-gradient(135deg, #060b24 0%, #0b1c6b 35%, #1e3fe0 62%, #050814 100%);
+  --button-accent-from: #d6f54a;
+  --button-accent-to: #c5ea2c;
+  --button-gradient: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+  --button-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.dark {
+  --color-canvas: 24 26 10;
+  --color-bone: 32 34 19;
+  --color-ink: 210 214 154;
+  --color-ink-hover: 107 188 92;
+  --color-ink-contrast: 24 26 10;
+  --color-charcoal: 240 241 223;
+  --color-muted: 166 168 140;
+  --color-hairline: 44 46 28;
+  --color-pastel-red: 46 25 23;
+  --color-pastel-red-ink: 224 102 92;
+  --color-pastel-blue: 19 36 48;
+  --color-pastel-blue-ink: 79 168 216;
+  --color-pastel-green: 22 34 15;
+  --color-pastel-green-ink: 91 168 79;
+  --color-pastel-yellow: 43 34 17;
+  --color-pastel-yellow-ink: 209 166 58;
+  --color-accent: 107 188 92;
+
+  --shadow-color: 0 0 0;
+  --shadow-o1: 0.25;
+  --shadow-o2: 0.35;
+  --shadow-o3: 0.55;
+
+  --wordmark-gradient: linear-gradient(115deg, #d2d69a 0%, #6bbc5c 45%, #4b742f 85%);
+  --glow-1: #d2d69a;
+  --glow-2: #4b742f;
+  --glow-3: #6bbc5c;
+  --portal-pending-gradient: linear-gradient(135deg, #181a0a 0%, #263312 35%, #4b742f 62%, #0f1108 100%);
+  --button-accent-from: #6bbc5c;
+  --button-accent-to: #4b742f;
+  --button-gradient: linear-gradient(180deg, #d2d69a 0%, #c3c889 100%);
+  --button-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
 body {
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 500;
@@ -19,7 +95,7 @@ body {
    or per-button hover treatments. */
 @layer base {
   :focus-visible {
-    outline: 2px solid #1f6c9f; /* accent */
+    outline: 2px solid rgb(var(--color-accent)); /* accent */
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -37,14 +113,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #787774; /* text-muted */
+  color: rgb(var(--color-muted)); /* text-muted */
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 .icon-btn:hover {
-  background-color: #f7f6f3; /* bg-bone */
-  color: #1a1a1a; /* text-ink */
+  background-color: rgb(var(--color-bone)); /* bg-bone */
+  color: rgb(var(--color-ink)); /* text-ink */
 }
 .icon-btn:active {
   transform: scale(0.94);

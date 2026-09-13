@@ -52,7 +52,7 @@ export default function MessagesBar() {
     <div ref={containerRef} className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
       {/* Popup panel */}
       <div
-        className={`mb-3 w-80 max-w-[calc(100vw-3rem)] bg-white border border-hairline rounded-xl shadow-lift overflow-hidden origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`mb-3 w-80 max-w-[calc(100vw-3rem)] bg-bone border border-hairline rounded-xl shadow-lift overflow-hidden origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           open ? "opacity-100 scale-100 translate-y-0 pointer-events-auto" : "opacity-0 scale-95 translate-y-3 pointer-events-none"
         }`}
       >
@@ -113,8 +113,8 @@ export default function MessagesBar() {
             ))}
           </span>
         )}
-        <span className="w-px h-6 bg-white/20 flex-shrink-0" />
-        <List size={18} className="text-white/70 flex-shrink-0" />
+        <span className="w-px h-6 bg-bone/20 flex-shrink-0" />
+        <List size={18} className="text-ink-contrast/70 flex-shrink-0" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 rounded-full bg-pastel-red-ink text-white text-[10px] font-semibold flex items-center justify-center">
             {unreadCount}

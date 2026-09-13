@@ -43,7 +43,7 @@ export default function SkillTestResult() {
   return (
     <DashboardLayout>
       <div className="flex items-center justify-center">
-        <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
+        <div className="w-full max-w-lg bg-bone border border-hairline rounded-xl p-10 text-center">
           {passed ? (
             <span className="text-3xl mb-2 block">🎉</span>
           ) : (
@@ -84,14 +84,14 @@ export default function SkillTestResult() {
           {passed ? (
             <button
               onClick={() => navigate("/skill-profile/graph")}
-              className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
+              className="w-full bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
             >
               View My Skills
             </button>
           ) : (
             <button
               onClick={() => navigate(`/skill-tests/${testId}`)}
-              className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
+              className="w-full bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
             >
               Retake Assessment
             </button>

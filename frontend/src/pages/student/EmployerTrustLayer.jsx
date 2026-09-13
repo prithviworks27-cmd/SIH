@@ -69,7 +69,7 @@ export default function EmployerTrustLayer() {
         <p className="text-muted">What an employer sees when they verify your profile.</p>
       </header>
 
-      <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
+      <section className="bg-bone border border-hairline rounded-xl p-8 mb-6">
         <div className="flex items-center gap-3 mb-6">
           <ShieldCheck size={28} className="text-pastel-green-ink" weight="fill" />
           <div>

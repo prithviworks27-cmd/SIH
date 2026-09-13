@@ -5,7 +5,7 @@ import { saveCompanyProfile, uploadCompanyLogo } from "../../services/companyPro
 import { ArrowClockwise, WarningCircle, Buildings } from "@phosphor-icons/react";
 
 const inputClass =
-  "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors";
+  "w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm placeholder:text-muted outline-none transition-colors";
 
 // Shown once, right after an industry account is created (email/password or
 // Google) — collects the same fields as the Company Profile settings page so
@@ -86,7 +86,7 @@ export default function CompanyOnboarding() {
     <div className="min-h-screen flex items-center justify-center bg-canvas text-charcoal px-4 py-12">
       <main className="w-full max-w-2xl">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-full bg-white border border-hairline flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 rounded-full bg-bone border border-hairline flex items-center justify-center mx-auto mb-4">
             <Buildings size={22} className="text-ink" />
           </div>
           <h1 className="font-geist text-3xl text-ink tracking-tight mb-2">Tell us about your company</h1>
@@ -96,7 +96,7 @@ export default function CompanyOnboarding() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-hairline rounded-xl p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-bone border border-hairline rounded-xl p-8 space-y-5">
           {error && (
             <div className="px-3 py-2.5 bg-pastel-red rounded-md flex items-start gap-2">
               <WarningCircle size={18} weight="bold" className="text-pastel-red-ink flex-shrink-0 mt-0.5" />
@@ -186,7 +186,7 @@ export default function CompanyOnboarding() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-4 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-4 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>

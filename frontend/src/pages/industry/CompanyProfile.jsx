@@ -5,7 +5,7 @@ import { DEFAULT_COMPANY_PROFILE } from "../../services/mockData/companyProfile"
 import { FloppyDisk, Buildings, UploadSimple, X } from "@phosphor-icons/react";
 
 const inputClass =
-  "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
+  "w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
 
 const MAX_LOGO_BYTES = 2 * 1024 * 1024; // 2MB — keeps the stored data URL reasonable
 
@@ -78,14 +78,14 @@ export default function CompanyProfile() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="py-2 px-6 rounded-md bg-ink text-white text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          className="py-2 px-6 rounded-md bg-ink text-ink-contrast text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
         >
           <FloppyDisk size={16} />
           {saving ? "Saving…" : saved ? "Saved ✓" : "Save Changes"}
         </button>
       </div>
 
-      <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
+      <section className="bg-bone border border-hairline rounded-xl p-8 mb-6">
         <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Company Logo</h3>
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 rounded-full border border-hairline bg-bone flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -127,7 +127,7 @@ export default function CompanyProfile() {
         </div>
       </section>
 
-      <section className="bg-white border border-hairline rounded-xl p-8">
+      <section className="bg-bone border border-hairline rounded-xl p-8">
         <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Organization Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

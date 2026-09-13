@@ -32,7 +32,7 @@ export default class ErrorBoundary extends Component {
           </p>
           <button
             onClick={this.handleReload}
-            className="inline-flex items-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
+            className="inline-flex items-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
           >
             <ArrowCounterClockwise size={16} />
             Reload page

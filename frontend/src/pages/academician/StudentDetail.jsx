@@ -46,7 +46,7 @@ export default function StudentDetail() {
             Back to My Students
           </button>
 
-          <header className="bg-white border border-hairline rounded-xl p-8 mb-6">
+          <header className="bg-bone border border-hairline rounded-xl p-8 mb-6">
             <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">{student.name}</h1>
             <p className="text-muted">
               {student.institution} · {student.year}
@@ -54,7 +54,7 @@ export default function StudentDetail() {
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <section className="bg-white border border-hairline rounded-xl p-6">
+            <section className="bg-bone border border-hairline rounded-xl p-6">
               <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Skills &amp; Assessments</h3>
               <ul className="flex flex-col gap-1">
                 {student.skills.map((s) => (
@@ -69,7 +69,7 @@ export default function StudentDetail() {
               </ul>
             </section>
 
-            <section className="bg-white border border-hairline rounded-xl p-6">
+            <section className="bg-bone border border-hairline rounded-xl p-6">
               <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Skill Gaps</h3>
               {student.skillGaps.length === 0 ? (
                 <p className="text-sm text-muted">No gaps — every skill meets its required proficiency.</p>
@@ -95,7 +95,7 @@ export default function StudentDetail() {
             </section>
           </div>
 
-          <section className="bg-white border border-hairline rounded-xl p-6">
+          <section className="bg-bone border border-hairline rounded-xl p-6">
             <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Internship Activity</h3>
             {student.internshipActivity.length === 0 ? (
               <p className="text-sm text-muted">No internship applications yet.</p>

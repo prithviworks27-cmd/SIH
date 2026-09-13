@@ -47,7 +47,7 @@ export default function DynamicTestSummary() {
   return (
     <DashboardLayout>
       <div className="flex items-center justify-center">
-        <div className="w-full max-w-2xl bg-white border border-hairline rounded-xl p-10">
+        <div className="w-full max-w-2xl bg-bone border border-hairline rounded-xl p-10">
           <div className="text-center mb-8">
             <span className="text-3xl mb-2 block">{passedCount === results.length ? "🎉" : "📋"}</span>
             <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">Assessments Completed</h1>
@@ -108,7 +108,7 @@ export default function DynamicTestSummary() {
               type="button"
               onClick={generateAnalysis}
               disabled={analysisLoading}
-              className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {analysisLoading ? <CircleNotch size={16} className="animate-spin" /> : <Sparkle size={16} />}
               {analysisLoading ? "Generating AI Analysis…" : "Generate AI Analysis"}

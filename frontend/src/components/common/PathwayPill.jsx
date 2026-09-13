@@ -31,7 +31,7 @@ export default function PathwayPill({ steps, expanded, onClick }) {
       aria-expanded={expanded}
       className={cn(
         "inline-flex cursor-pointer select-none items-center rounded-full",
-        "border border-hairline bg-white/90 backdrop-blur-sm",
+        "border border-hairline bg-bone/90 backdrop-blur-sm",
         "h-[68px] pl-3 pr-7 gap-4 text-lg",
         "shadow-[0_2px_12px_rgba(0,0,0,.10)] transition-shadow duration-300",
         "hover:shadow-[0_6px_24px_rgba(0,0,0,.16)]",
@@ -54,7 +54,7 @@ export default function PathwayPill({ steps, expanded, onClick }) {
               key={step.number}
               className={cn(
                 "absolute top-0 left-0 flex items-center justify-center rounded-xl",
-                "border-2 border-white shadow-[0_2px_8px_rgba(0,0,0,.18)]",
+                "border-2 border-bone shadow-[0_2px_8px_rgba(0,0,0,.18)]",
                 step.tint,
               )}
               style={{ width: PX, height: PX, zIndex: zIdx }}

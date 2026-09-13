@@ -57,7 +57,7 @@ export default function SkillTests() {
         <div className="relative flex-1">
           <MagnifyingGlass size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
-            className="w-full pl-9 pr-4 py-2.5 border border-hairline bg-white rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
+            className="w-full pl-9 pr-4 py-2.5 border border-hairline bg-bone rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
             placeholder="Search assessment domains…"
             type="text"
             value={search}
@@ -70,7 +70,7 @@ export default function SkillTests() {
               key={c}
               onClick={() => setCategory(c)}
               className={`px-3 py-2 rounded-md text-sm border transition-colors cursor-pointer ${
-                category === c ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+                category === c ? "bg-ink text-ink-contrast border-ink" : "bg-bone text-charcoal border-hairline hover:border-ink"
               }`}
             >
               {c === "All" ? "All Domains" : c === "Technical Skill" ? "Technical" : "Soft Skills"}
@@ -126,7 +126,7 @@ export default function SkillTests() {
         )}
 
         {history && history.length > 0 && (
-          <div className="bg-white border border-hairline rounded-xl divide-y divide-hairline">
+          <div className="bg-bone border border-hairline rounded-xl divide-y divide-hairline">
             {history.map((entry) => (
               <div key={entry.testId} className="p-5 flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex-1 min-w-0">
@@ -183,7 +183,7 @@ export default function SkillTests() {
       </section>
         </div>
 
-        <aside className="lg:sticky lg:top-6 bg-white border border-hairline rounded-xl p-5">
+        <aside className="lg:sticky lg:top-6 bg-bone border border-hairline rounded-xl p-5">
           <div className="flex items-center gap-2 mb-1">
             <Sparkle size={18} className="text-pastel-blue-ink" />
             <h2 className="text-base font-medium text-ink">Latest AI Review</h2>
@@ -202,7 +202,7 @@ export default function SkillTests() {
                 type="button"
                 onClick={generateAnalysis}
                 disabled={analysisLoading}
-                className="w-full bg-ink text-white text-sm px-3 py-2 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60"
+                className="w-full bg-ink text-ink-contrast text-sm px-3 py-2 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60"
               >
                 {analysisLoading ? "Generating…" : "Generate AI Analysis"}
               </button>

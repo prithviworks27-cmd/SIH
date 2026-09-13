@@ -73,7 +73,7 @@ export default function SkillProfileGapReport() {
         </div>
         <button
           onClick={() => navigate("/skill-assessment")}
-          className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all self-start md:self-auto"
+          className="bg-ink text-ink-contrast px-4 py-2 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all self-start md:self-auto"
         >
           Retake Assessment
         </button>
@@ -83,7 +83,7 @@ export default function SkillProfileGapReport() {
         {/*Left Column: Summary & Strong Skills*/}
         <div className="lg:col-span-8 flex flex-col gap-6">
           {/*Overview Card*/}
-          <section className="bg-white border border-hairline rounded-xl p-8">
+          <section className="bg-bone border border-hairline rounded-xl p-8">
             <div className="flex items-start justify-between gap-4 mb-4 border-b border-hairline pb-3">
               <div>
                 <h3 className="text-base font-medium text-ink">Core Competency Overview</h3>
@@ -114,7 +114,7 @@ export default function SkillProfileGapReport() {
           </section>
 
           {/*Skill breakdown*/}
-          <section className="bg-white border border-hairline rounded-xl p-8">
+          <section className="bg-bone border border-hairline rounded-xl p-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5 border-b border-hairline pb-4">
               <div className="flex items-center gap-2">
                 <SealCheck size={18} className="text-pastel-green-ink" />
@@ -124,12 +124,12 @@ export default function SkillProfileGapReport() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <select value={filter} onChange={(event) => setFilter(event.target.value)} className="border border-hairline rounded-md px-2 py-1.5 text-xs text-charcoal bg-white">
+                <select value={filter} onChange={(event) => setFilter(event.target.value)} className="border border-hairline rounded-md px-2 py-1.5 text-xs text-charcoal bg-bone">
                   <option value="all">All skills</option>
                   <option value="gaps">Needs improvement</option>
                   <option value="unassessed">Not assessed</option>
                 </select>
-                <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="border border-hairline rounded-md px-2 py-1.5 text-xs text-charcoal bg-white">
+                <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="border border-hairline rounded-md px-2 py-1.5 text-xs text-charcoal bg-bone">
                   <option value="gap">Sort: biggest gap</option>
                   <option value="score">Sort: highest score</option>
                   <option value="name">Sort: name</option>
@@ -167,7 +167,7 @@ export default function SkillProfileGapReport() {
 
         {/*Right Column: Skill Gaps & Recommendations*/}
         <div className="lg:col-span-4 flex flex-col gap-6">
-          <section className="bg-white border border-hairline rounded-xl p-8 h-full">
+          <section className="bg-bone border border-hairline rounded-xl p-8 h-full">
             <div className="flex items-center gap-2 mb-4 border-b border-hairline pb-3">
               <Warning size={18} className="text-pastel-red-ink" />
               <h3 className="text-base font-medium text-ink">Identified Skill Gaps</h3>
@@ -178,9 +178,9 @@ export default function SkillProfileGapReport() {
                 <div key={gap.name} className="border border-hairline p-4 rounded-lg bg-bone">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="text-sm text-ink">{gap.name}</h4>
-                    <span className="px-2 py-0.5 bg-white border border-hairline rounded text-xs text-charcoal">{levelLabel(gap.currentScore)}</span>
+                    <span className="px-2 py-0.5 bg-bone border border-hairline rounded text-xs text-charcoal">{levelLabel(gap.currentScore)}</span>
                   </div>
-                  <div className="w-full bg-white h-1.5 rounded-full overflow-hidden mb-2 border border-hairline">
+                  <div className="w-full bg-bone h-1.5 rounded-full overflow-hidden mb-2 border border-hairline">
                     <div className="bg-muted h-full" style={{ width: `${gap.currentScore}%` }}></div>
                   </div>
                   <p className="text-sm text-muted">{gap.gap} points below the {gap.requiredScore}% target.</p>

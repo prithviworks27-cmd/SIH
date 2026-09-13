@@ -9,6 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
 import { getPortfolio, getAssessmentResults } from "../../services/portfolioService";
 import { X, SealCheck, DownloadSimple, UserCircle, ArrowRight, PencilSimple } from "@phosphor-icons/react";
+import avatarPlaceholderBg from "../../assets/avatar-placeholder-bg.png";
 
 export default function DigitalPortfolio() {
   const { user } = useAuth();
@@ -62,7 +63,7 @@ export default function DigitalPortfolio() {
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setShareModalOpen(true)}
-              className="flex items-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
+              className="flex items-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
             >
               Share Portfolio
               <ArrowRight size={15} weight="bold" />
@@ -78,11 +79,22 @@ export default function DigitalPortfolio() {
               Manage entries
             </Link>
           </div>
+
+          <button
+            onClick={() => window.print()}
+            className="mt-3 flex items-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
+          >
+            Download Resume
+            <DownloadSimple size={15} />
+          </button>
         </div>
 
         {/* Faux-window profile card */}
-        <div className="w-[65%] mx-auto lg:mx-0 border border-hairline rounded-xl bg-white shadow-lift overflow-hidden">
-          <div className="flex items-center justify-between px-3 py-2 border-b border-hairline bg-bone">
+        <div
+          className="w-[65%] mx-auto lg:mx-0 border border-hairline rounded-xl shadow-lift overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: `url(${avatarPlaceholderBg})` }}
+        >
+          <div className="flex items-center justify-between px-3 py-2 border-b border-hairline bg-bone/80 backdrop-blur-sm">
             <span className="text-[13px] font-mono text-muted">profile</span>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-hairline" />
@@ -102,9 +114,9 @@ export default function DigitalPortfolio() {
                 <UserCircle size={31} className="text-muted" />
               </div>
             )}
-            <p className="font-geist text-lg text-ink mt-2.5">{user?.name || "Student"}</p>
+            <p className="font-geist text-lg text-ink mt-2.5 bg-bone/80 backdrop-blur-sm rounded px-2">{user?.name || "Student"}</p>
           </div>
-          <div className="flex items-center justify-between px-4 py-2 border-t border-hairline text-[13px] text-muted">
+          <div className="flex items-center justify-between px-4 py-2 border-t border-hairline bg-bone/80 backdrop-blur-sm text-[13px] text-muted">
             <span>{portfolio.institution || "SkillBridge"}</span>
             <span className="flex items-center gap-1.5 text-pastel-green-ink">
               <span className="w-1.5 h-1.5 rounded-full bg-pastel-green-ink" />
@@ -118,7 +130,7 @@ export default function DigitalPortfolio() {
          set in a rounded-rectangle chip rather than an underline.*/}
       <div className="flex flex-col gap-6">
         {/*Verified Skills*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
+        <section className="bg-bone border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Skills &amp; Trust Levels
           </h3>
@@ -139,7 +151,7 @@ export default function DigitalPortfolio() {
         </section>
 
         {/*Projects*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
+        <section className="bg-bone border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Projects
           </h3>
@@ -164,7 +176,7 @@ export default function DigitalPortfolio() {
         </section>
 
         {/*Certifications*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
+        <section className="bg-bone border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Certifications
           </h3>
@@ -186,7 +198,7 @@ export default function DigitalPortfolio() {
         </section>
 
         {/*Assessment Results — the scores behind the verified badges*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
+        <section className="bg-bone border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Assessment Results
           </h3>
@@ -214,7 +226,7 @@ export default function DigitalPortfolio() {
         </section>
 
         {/*Internships*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
+        <section className="bg-bone border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Internships
           </h3>
@@ -233,7 +245,7 @@ export default function DigitalPortfolio() {
         </section>
 
         {/*Achievements*/}
-        <section className="bg-white border border-hairline rounded-xl p-6">
+        <section className="bg-bone border border-hairline rounded-xl p-6">
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Achievements
           </h3>
@@ -244,26 +256,6 @@ export default function DigitalPortfolio() {
             ))}
           </ul>
         </section>
-
-        {/*Resume — generated from the portfolio itself rather than uploaded,
-           so it can never drift out of sync with the verified evidence above.*/}
-        <section className="bg-white border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-2">
-              Resume
-            </h3>
-            <p className="text-sm text-muted">
-              Generated from your verified skills, projects, certifications and experience above.
-            </p>
-          </div>
-          <button
-            onClick={() => window.print()}
-            className="inline-flex items-center justify-center gap-2 border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors whitespace-nowrap"
-          >
-            <DownloadSimple size={16} />
-            Download Resume
-          </button>
-        </section>
       </div>
 
       {selectedSkill && <SkillEvidencePanel skill={selectedSkill} portfolio={portfolio} onClose={() => setSelectedSkill(null)} />}
@@ -271,14 +263,14 @@ export default function DigitalPortfolio() {
       {/*Share Modal*/}
       {shareModalOpen && (
         <div className="fixed inset-0 bg-[#1A1A1A]/20 z-50 flex items-center justify-center p-4" onClick={() => setShareModalOpen(false)}>
-          <div className="bg-white border border-hairline rounded-xl p-8 max-w-sm w-full relative" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-bone border border-hairline rounded-xl p-8 max-w-sm w-full relative" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setShareModalOpen(false)} className="absolute top-4 right-4 text-muted hover:text-ink">
               <X size={18} />
             </button>
             <h3 className="text-lg font-medium text-ink mb-4 text-center">Share Skill Passport</h3>
             <div className="flex gap-2">
               <input
-                className="flex-grow border border-hairline bg-white rounded-md px-3 py-2 text-sm text-charcoal focus:outline-none focus:border-ink"
+                className="flex-grow border border-hairline bg-bone rounded-md px-3 py-2 text-sm text-charcoal focus:outline-none focus:border-ink"
                 readOnly
                 type="text"
                 value={shareUrl}

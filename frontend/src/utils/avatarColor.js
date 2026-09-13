@@ -2,6 +2,8 @@
 // palette (wordmark teal/purple/orange plus the existing pastel-ink accents)
 // instead of arbitrary hues — so every avatar in the messaging surfaces
 // feels like it belongs to SkillBridge rather than a generic identicon set.
+// Same in both themes — these are saturated mid-tones that read fine with
+// white initials text on either a light or dark page background.
 const AVATAR_GRADIENTS = [
   "linear-gradient(135deg, #4fadb0, #3d8a8d)", // teal
   "linear-gradient(135deg, #7a6fe0, #5f52c4)", // purple

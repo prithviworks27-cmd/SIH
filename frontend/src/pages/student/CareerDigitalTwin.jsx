@@ -49,12 +49,12 @@ export default function CareerDigitalTwin() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <section className="bg-white border border-hairline rounded-xl p-8 text-center">
+        <section className="bg-bone border border-hairline rounded-xl p-8 text-center">
           <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Current Profile</h2>
           <div className="font-editorial text-5xl text-ink tracking-tight mb-2">{overallMatchPercent}%</div>
           <p className="text-sm text-muted">Software Developer Readiness</p>
         </section>
-        <section className="bg-white border border-hairline rounded-xl p-8 text-center relative overflow-hidden">
+        <section className="bg-bone border border-hairline rounded-xl p-8 text-center relative overflow-hidden">
           <span className="absolute top-3 right-3 text-xs uppercase tracking-wide text-muted bg-bone px-2 py-0.5 rounded-full">Estimate</span>
           <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Projected After Learning Paths</h2>
           <div className="font-editorial text-5xl text-pastel-green-ink tracking-tight mb-2 flex items-center justify-center gap-2">
@@ -65,7 +65,7 @@ export default function CareerDigitalTwin() {
         </section>
       </div>
 
-      <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
+      <section className="bg-bone border border-hairline rounded-xl p-8 mb-6">
         <h2 className="text-lg font-medium text-ink mb-2 flex items-center gap-2">
           <Target size={20} />
           Skill Gaps Driving This Projection
@@ -99,7 +99,7 @@ export default function CareerDigitalTwin() {
             <span className="font-medium text-ink">Recommended action:</span> Start your learning paths to move toward the projected readiness.
           </span>
         </p>
-        <Link to="/learning-paths" className="bg-ink text-white text-sm px-6 py-2.5 rounded-md whitespace-nowrap hover:bg-ink-hover active:scale-[0.98] transition-all">
+        <Link to="/learning-paths" className="bg-ink text-ink-contrast text-sm px-6 py-2.5 rounded-md whitespace-nowrap hover:bg-ink-hover active:scale-[0.98] transition-all">
           View Learning Paths
         </Link>
       </section>

@@ -89,7 +89,7 @@ export default function SkillAssessment() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center">
-          <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
+          <div className="w-full max-w-lg bg-bone border border-hairline rounded-xl p-10 text-center">
             <ClockCounterClockwise size={32} className="text-ink mx-auto mb-4" />
             <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">You've already completed this assessment</h1>
             <p className="text-muted mb-8">
@@ -100,7 +100,7 @@ export default function SkillAssessment() {
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => setShowRetakeWarning(true)}
-                className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all cursor-pointer"
+                className="w-full bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all cursor-pointer"
               >
                 Retake Assessment
               </button>
@@ -115,7 +115,7 @@ export default function SkillAssessment() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center">
-          <div className="w-full max-w-lg bg-white border border-hairline rounded-xl p-10 text-center">
+          <div className="w-full max-w-lg bg-bone border border-hairline rounded-xl p-10 text-center">
             <ClockCounterClockwise size={32} className="text-ink mx-auto mb-4" />
             <h1 className="font-geist text-2xl text-ink tracking-tight mb-3">Retake this assessment?</h1>
             <p className="text-muted mb-8">
@@ -125,7 +125,7 @@ export default function SkillAssessment() {
               <button
                 type="button"
                 onClick={() => setForceRetake(true)}
-                className="w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all cursor-pointer"
+                className="w-full bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all cursor-pointer"
               >
                 Continue and Retake Test
               </button>
@@ -185,7 +185,7 @@ export default function SkillAssessment() {
   if (showRules) {
     return (
       <DashboardLayout>
-        <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
+        <div className="w-full max-w-2xl mx-auto bg-bone border border-hairline rounded-xl p-6 md:p-10">
           <div className="mb-8">
             <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">Are you ready to take the test?</h1>
             <p className="text-muted">Please read and accept the rules before starting your skill assessment.</p>
@@ -246,7 +246,7 @@ export default function SkillAssessment() {
               type="button"
               onClick={startSkillTests}
               disabled={!agreedToRules || cameraAccess !== "granted"}
-              className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Agree and Start Test
             </button>
@@ -258,7 +258,7 @@ export default function SkillAssessment() {
 
   return (
     <DashboardLayout>
-      <div className="w-full max-w-2xl mx-auto bg-white border border-hairline rounded-xl p-6 md:p-10">
+      <div className="w-full max-w-2xl mx-auto bg-bone border border-hairline rounded-xl p-6 md:p-10">
         <div className="mb-8">
           <h1 className="font-geist text-2xl text-ink tracking-tight mb-2">Which skills do you know?</h1>
           <p className="text-muted">
@@ -306,7 +306,7 @@ export default function SkillAssessment() {
             type="button"
             onClick={beginSkillTests}
             disabled={selectedSkills.length === 0}
-            className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Start Skill Tests
           </button>

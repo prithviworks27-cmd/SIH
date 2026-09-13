@@ -12,7 +12,7 @@ import { studentNavItems, studentFooterNavItems } from "../../config/studentNavC
 // Same 115deg teal/purple/orange gradient as the SKILLBRIDGE wordmark on
 // Landing/Login/Signup, so this pill reads as branded rather than a plain
 // utility control.
-const WORDMARK_GRADIENT = "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)";
+const WORDMARK_GRADIENT = "var(--wordmark-gradient)";
 
 function TopRightLinks() {
   return (
@@ -20,30 +20,30 @@ function TopRightLinks() {
       <div className="inline-flex items-center gap-1.5 rounded-full p-1.5 shadow-lift" style={{ backgroundImage: WORDMARK_GRADIENT }}>
         <Link
           to="/portfolio"
-          className="icon-btn flex items-center justify-center w-9 h-9 bg-white hover:bg-white"
-          style={{ borderRadius: "9999px" }}
+          className="icon-btn flex items-center justify-center w-9 h-9 bg-bone hover:bg-bone"
+          style={{ borderRadius: "9999px", color: "rgb(var(--color-ink))" }}
           aria-label="Portfolio"
           title="Portfolio"
         >
-          <UserCircle size={18} weight="bold" color="#111111" />
+          <UserCircle size={18} weight="bold" />
         </Link>
         <Link
           to="/messages"
-          className="icon-btn flex items-center justify-center w-9 h-9 bg-white hover:bg-white"
-          style={{ borderRadius: "9999px" }}
+          className="icon-btn flex items-center justify-center w-9 h-9 bg-bone hover:bg-bone"
+          style={{ borderRadius: "9999px", color: "rgb(var(--color-ink))" }}
           aria-label="Messages"
           title="Messages"
         >
-          <EnvelopeSimple size={18} weight="bold" color="#111111" />
+          <EnvelopeSimple size={18} weight="bold" />
         </Link>
         <Link
           to="/notifications"
-          className="icon-btn flex items-center justify-center w-9 h-9 bg-white hover:bg-white"
-          style={{ borderRadius: "9999px" }}
+          className="icon-btn flex items-center justify-center w-9 h-9 bg-bone hover:bg-bone"
+          style={{ borderRadius: "9999px", color: "rgb(var(--color-ink))" }}
           aria-label="Notifications"
           title="Notifications"
         >
-          <Bell size={18} weight="bold" color="#111111" />
+          <Bell size={18} weight="bold" />
         </Link>
       </div>
     </div>
@@ -69,7 +69,7 @@ export default function DashboardLayout({
     <AmbientBrandGlow className="text-charcoal min-h-screen">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-ink focus:text-white focus:text-sm focus:font-medium focus:rounded-md focus:py-2.5 focus:px-4"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-ink focus:text-ink-contrast focus:text-sm focus:font-medium focus:rounded-md focus:py-2.5 focus:px-4"
       >
         Skip to content
       </a>

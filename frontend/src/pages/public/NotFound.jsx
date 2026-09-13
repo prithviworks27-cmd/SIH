@@ -11,7 +11,7 @@ export default function NotFound() {
         <p className="text-sm text-muted mb-8">The page you're looking for doesn't exist or may have moved.</p>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
+          className="inline-flex items-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
         >
           <ArrowLeft size={16} />
           Back to SkillBridge

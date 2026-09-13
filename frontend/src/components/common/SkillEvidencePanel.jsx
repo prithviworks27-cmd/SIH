@@ -24,7 +24,7 @@ export default function SkillEvidencePanel({ skill, portfolio, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-[#1A1A1A]/20 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white border border-hairline rounded-xl p-8 max-w-sm w-full relative" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-bone border border-hairline rounded-xl p-8 max-w-sm w-full relative" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="absolute top-4 right-4 text-muted hover:text-ink">
           <X size={18} />
         </button>

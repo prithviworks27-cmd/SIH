@@ -14,7 +14,7 @@ function ResultBadge({ lastResult }) {
 
 export default function SkillTestCard({ title, category, questionCount, durationMinutes, lastResult, onStart }) {
   return (
-    <div className="bg-white border border-hairline rounded-xl p-6 flex flex-col gap-4">
+    <div className="bg-bone border border-hairline rounded-xl p-6 flex flex-col gap-4">
       <div>
         <div className="flex items-center justify-between gap-2 mb-1">
           <h3 className="text-base font-medium text-ink">{title}</h3>

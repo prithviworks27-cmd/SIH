@@ -38,7 +38,7 @@ export default function AdminDashboard() {
           </section>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
-            <section className="lg:col-span-7 bg-white border border-hairline rounded-xl p-8">
+            <section className="lg:col-span-7 bg-bone border border-hairline rounded-xl p-8">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-lg font-medium text-ink">Top Skill Gaps</h2>
                 <Link to="/admin/skill-analytics" className="text-xs uppercase tracking-wide text-ink hover:text-muted transition-colors">
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
               </div>
             </section>
 
-            <section className="lg:col-span-5 bg-white border border-hairline rounded-xl p-8">
+            <section className="lg:col-span-5 bg-bone border border-hairline rounded-xl p-8">
               <h2 className="text-lg font-medium text-ink mb-1">Placement Readiness</h2>
               <p className="text-sm text-muted mb-6">Students grouped by overall skill readiness.</p>
               <div className="flex flex-col gap-4">
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
               Manage students
             </Link>
           </div>
-          <section className="bg-white border border-hairline rounded-xl">
+          <section className="bg-bone border border-hairline rounded-xl">
             <div className="overflow-x-auto w-full">
               <table className="w-full text-left border-collapse">
                 <thead>

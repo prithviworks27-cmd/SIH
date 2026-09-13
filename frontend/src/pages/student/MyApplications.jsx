@@ -41,7 +41,7 @@ export default function MyApplications() {
           </label>
           <select
             id="status-filter"
-            className="w-full border border-hairline bg-white text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
+            className="w-full border border-hairline bg-bone text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -71,7 +71,7 @@ export default function MyApplications() {
       )}
 
       {filteredApplications && filteredApplications.length > 0 && (
-        <div className="bg-white border border-hairline rounded-xl">
+        <div className="bg-bone border border-hairline rounded-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse">
               <thead>
