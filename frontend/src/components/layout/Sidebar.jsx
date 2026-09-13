@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import useDarkMode from "../../hooks/useDarkMode";
 import {
   SquaresFour,
   ClipboardText,
@@ -26,8 +25,6 @@ import {
   Trophy,
   Robot,
   ShieldCheck,
-  Sun,
-  Moon,
 } from "@phosphor-icons/react";
 
 // Custom colored mark for AI Advisor — a chatbot face flanked by gradient
@@ -98,7 +95,6 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [isDark, setIsDark] = useDarkMode();
 
   const handleLogout = async () => {
     await logout();
@@ -168,23 +164,8 @@ export default function Sidebar({ navItems, footerNavItems, title = "Student Por
             </NavLink>
           ))}
           <button
-            onClick={() => setIsDark((v) => !v)}
-            style={{ transitionDelay: mobileOpen ? `${(navItems.length + footerNavItems.length) * 40}ms` : "0ms" }}
-            className={`group w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink cursor-pointer transition-[color,background-color,opacity,transform] duration-300 ease-out md:!opacity-100 md:!translate-x-0 ${
-              mobileOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
-            }`}
-            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {isDark ? (
-              <Sun size={18} className="transition-transform duration-150 group-hover:scale-110" />
-            ) : (
-              <Moon size={18} className="transition-transform duration-150 group-hover:scale-110" />
-            )}
-            <span>{isDark ? "Light mode" : "Dark mode"}</span>
-          </button>
-          <button
             onClick={handleLogout}
-            style={{ transitionDelay: mobileOpen ? `${(navItems.length + footerNavItems.length + 1) * 40}ms` : "0ms" }}
+            style={{ transitionDelay: mobileOpen ? `${(navItems.length + footerNavItems.length) * 40}ms` : "0ms" }}
             className={`group w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted hover:bg-bone hover:text-ink cursor-pointer transition-[color,background-color,opacity,transform] duration-300 ease-out md:!opacity-100 md:!translate-x-0 ${
               mobileOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
             }`}

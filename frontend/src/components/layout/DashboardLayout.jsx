@@ -3,6 +3,7 @@ import { UserCircle, EnvelopeSimple, Bell } from "@phosphor-icons/react";
 import Sidebar from "./Sidebar";
 import MessagesBar from "../common/MessagesBar";
 import AmbientBrandGlow from "../ui/ambient-brand-glow";
+import ThemeToggle from "../common/ThemeToggle";
 import { studentNavItems, studentFooterNavItems } from "../../config/studentNavConfig";
 
 // Portfolio/Messages/Notifications moved out of the student sidebar and up
@@ -16,7 +17,8 @@ const WORDMARK_GRADIENT = "var(--wordmark-gradient)";
 
 function TopRightLinks() {
   return (
-    <div className="flex justify-end mb-6">
+    <div className="flex justify-end items-center gap-3 mb-6">
+      <ThemeToggle />
       <div className="inline-flex items-center gap-1.5 rounded-full p-1.5 shadow-lift" style={{ backgroundImage: WORDMARK_GRADIENT }}>
         <Link
           to="/portfolio"
@@ -76,7 +78,7 @@ export default function DashboardLayout({
       {!hideSidebar && <Sidebar navItems={navItems} footerNavItems={footerNavItems} title={title} subtitle={subtitle} />}
       <main id="main-content" className={hideSidebar ? "px-4 md:px-10 py-10" : "md:ml-56 px-4 md:px-10 py-10"}>
         <div className={`max-w-5xl mx-auto ${contentClassName}`}>
-          {!hideSidebar && isStudentPortal && <TopRightLinks />}
+          {!hideSidebar && (isStudentPortal ? <TopRightLinks /> : <div className="flex justify-end mb-6"><ThemeToggle /></div>)}
           {children}
         </div>
       </main>
