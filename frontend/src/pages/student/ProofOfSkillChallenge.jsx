@@ -64,7 +64,7 @@ export default function ProofOfSkillChallenge() {
               : " A score of 75% or higher is required to verify this skill."}
           </p>
           <div className="flex gap-3 mt-4">
-            <Link to="/portfolio" className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all">
+            <Link to="/portfolio" className="bg-ink text-ink-contrast text-sm px-6 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all">
               View Skill Passport
             </Link>
             {!result.passing && (
@@ -111,7 +111,7 @@ export default function ProofOfSkillChallenge() {
               </button>
             </div>
           </div>
-          <div className="relative w-full h-[500px] border border-hairline bg-white rounded-b-xl overflow-hidden">
+          <div className="relative w-full h-[500px] border border-hairline bg-bone rounded-b-xl overflow-hidden">
             <textarea
               className="w-full h-full px-4 py-4 font-mono text-sm text-charcoal bg-transparent border-none focus:ring-0 resize-none outline-none leading-relaxed"
               spellCheck="false"
@@ -139,7 +139,7 @@ export default function ProofOfSkillChallenge() {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+            className="bg-ink text-ink-contrast text-sm px-6 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
           >
             {submitting ? "Submitting…" : "Submit for Review"}
             <PaperPlaneTilt size={16} />
@@ -147,7 +147,7 @@ export default function ProofOfSkillChallenge() {
         </div>
 
         {/*Rubric*/}
-        <div className="mt-6 border border-hairline bg-white rounded-xl p-8">
+        <div className="mt-6 border border-hairline bg-bone rounded-xl p-8">
           <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Evaluation Criteria</h3>
           <ul className="flex flex-col gap-3">
             {[

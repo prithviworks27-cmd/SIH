@@ -44,7 +44,7 @@ export default function CandidatesList() {
           </label>
           <select
             id="opp-selector"
-            className="w-full border border-hairline bg-white text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
+            className="w-full border border-hairline bg-bone text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
             value={opportunityId}
             onChange={(e) => handleOpportunityChange(e.target.value)}
           >
@@ -68,7 +68,7 @@ export default function CandidatesList() {
             <Link
               key={candidate.id}
               to={`/industry/candidates/${candidate.id}${opportunityId ? `?opportunityId=${opportunityId}` : ""}`}
-              className="bg-white border border-hairline rounded-xl p-5 flex items-center gap-4 hover:shadow-lift transition-shadow"
+              className="bg-bone border border-hairline rounded-xl p-5 flex items-center gap-4 hover:shadow-lift transition-shadow"
             >
               <div className="w-11 h-11 rounded-full bg-bone flex items-center justify-center text-ink font-medium shrink-0">
                 {candidate.avatarInitial}

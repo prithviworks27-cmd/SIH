@@ -46,7 +46,7 @@ export default function IndustryDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8 flex flex-col gap-6">
-          <section className="bg-white border border-hairline rounded-xl p-8">
+          <section className="bg-bone border border-hairline rounded-xl p-8">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-medium text-ink">Recent Applications</h3>
               <Link to="/industry/applications" className="text-xs uppercase tracking-wide text-ink hover:text-muted transition-colors">
@@ -68,7 +68,7 @@ export default function IndustryDashboard() {
             </div>
           </section>
 
-          <section className="bg-white border border-hairline rounded-xl p-8">
+          <section className="bg-bone border border-hairline rounded-xl p-8">
             <h3 className="text-lg font-medium text-ink mb-6">Active Opportunities</h3>
             {!opportunities && <p className="text-sm text-muted">Loading…</p>}
             <div className="flex flex-col divide-y divide-hairline">
@@ -91,7 +91,7 @@ export default function IndustryDashboard() {
         </div>
 
         <div className="lg:col-span-4 flex flex-col gap-6">
-          <section className="bg-white border border-hairline rounded-xl p-6">
+          <section className="bg-bone border border-hairline rounded-xl p-6">
             <h3 className="text-lg font-medium text-ink mb-4">Top Candidates</h3>
             {!topCandidates && <p className="text-sm text-muted">Loading…</p>}
             {topCandidates && topCandidates.length === 0 && <p className="text-sm text-muted">No candidates in review yet.</p>}
@@ -109,7 +109,7 @@ export default function IndustryDashboard() {
             </div>
             <Link
               to="/industry/opportunities/create"
-              className="mt-6 w-full block text-center bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
+              className="mt-6 w-full block text-center bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
             >
               Post New Opportunity
             </Link>

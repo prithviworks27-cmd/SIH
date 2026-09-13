@@ -42,7 +42,7 @@ export default function RecommendedLearningPaths() {
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {paths.map((path) => {
               return (
-                <article key={path.skillName} className="bg-white border border-hairline rounded-xl flex flex-col h-full">
+                <article key={path.skillName} className="bg-bone border border-hairline rounded-xl flex flex-col h-full">
                   <div className="p-6 flex-grow">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="text-lg font-medium text-ink">{path.title}</h3>
@@ -86,7 +86,7 @@ export default function RecommendedLearningPaths() {
                   <div className="p-6 border-t border-hairline mt-auto">
                     <button
                       onClick={() => navigate(`/learning-paths/study?skill=${encodeURIComponent(path.skillName)}`)}
-                      className="block text-center w-full bg-ink text-white rounded-md text-sm py-2.5 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
+                      className="block text-center w-full bg-ink text-ink-contrast rounded-md text-sm py-2.5 hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
                     >
                       Study
                     </button>
@@ -103,7 +103,7 @@ export default function RecommendedLearningPaths() {
           <h3 className="text-xs uppercase tracking-wide text-muted mb-4">Industry Programs</h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {programs.map((program) => (
-              <article key={program.id} className="bg-white border border-hairline rounded-xl p-6">
+              <article key={program.id} className="bg-bone border border-hairline rounded-xl p-6">
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <h4 className="text-base font-medium text-ink">{program.title}</h4>
                   <span className="bg-bone px-2.5 py-1 rounded-full text-xs uppercase tracking-wide text-charcoal whitespace-nowrap">

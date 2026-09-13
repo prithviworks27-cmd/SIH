@@ -52,14 +52,14 @@ export default function SkillProfileGraph() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/*Readiness Score & Recommendations*/}
         <div className="lg:col-span-4 flex flex-col gap-6">
-          <div className="bg-white border border-hairline p-8 rounded-xl flex flex-col items-center text-center">
+          <div className="bg-bone border border-hairline p-8 rounded-xl flex flex-col items-center text-center">
             <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Current Readiness Score</h2>
             <div className="font-editorial text-4xl text-ink tracking-tight mb-2">{overallMatchPercent}%</div>
             <p className="text-sm text-charcoal">
               You match {provenCount} out of {totalCount} core competencies.
             </p>
           </div>
-          <div className="bg-white border border-hairline p-6 rounded-xl">
+          <div className="bg-bone border border-hairline p-6 rounded-xl">
             <h3 className="text-base font-medium text-ink mb-3">Recommended Next Activity</h3>
             <p className="text-muted mb-6 text-sm leading-relaxed">
               {skillGaps[0]
@@ -68,7 +68,7 @@ export default function SkillProfileGraph() {
             </p>
             <Link
               to="/proof-of-skill"
-              className="block text-center w-full bg-ink text-white hover:bg-ink-hover active:scale-[0.98] transition-all py-2.5 px-4 rounded-md text-sm"
+              className="block text-center w-full bg-ink text-ink-contrast hover:bg-ink-hover active:scale-[0.98] transition-all py-2.5 px-4 rounded-md text-sm"
             >
               Begin Challenge
             </Link>
@@ -78,7 +78,7 @@ export default function SkillProfileGraph() {
         {/*Skills Detail*/}
         <div className="lg:col-span-8 flex flex-col gap-6">
           {/*Proven Skills*/}
-          <div className="bg-white border border-hairline rounded-xl">
+          <div className="bg-bone border border-hairline rounded-xl">
             <div className="border-b border-hairline p-5">
               <h2 className="text-xs uppercase tracking-wide text-muted">Skills Already Proven</h2>
             </div>
@@ -105,7 +105,7 @@ export default function SkillProfileGraph() {
           </div>
 
           {/*Missing Skills*/}
-          <div className="bg-white border border-hairline rounded-xl">
+          <div className="bg-bone border border-hairline rounded-xl">
             <div className="border-b border-hairline p-5">
               <h2 className="text-xs uppercase tracking-wide text-muted">Missing Competencies</h2>
             </div>

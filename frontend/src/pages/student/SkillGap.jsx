@@ -47,7 +47,7 @@ export default function SkillGap() {
             id="target-role"
             value={selectedRoleId}
             onChange={(e) => handleRoleChange(e.target.value)}
-            className="w-full md:w-80 border border-hairline rounded-md px-4 py-2.5 text-sm text-ink bg-white focus:outline-none focus:ring-1 focus:ring-ink"
+            className="w-full md:w-80 border border-hairline rounded-md px-4 py-2.5 text-sm text-ink bg-bone focus:outline-none focus:ring-1 focus:ring-ink"
           >
             {roles.map((role) => (
               <option key={role.id} value={role.id}>
@@ -63,7 +63,7 @@ export default function SkillGap() {
       {readiness && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-4">
-            <div className="bg-white border border-hairline rounded-xl p-8 flex flex-col items-center text-center">
+            <div className="bg-bone border border-hairline rounded-xl p-8 flex flex-col items-center text-center">
               <h2 className="text-xs uppercase tracking-wide text-muted mb-3">Readiness for {readiness.role.title}</h2>
               <div className="font-editorial text-4xl text-ink tracking-tight mb-2">{readiness.readinessPercent}%</div>
               <p className="text-sm text-charcoal">
@@ -72,7 +72,7 @@ export default function SkillGap() {
               </p>
               <Link
                 to="/career-path"
-                className="mt-6 w-full bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
+                className="mt-6 w-full bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
               >
                 View Career Path
               </Link>
@@ -80,7 +80,7 @@ export default function SkillGap() {
           </div>
 
           <div className="lg:col-span-8 flex flex-col gap-6">
-            <section className="bg-white border border-hairline rounded-xl p-6">
+            <section className="bg-bone border border-hairline rounded-xl p-6">
               <h3 className="text-base font-medium text-ink mb-4">Skills You Have</h3>
               {readiness.matchedSkills.length === 0 ? (
                 <p className="text-sm text-muted">No required skills verified yet for this role.</p>
@@ -97,7 +97,7 @@ export default function SkillGap() {
               )}
             </section>
 
-            <section className="bg-white border border-hairline rounded-xl p-6">
+            <section className="bg-bone border border-hairline rounded-xl p-6">
               <h3 className="text-base font-medium text-ink mb-4">Missing Skills</h3>
               {readiness.missingSkills.length === 0 ? (
                 <p className="text-sm text-muted">No gaps — you meet every required skill for this role.</p>

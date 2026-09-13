@@ -54,7 +54,7 @@ export default function CertificateReview() {
       {pending && pending.length > 0 && (
         <div className="flex flex-col gap-4">
           {pending.map((c) => (
-            <div key={c.id} className="bg-white border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div key={c.id} className="bg-bone border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-ink">{c.title}</p>
                 <p className="text-xs text-muted mt-0.5">
@@ -79,7 +79,7 @@ export default function CertificateReview() {
                 <button
                   onClick={() => handleDecision(c.id, "verified")}
                   disabled={decidingId === c.id}
-                  className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-ink text-white text-sm px-4 py-2 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-50"
+                  className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-ink text-ink-contrast text-sm px-4 py-2 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-50"
                 >
                   <CheckCircle size={16} />
                   {decidingId === c.id ? "Saving…" : "Approve"}

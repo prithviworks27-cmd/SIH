@@ -70,7 +70,7 @@ export default function SkillPrograms() {
         </div>
         <button
           onClick={() => setShowForm((v) => !v)}
-          className="bg-ink text-white px-4 py-2 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 self-start md:self-auto"
+          className="bg-ink text-ink-contrast px-4 py-2 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 self-start md:self-auto"
         >
           <Plus size={16} />
           {showForm ? "Cancel" : "Create Program"}
@@ -78,11 +78,11 @@ export default function SkillPrograms() {
       </header>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white border border-hairline rounded-xl p-8 mb-10 flex flex-col gap-6 max-w-3xl">
+        <form onSubmit={handleSubmit} className="bg-bone border border-hairline rounded-xl p-8 mb-10 flex flex-col gap-6 max-w-3xl">
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Program Title</label>
             <input
-              className="w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors"
+              className="w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm outline-none transition-colors"
               type="text"
               value={form.title}
               onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
@@ -101,7 +101,7 @@ export default function SkillPrograms() {
                     type="button"
                     onClick={() => toggleSkill(s.name)}
                     className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
-                      selected ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+                      selected ? "bg-ink text-ink-contrast border-ink" : "bg-bone text-charcoal border-hairline hover:border-ink"
                     }`}
                   >
                     {s.name}
@@ -143,7 +143,7 @@ export default function SkillPrograms() {
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-2.5 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+              className="px-6 py-2.5 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
             >
               {submitting ? "Publishing…" : "Publish Program"}
               <ArrowRight size={16} />
@@ -167,7 +167,7 @@ export default function SkillPrograms() {
       {programs && programs.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {programs.map((program) => (
-            <article key={program.id} className="bg-white border border-hairline rounded-xl p-6">
+            <article key={program.id} className="bg-bone border border-hairline rounded-xl p-6">
               <div className="flex items-start justify-between gap-2 mb-1">
                 <h4 className="text-base font-medium text-ink">{program.title}</h4>
                 <span className="bg-bone px-2.5 py-1 rounded-full text-xs uppercase tracking-wide text-charcoal whitespace-nowrap">

@@ -7,7 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { getPortfolio, savePortfolioBasics, uploadAvatar, removeAvatar } from "../../services/portfolioService";
 
 const inputClass =
-  "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
+  "w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
 
 export default function DigitalPortfolioEdit() {
   const navigate = useNavigate();
@@ -107,7 +107,7 @@ export default function DigitalPortfolioEdit() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 md:flex-none py-2 px-6 rounded-md bg-ink text-white text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+            className="flex-1 md:flex-none py-2 px-6 rounded-md bg-ink text-ink-contrast text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
           >
             <FloppyDisk size={16} />
             {saving ? "Saving…" : "Save Changes"}
@@ -115,7 +115,7 @@ export default function DigitalPortfolioEdit() {
         </div>
       </div>
       {/*Profile Picture*/}
-      <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
+      <section className="bg-bone border border-hairline rounded-xl p-8 mb-6">
         <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Profile Picture</h3>
         <div className="flex items-center gap-5">
           {avatarUrl ? (
@@ -150,7 +150,7 @@ export default function DigitalPortfolioEdit() {
       </section>
 
       {/*Basic Info Form*/}
-      <section className="bg-white border border-hairline rounded-xl p-8">
+      <section className="bg-bone border border-hairline rounded-xl p-8">
         <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Basic Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

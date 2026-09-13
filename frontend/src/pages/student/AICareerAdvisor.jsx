@@ -37,7 +37,7 @@ function Bubble({ role, content }) {
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
         className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-          isUser ? "bg-ink text-white" : "bg-white border border-hairline text-charcoal"
+          isUser ? "bg-ink text-ink-contrast" : "bg-bone border border-hairline text-charcoal"
         }`}
       >
         {content}
@@ -141,7 +141,7 @@ export default function AICareerAdvisor() {
             </div>
           )}
 
-          <div className="bg-white border border-hairline rounded-xl p-6 mb-4 min-h-[320px] flex flex-col gap-4">
+          <div className="bg-bone border border-hairline rounded-xl p-6 mb-4 min-h-[320px] flex flex-col gap-4">
             {messages.length === 0 && (
               <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 py-8">
                 <p className="text-sm text-muted max-w-sm">
@@ -167,7 +167,7 @@ export default function AICareerAdvisor() {
 
             {sending && (
               <div className="flex justify-start">
-                <div className="bg-white border border-hairline rounded-xl px-4 py-3 text-sm text-muted">Thinking…</div>
+                <div className="bg-bone border border-hairline rounded-xl px-4 py-3 text-sm text-muted">Thinking…</div>
               </div>
             )}
 
@@ -183,7 +183,7 @@ export default function AICareerAdvisor() {
 
           <form onSubmit={handleSubmit} className="flex gap-2">
             <input
-              className="flex-1 border border-hairline rounded-md px-4 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors"
+              className="flex-1 border border-hairline rounded-md px-4 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm outline-none transition-colors"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -193,7 +193,7 @@ export default function AICareerAdvisor() {
             <button
               type="submit"
               disabled={sending || !input.trim()}
-              className="shrink-0 bg-ink text-white px-4 py-2.5 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60 flex items-center gap-2"
+              className="shrink-0 bg-ink text-ink-contrast px-4 py-2.5 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60 flex items-center gap-2"
             >
               <PaperPlaneRight size={16} />
               Send

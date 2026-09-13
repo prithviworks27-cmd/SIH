@@ -99,10 +99,10 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
     <AmbientBrandGlow className="text-charcoal min-h-screen">
       <Sidebar navItems={navItems} footerNavItems={footerNavItems} />
       <main className="md:ml-56 flex-1 flex flex-col h-screen overflow-hidden">
-        <div className="flex-1 flex w-full bg-white h-full border-t md:border-t-0 border-hairline">
+        <div className="flex-1 flex w-full bg-bone h-full border-t md:border-t-0 border-hairline">
           {/*Left Column: Conversation List*/}
           <div
-            className={`w-full md:w-[280px] lg:w-[320px] flex-shrink-0 md:border-r border-hairline flex-col bg-white ${
+            className={`w-full md:w-[280px] lg:w-[320px] flex-shrink-0 md:border-r border-hairline flex-col bg-bone ${
               mobileShowThread ? "hidden md:flex" : "flex"
             }`}
           >
@@ -116,7 +116,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
               <div className="relative">
                 <MagnifyingGlass size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
                 <input
-                  className="w-full pl-10 pr-4 py-2.5 border border-hairline bg-white rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
+                  className="w-full pl-10 pr-4 py-2.5 border border-hairline bg-bone rounded-md text-sm focus:border-ink focus:outline-none focus:ring-0 placeholder:text-muted"
                   placeholder="Search conversations..."
                   type="text"
                   value={search}
@@ -175,7 +175,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
           </div>
 
           {/*Right Column: Open Thread*/}
-          <div className={`flex-1 flex-col bg-white ${mobileShowThread ? "flex" : "hidden md:flex"}`}>
+          <div className={`flex-1 flex-col bg-bone ${mobileShowThread ? "flex" : "hidden md:flex"}`}>
             {!active && (
               <div className="flex-1 flex flex-col items-center justify-center text-center gap-3 px-6">
                 <div className="w-16 h-16 rounded-full bg-bone flex items-center justify-center text-muted">
@@ -237,7 +237,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
                     >
                       <div
                         className={`px-4 py-3 rounded-xl text-sm leading-relaxed text-charcoal ${
-                          msg.from === "me" ? "bg-bone rounded-tr-sm" : "bg-white border border-hairline rounded-tl-sm"
+                          msg.from === "me" ? "bg-bone rounded-tr-sm" : "bg-bone border border-hairline rounded-tl-sm"
                         }`}
                       >
                         <p className="whitespace-pre-wrap break-words">{msg.text}</p>
@@ -266,7 +266,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
                     </button>
                     <div className="flex-1 relative">
                       <textarea
-                        className="w-full resize-none border border-hairline bg-white rounded-md p-3 text-sm focus:border-ink focus:ring-0 focus:outline-none min-h-[44px] max-h-[120px]"
+                        className="w-full resize-none border border-hairline bg-bone rounded-md p-3 text-sm focus:border-ink focus:ring-0 focus:outline-none min-h-[44px] max-h-[120px]"
                         placeholder="Type a message..."
                         rows="1"
                         value={draft}
@@ -282,7 +282,7 @@ export default function ConversationInbox({ navItems, footerNavItems, emptyState
                     <button
                       onClick={handleSend}
                       disabled={sending || !draft.trim()}
-                      className="bg-ink text-white px-4 md:px-5 py-2.5 rounded-md text-sm flex items-center gap-1.5 hover:bg-ink-hover active:scale-[0.98] transition-all mb-0.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed flex-shrink-0"
+                      className="bg-ink text-ink-contrast px-4 md:px-5 py-2.5 rounded-md text-sm flex items-center gap-1.5 hover:bg-ink-hover active:scale-[0.98] transition-all mb-0.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed flex-shrink-0"
                       aria-label="Send message"
                     >
                       <span className="hidden sm:inline">{sending ? "Sending…" : "Send"}</span>

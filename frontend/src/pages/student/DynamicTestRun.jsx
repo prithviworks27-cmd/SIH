@@ -272,13 +272,13 @@ export default function DynamicTestRun() {
         </div>
       )}
       {camera.status === "loading" && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-ink text-white text-sm px-4 py-3 rounded-lg shadow-xl">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-ink text-ink-contrast text-sm px-4 py-3 rounded-lg shadow-xl">
           Starting camera monitoring…
         </div>
       )}
       {autoSubmitting && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white border border-hairline rounded-xl px-6 py-5 text-center shadow-xl">
+          <div className="bg-bone border border-hairline rounded-xl px-6 py-5 text-center shadow-xl">
             <p className="text-sm font-medium text-ink">Three warnings reached</p>
             <p className="text-sm text-muted mt-1">Submitting your assessment automatically…</p>
           </div>
@@ -287,17 +287,17 @@ export default function DynamicTestRun() {
       {/* Exam bar: bleeds edge-to-edge past DashboardLayout's content padding
           (negative margins cancel px-4 md:px-10) and sticks to the top, the
           way a real proctored test's chrome stays fixed regardless of scroll. */}
-      <div className="sticky top-0 z-30 -mx-4 md:-mx-10 -mt-10 mb-8 bg-ink text-white">
+      <div className="sticky top-0 z-30 -mx-4 md:-mx-10 -mt-10 mb-8 bg-ink text-ink-contrast">
         <div className="max-w-5xl mx-auto px-4 md:px-10 py-4 flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-[#9a9a9a] mb-0.5">
+            <p className="text-[11px] uppercase tracking-[0.14em] text-ink-contrast/60 mb-0.5">
               Section {sectionNumber} of {skillBoundaries.length} · Skill Assessment
             </p>
             <h1 className="font-geist text-xl tracking-tight truncate">{item.skillName}</h1>
           </div>
 
           <div className="flex items-center gap-5 flex-shrink-0">
-            <div className={`flex items-center gap-2 ${lowOnTime ? "text-pastel-red" : "text-white"}`}>
+            <div className={`flex items-center gap-2 ${lowOnTime ? "text-pastel-red" : "text-ink-contrast"}`}>
               <ClockCountdown size={20} weight={lowOnTime ? "fill" : "regular"} className={lowOnTime ? "animate-pulse" : ""} />
               <span className="font-mono text-lg tabular-nums tracking-wide">{formatClock(timeRemaining)}</span>
             </div>
@@ -309,19 +309,19 @@ export default function DynamicTestRun() {
                 sessionStorage.removeItem(QUEUE_STORAGE_KEY);
                 navigate("/skill-tests");
               }}
-              className="text-sm text-[#bbbbbb] hover:text-white transition-colors"
+              className="text-sm text-ink-contrast/60 hover:text-ink-contrast transition-colors"
             >
               Exit
             </button>
           </div>
         </div>
-        <div className="h-0.5 w-full bg-[#333333]">
-          <div className="h-full bg-white transition-all duration-300" style={{ width: `${((current + 1) / total) * 100}%` }} />
+        <div className="h-0.5 w-full bg-ink-contrast/10">
+          <div className="h-full bg-ink-contrast transition-all duration-300" style={{ width: `${((current + 1) / total) * 100}%` }} />
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row items-start justify-center gap-6">
-        <div className="w-full max-w-2xl bg-white border border-hairline rounded-xl p-10">
+        <div className="w-full max-w-2xl bg-bone border border-hairline rounded-xl p-10">
           <p className="text-xs uppercase tracking-[0.14em] text-muted mb-4">
             Question {current + 1} of {total}
           </p>
@@ -351,7 +351,7 @@ export default function DynamicTestRun() {
               </button>
               {isLastQuestion ? (
                 <button
-                  className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+                  className="px-4 py-2 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
                   type="button"
                   onClick={handleSubmitClick}
                   disabled={submitting}
@@ -360,7 +360,7 @@ export default function DynamicTestRun() {
                 </button>
               ) : (
                 <button
-                  className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2"
                   type="button"
                   onClick={handleNext}
                 >
@@ -394,7 +394,7 @@ export default function DynamicTestRun() {
             if (event.target === event.currentTarget && !submitting) setConfirmingSubmit(false);
           }}
         >
-          <div className="w-full max-w-md bg-white border border-hairline rounded-xl p-6 shadow-xl" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md bg-bone border border-hairline rounded-xl p-6 shadow-xl" role="dialog" aria-modal="true">
             <div className="flex items-start gap-3 mb-4">
               <span
                 className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
@@ -424,7 +424,7 @@ export default function DynamicTestRun() {
                 type="button"
                 onClick={() => finalizeSubmit(answers)}
                 disabled={submitting}
-                className="bg-ink text-white text-sm px-4 py-2 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60"
+                className="bg-ink text-ink-contrast text-sm px-4 py-2 rounded-md hover:bg-ink-hover transition-colors disabled:opacity-60"
               >
                 {submitting ? "Submitting…" : "Submit Final Answers"}
               </button>
@@ -439,13 +439,13 @@ export default function DynamicTestRun() {
           quiet inline prompt rather than a blocking modal, since the test
           itself is still fully usable without fullscreen. */}
       {proctoring.fullscreenBlocked && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-ink text-white text-sm px-4 py-3 rounded-lg shadow-xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-ink text-ink-contrast text-sm px-4 py-3 rounded-lg shadow-xl">
           <ArrowsOutSimple size={16} />
           <span>Enter fullscreen for the full exam experience.</span>
           <button
             type="button"
             onClick={proctoring.resumeFullscreen}
-            className="bg-white text-ink text-xs font-medium px-3 py-1.5 rounded-md hover:bg-[#eeeeee] transition-colors"
+            className="bg-bone text-ink text-xs font-medium px-3 py-1.5 rounded-md hover:bg-hairline transition-colors"
           >
             Enter Fullscreen
           </button>
@@ -459,7 +459,7 @@ export default function DynamicTestRun() {
           (see useExamProctoring's onMaxStrikes). */}
       {proctoring.warning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="presentation">
-          <div className="w-full max-w-md bg-white border border-hairline rounded-xl p-6 shadow-xl text-center" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md bg-bone border border-hairline rounded-xl p-6 shadow-xl text-center" role="dialog" aria-modal="true">
             <span className="inline-flex w-12 h-12 rounded-full bg-pastel-red text-pastel-red-ink items-center justify-center mb-4">
               <Warning size={24} weight="bold" />
             </span>
@@ -484,7 +484,7 @@ export default function DynamicTestRun() {
                 proctoring.dismissWarning();
                 proctoring.resumeFullscreen();
               }}
-              className="bg-ink text-white text-sm px-5 py-2.5 rounded-md hover:bg-ink-hover transition-colors"
+              className="bg-ink text-ink-contrast text-sm px-5 py-2.5 rounded-md hover:bg-ink-hover transition-colors"
             >
               Return to Test
             </button>

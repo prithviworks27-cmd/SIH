@@ -89,7 +89,7 @@ export default function CareerPath() {
               <button
                 key={r.role.id}
                 onClick={() => handleSelectRole(r.role.id)}
-                className={`text-left bg-white border rounded-xl p-5 transition-colors ${
+                className={`text-left bg-bone border rounded-xl p-5 transition-colors ${
                   isSelected ? "border-ink" : "border-hairline hover:border-ink"
                 }`}
               >
@@ -107,7 +107,7 @@ export default function CareerPath() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-5 flex flex-col gap-6">
-          <section className="bg-white border border-hairline rounded-xl p-8">
+          <section className="bg-bone border border-hairline rounded-xl p-8">
             <p className="text-xs uppercase tracking-wide text-muted mb-1">Selected Role</p>
             <h2 className="font-geist text-2xl text-ink tracking-tight mb-4">{readiness.role.title}</h2>
             <div className="flex items-end gap-2 mb-1">
@@ -150,7 +150,7 @@ export default function CareerPath() {
 
             <Link
               to="/skill-tests"
-              className="mt-6 w-full flex items-center justify-center gap-2 bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
+              className="mt-6 w-full flex items-center justify-center gap-2 bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
             >
               Close a Skill Gap
               <ArrowRight size={16} />
@@ -159,7 +159,7 @@ export default function CareerPath() {
         </div>
 
         <div className="lg:col-span-7">
-          <section className="bg-white border border-hairline rounded-xl p-8 h-full">
+          <section className="bg-bone border border-hairline rounded-xl p-8 h-full">
             <h3 className="text-base font-medium text-ink mb-6">Career Roadmap</h3>
             <RoadmapTrack steps={readiness.role.roadmap} currentIndex={currentIndex} />
           </section>

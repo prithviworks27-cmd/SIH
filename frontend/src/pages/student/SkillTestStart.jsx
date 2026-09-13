@@ -80,7 +80,7 @@ export default function SkillTestStart() {
 
   return (
     <DashboardLayout hideSidebar>
-      <div className="w-full bg-white border border-hairline rounded-xl flex flex-col mb-10">
+      <div className="w-full bg-bone border border-hairline rounded-xl flex flex-col mb-10">
         <ProgressBar percent={progressPercent} className="rounded-t-xl rounded-b-none" />
         <div className="px-6 py-4 flex justify-between items-center">
           <div>
@@ -96,7 +96,7 @@ export default function SkillTestStart() {
       </div>
 
       <div className="flex items-center justify-center">
-        <div className="w-full max-w-2xl bg-white border border-hairline rounded-xl p-10">
+        <div className="w-full max-w-2xl bg-bone border border-hairline rounded-xl p-10">
           <QuestionCard prompt={question.prompt} options={question.options} selectedValue={selectedValue} onSelect={handleSelect} />
 
           {error && <p className="text-sm text-pastel-red-ink mt-4">{error}</p>}
@@ -113,7 +113,7 @@ export default function SkillTestStart() {
             </button>
             {isLastQuestion ? (
               <button
-                className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+                className="px-4 py-2 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
@@ -123,7 +123,7 @@ export default function SkillTestStart() {
               </button>
             ) : (
               <button
-                className="px-4 py-2 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2"
                 type="button"
                 onClick={handleNext}
               >

@@ -89,7 +89,7 @@ export default function ExplainableMatchBreakdown() {
             Back to Internships
           </button>
 
-          <div className="bg-white border border-hairline rounded-xl p-8 flex flex-col gap-8">
+          <div className="bg-bone border border-hairline rounded-xl p-8 flex flex-col gap-8">
             <div className="flex justify-between items-start">
               <div>
                 <h1 className="font-geist text-2xl text-ink tracking-tight mb-1">{data.opportunity.title}</h1>
@@ -115,7 +115,7 @@ export default function ExplainableMatchBreakdown() {
               {saved ? "Saved ✓" : saving ? "Saving…" : "Save for Later"}
             </button>
             <button
-              className="bg-ink text-white text-sm px-6 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
+              className="bg-ink text-ink-contrast text-sm px-6 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-60"
               onClick={handleApply}
               disabled={applied || applying}
             >

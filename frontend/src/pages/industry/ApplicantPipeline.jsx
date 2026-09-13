@@ -98,13 +98,13 @@ export default function ApplicantPipeline() {
                   key={stage}
                   onClick={() => toggleStage(stage)}
                   className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 transition-colors ${
-                    isCollapsed ? "border-hairline bg-white hover:bg-bone" : "border-ink bg-ink text-white hover:bg-ink-hover"
+                    isCollapsed ? "border-hairline bg-bone hover:bg-bone" : "border-ink bg-ink text-ink-contrast hover:bg-ink-hover"
                   }`}
                 >
                   <span className="text-sm font-medium">{stage}</span>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full ${
-                      isCollapsed ? "text-muted bg-bone" : "text-white/80 bg-white/15"
+                      isCollapsed ? "text-muted bg-bone" : "text-ink-contrast/80 bg-ink-contrast/15"
                     }`}
                   >
                     {stageEntries.length}
@@ -143,7 +143,7 @@ export default function ApplicantPipeline() {
                           {stageEntries.map((entry) => {
                             const isLastStage = PIPELINE_STAGES.indexOf(entry.stage) === PIPELINE_STAGES.length - 1;
                             return (
-                              <div key={entry.id} className="border border-hairline rounded-xl p-5 flex flex-col gap-3 bg-white">
+                              <div key={entry.id} className="border border-hairline rounded-xl p-5 flex flex-col gap-3 bg-bone">
                                 <Link to={`/industry/candidates/${entry.candidateId}`} className="block">
                                   <p className="text-base font-medium text-ink hover:underline">{entry.candidate?.name}</p>
                                   <p className="text-sm text-muted mt-0.5">{entry.opportunity?.title}</p>

@@ -17,7 +17,7 @@ export default function TestNavigatorSidebar({ questionCount, current, answeredI
 
   return (
     <aside className="w-full lg:w-72 flex-shrink-0">
-      <div className="bg-white border border-hairline rounded-xl p-5">
+      <div className="bg-bone border border-hairline rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-ink">Answer Sheet</h3>
           <span className="text-xs text-muted tabular-nums">
@@ -51,7 +51,7 @@ export default function TestNavigatorSidebar({ questionCount, current, answeredI
                       title={isAnswered ? "Answered" : isSkipped ? "Skipped" : "Not answered"}
                       className={`h-9 w-9 rounded-full text-xs font-medium transition-all flex items-center justify-center mx-auto ${
                         isCurrent
-                          ? "bg-ink text-white"
+                          ? "bg-ink text-ink-contrast"
                           : isAnswered
                           ? "bg-pastel-green-ink text-white hover:opacity-90"
                           : isSkipped

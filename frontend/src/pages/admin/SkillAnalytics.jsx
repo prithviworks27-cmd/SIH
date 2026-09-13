@@ -50,7 +50,7 @@ export default function SkillAnalytics() {
 
       {!loading && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <section className="lg:col-span-5 bg-white border border-hairline rounded-xl p-8">
+          <section className="lg:col-span-5 bg-bone border border-hairline rounded-xl p-8">
             <h2 className="text-lg font-medium text-ink mb-1">Top Skill Gaps</h2>
             <p className="text-sm text-muted mb-6">Share of students below the required proficiency for each skill.</p>
             <div className="flex flex-col gap-4">
@@ -68,7 +68,7 @@ export default function SkillAnalytics() {
             </div>
           </section>
 
-          <section className="lg:col-span-7 bg-white border border-hairline rounded-xl p-8">
+          <section className="lg:col-span-7 bg-bone border border-hairline rounded-xl p-8">
             <h2 className="text-lg font-medium text-ink mb-1">Industry Demand vs. Student Supply</h2>
             <p className="text-sm text-muted mb-6">How many active opportunities require each skill, vs. how many students already have it.</p>
             <div className="flex flex-col gap-4">

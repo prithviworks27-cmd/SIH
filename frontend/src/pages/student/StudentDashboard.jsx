@@ -83,11 +83,11 @@ export default function StudentDashboard() {
       </header>
 
       {skillProfile && !skillProfile.completedAt && (
-        <section className="mb-10 bg-ink text-white rounded-xl p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <section className="mb-10 bg-ink text-ink-contrast rounded-xl p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
-            <p className="text-xs uppercase tracking-wide text-[#cfcfcf] mb-2">Start here</p>
+            <p className="text-xs uppercase tracking-wide text-ink-contrast/70 mb-2">Start here</p>
             <h2 className="font-geist text-2xl tracking-tight mb-2">Give your skills a starting point</h2>
-            <p className="text-sm text-[#cfcfcf] max-w-xl leading-relaxed">
+            <p className="text-sm text-ink-contrast/70 max-w-xl leading-relaxed">
               Complete your skill assessment to see your strengths, identify gaps, and get more relevant opportunities.
             </p>
           </div>
@@ -95,14 +95,14 @@ export default function StudentDashboard() {
             <button
               type="button"
               onClick={() => startAssessment()}
-              className="bg-white text-ink text-sm px-4 py-2.5 rounded-md hover:bg-[#eeeeee] transition-colors"
+              className="bg-bone text-ink text-sm px-4 py-2.5 rounded-md hover:bg-hairline transition-colors"
             >
               Give skill assessment
             </button>
             <button
               type="button"
               onClick={() => startAssessment(true)}
-              className="border border-[#777777] text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors"
+              className="border border-ink-contrast/30 text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors"
             >
               Start from beginning
             </button>
@@ -111,7 +111,7 @@ export default function StudentDashboard() {
       )}
 
       {skillProfile?.completedAt && (
-        <section className="mb-10 bg-white border border-hairline rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <section className="mb-10 bg-bone border border-hairline rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-lg font-medium text-ink">Skill Gap Report</h2>
           </div>
@@ -128,7 +128,7 @@ export default function StudentDashboard() {
             <button
               type="button"
               onClick={() => startAssessment(true)}
-              className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors self-start sm:self-auto"
+              className="bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors self-start sm:self-auto"
             >
               Retake the test
             </button>
@@ -144,7 +144,7 @@ export default function StudentDashboard() {
             if (event.target === event.currentTarget) setShowSkillGapReport(false);
           }}
         >
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-hairline rounded-xl p-6 md:p-8 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="skill-gap-report-title">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-bone border border-hairline rounded-xl p-6 md:p-8 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="skill-gap-report-title">
             <div className="flex items-start justify-between gap-4 border-b border-hairline pb-4 mb-6">
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted mb-1">Assessment results</p>
@@ -201,7 +201,7 @@ export default function StudentDashboard() {
               <button
                 type="button"
                 onClick={() => navigate("/skill-assessment?retake=true&start=beginning")}
-                className="bg-ink text-white text-sm px-4 py-2 rounded-md hover:bg-ink-hover transition-colors"
+                className="bg-ink text-ink-contrast text-sm px-4 py-2 rounded-md hover:bg-ink-hover transition-colors"
               >
                 Retake assessment
               </button>
@@ -219,7 +219,7 @@ export default function StudentDashboard() {
           }}
         >
           <div
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-hairline rounded-xl p-6 md:p-8 shadow-xl"
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-bone border border-hairline rounded-xl p-6 md:p-8 shadow-xl"
             role="dialog"
             aria-modal="true"
             aria-labelledby="skill-analysis-title"
@@ -254,7 +254,7 @@ export default function StudentDashboard() {
                 <button
                   type="button"
                   onClick={() => navigate("/skill-assessment")}
-                  className="bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors"
+                  className="bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover transition-colors"
                 >
                   Take a Skill Assessment
                 </button>
@@ -373,7 +373,7 @@ export default function StudentDashboard() {
         {/*Left Column: Skills & Opportunities*/}
         <div className="lg:col-span-8 flex flex-col gap-6">
           {/*Skill Gap Analysis*/}
-          <section className="bg-white border border-hairline rounded-xl p-8">
+          <section className="bg-bone border border-hairline rounded-xl p-8">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-medium text-ink">Skill Gap Analysis</h3>
               <Link to="/skill-profile/gap-report" className="text-xs uppercase tracking-wide text-ink hover:text-muted transition-colors">
@@ -399,7 +399,7 @@ export default function StudentDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {!topMatches && <p className="text-sm text-muted">Loading opportunities…</p>}
               {topMatches?.map((job) => (
-                <article key={job.id} className="bg-white border border-hairline rounded-xl p-5 flex flex-col h-full">
+                <article key={job.id} className="bg-bone border border-hairline rounded-xl p-5 flex flex-col h-full">
                   <div className="flex justify-between items-start mb-4">
                     <span className="w-9 h-9 rounded-md flex items-center justify-center bg-pastel-blue text-pastel-blue-ink">
                       <Sparkle size={16} weight="bold" />
@@ -426,7 +426,7 @@ export default function StudentDashboard() {
 
         {/*Right Column: Recommended Courses*/}
         <div className="lg:col-span-4">
-          <section className="bg-white border border-hairline rounded-xl p-6 h-full flex flex-col">
+          <section className="bg-bone border border-hairline rounded-xl p-6 h-full flex flex-col">
             <h3 className="text-lg font-medium text-ink mb-6">Recommended Courses</h3>
             <div className="space-y-3 flex-1">
               {!courses && <p className="text-sm text-muted">Loading courses…</p>}
@@ -447,7 +447,7 @@ export default function StudentDashboard() {
             </div>
             <Link
               to="/courses"
-              className="mt-6 w-full text-center bg-ink text-white text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
+              className="mt-6 w-full text-center bg-ink text-ink-contrast text-sm px-4 py-2.5 rounded-md hover:bg-ink-hover active:scale-[0.98] transition-all"
             >
               Browse Full Catalog
             </Link>
@@ -459,22 +459,22 @@ export default function StudentDashboard() {
       <section className="mt-6">
         <h3 className="text-lg font-medium text-ink mb-4">Career Tools</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link to="/portfolio" className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
+          <Link to="/portfolio" className="bg-bone border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
             <UserCircle size={20} className="text-ink" />
             <span className="text-sm font-medium text-ink">Preview Portfolio</span>
             <span className="text-xs text-muted">See your professional profile the way employers do.</span>
           </Link>
-          <Link to="/proof-of-skill" className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
+          <Link to="/proof-of-skill" className="bg-bone border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
             <Code size={20} className="text-ink" />
             <span className="text-sm font-medium text-ink">Proof-of-Skill Challenge</span>
             <span className="text-xs text-muted">Verify a skill with a real coding challenge.</span>
           </Link>
-          <Link to="/career-twin" className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
+          <Link to="/career-twin" className="bg-bone border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
             <TrendUp size={20} className="text-ink" />
             <span className="text-sm font-medium text-ink">Career Digital Twin</span>
             <span className="text-xs text-muted">See your projected readiness after learning.</span>
           </Link>
-          <Link to="/employer-trust" className="bg-white border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
+          <Link to="/employer-trust" className="bg-bone border border-hairline rounded-xl p-5 hover:shadow-lift transition-shadow flex flex-col gap-2">
             <ShieldCheck size={20} className="text-ink" />
             <span className="text-sm font-medium text-ink">Employer Trust Layer</span>
             <span className="text-xs text-muted">Preview what employers see when they verify you.</span>

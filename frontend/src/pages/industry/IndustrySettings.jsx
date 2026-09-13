@@ -10,7 +10,7 @@ export default function IndustrySettings() {
         <p className="text-muted mt-2">Manage your recruiter account.</p>
       </header>
 
-      <div className="bg-white border border-hairline rounded-xl p-8 max-w-xl">
+      <div className="bg-bone border border-hairline rounded-xl p-8 max-w-xl">
         <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Account</h3>
         <div className="flex flex-col gap-1.5 mb-4">
           <span className="text-xs uppercase tracking-wide text-muted">Name</span>

@@ -21,10 +21,10 @@ export default function PortalPending() {
   return (
     <div
       className="min-h-screen p-2.5 md:p-4"
-      style={{ background: "linear-gradient(135deg, #060B24 0%, #0B1C6B 35%, #1E3FE0 62%, #050814 100%)" }}
+      style={{ background: "var(--portal-pending-gradient)" }}
     >
-      <div className="bg-white rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] flex items-center justify-center text-charcoal antialiased px-4">
-        <div className="max-w-md w-full text-center bg-white border border-hairline rounded-xl p-10">
+      <div className="bg-bone rounded-[28px] md:rounded-[32px] min-h-[calc(100vh-20px)] md:min-h-[calc(100vh-32px)] flex items-center justify-center text-charcoal antialiased px-4">
+        <div className="max-w-md w-full text-center bg-bone border border-hairline rounded-xl p-10">
           <Wrench size={32} className="text-ink mb-4 inline-block" />
           <h1 className="font-sans font-bold text-2xl text-ink mb-3 tracking-tight">Your {roleLabel} portal is coming soon</h1>
           <p className="text-sm text-muted mb-8 leading-relaxed">
@@ -33,7 +33,7 @@ export default function PortalPending() {
           </p>
           <button
             onClick={handleLogout}
-            className="w-full flex justify-center py-2.5 px-4 rounded-md text-sm text-white bg-ink hover:bg-ink-hover active:scale-[0.98] transition-all"
+            className="w-full flex justify-center py-2.5 px-4 rounded-md text-sm text-ink-contrast bg-ink hover:bg-ink-hover active:scale-[0.98] transition-all"
           >
             Logout
           </button>

@@ -15,7 +15,7 @@ export default function QuestionCard({ prompt, options, selectedValue, onSelect 
   return (
     <div>
       {looksLikeCode ? (
-        <pre className="w-full overflow-x-auto bg-ink text-[#e8e8e8] rounded-xl p-5 mb-6 text-sm leading-relaxed font-mono whitespace-pre-wrap">
+        <pre className="w-full overflow-x-auto bg-canvas text-charcoal rounded-xl p-5 mb-6 text-sm leading-relaxed font-mono whitespace-pre-wrap">
           {prompt}
         </pre>
       ) : (
@@ -41,7 +41,7 @@ export default function QuestionCard({ prompt, options, selectedValue, onSelect 
               >
                 <span
                   className={`flex-shrink-0 w-6 h-6 rounded-full border text-xs font-medium flex items-center justify-center ${
-                    isSelected ? "border-ink bg-ink text-white" : "border-hairline text-muted"
+                    isSelected ? "border-ink bg-ink text-ink-contrast" : "border-hairline text-muted"
                   }`}
                 >
                   {OPTION_LETTERS[index] ?? index + 1}

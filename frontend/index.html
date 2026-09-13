@@ -26,6 +26,17 @@
     />
   </head>
   <body>
+    <script>
+      // Applies the saved dark-mode preference before React mounts, so the
+      // page never flashes light-then-dark (or vice versa) on load.
+      (function () {
+        try {
+          if (localStorage.getItem("skillbridge-theme") === "dark") {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

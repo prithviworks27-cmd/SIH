@@ -60,7 +60,7 @@ export default function Notifications() {
       )}
 
       {notifications && notifications.length > 0 && (
-        <div className="bg-white border border-hairline rounded-xl flex flex-col">
+        <div className="bg-bone border border-hairline rounded-xl flex flex-col">
           {notifications.map((item, i) => {
             const Icon = ICONS[item.icon] || Bell;
             return (

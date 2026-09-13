@@ -88,7 +88,7 @@ export function ImagesBadge({
     <motion.div
       className={cn(
         "inline-flex cursor-default select-none items-center rounded-full",
-        "border border-hairline bg-white/90 backdrop-blur-sm",
+        "border border-hairline bg-bone/90 backdrop-blur-sm",
         "shadow-[0_2px_12px_rgba(0,0,0,.10)] dark:shadow-[0_2px_16px_rgba(0,0,0,.35)]",
         "dark:bg-zinc-900/80 dark:border-white/[0.09]",
         "transition-shadow duration-300",

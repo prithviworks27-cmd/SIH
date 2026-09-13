@@ -12,7 +12,7 @@ import { SignOut, PencilSimple, CheckCircle } from "@phosphor-icons/react";
 const DEGREES = ["B.Tech", "B.E.", "B.Sc", "BCA", "M.Tech", "M.E.", "M.Sc", "MCA", "Other"];
 
 const inputClass =
-  "border border-hairline rounded-md px-3 py-2.5 text-sm focus:border-ink focus:ring-0 focus:outline-none bg-white text-charcoal transition-colors";
+  "border border-hairline rounded-md px-3 py-2.5 text-sm focus:border-ink focus:ring-0 focus:outline-none bg-bone text-charcoal transition-colors";
 const selectClass = `${inputClass} cursor-pointer`;
 
 function ToggleRow({ title, description, checked, onChange }) {
@@ -24,7 +24,7 @@ function ToggleRow({ title, description, checked, onChange }) {
       </div>
       <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
         <input checked={checked} onChange={onChange} className="sr-only peer" type="checkbox" />
-        <div className="w-11 h-6 bg-bone border border-hairline peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:border-hairline after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ink" />
+        <div className="w-11 h-6 bg-bone border border-hairline peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-bone after:border after:border-hairline after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ink" />
       </label>
     </div>
   );
@@ -32,7 +32,7 @@ function ToggleRow({ title, description, checked, onChange }) {
 
 function SectionCard({ title, action, children }) {
   return (
-    <div className="bg-white border border-hairline rounded-xl p-8 mb-6">
+    <div className="bg-bone border border-hairline rounded-xl p-8 mb-6">
       <div className="flex items-center justify-between mb-6 border-b border-hairline pb-3">
         <h3 className="text-base font-medium text-ink">{title}</h3>
         {action}
@@ -407,7 +407,7 @@ export default function ProfileSettings() {
           <button
             type="submit"
             disabled={pwSaving || !pwForm.currentPassword || !pwForm.newPassword}
-            className="self-start bg-ink text-white px-5 py-2.5 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+            className="self-start bg-ink text-ink-contrast px-5 py-2.5 rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             {pwSaving ? "Updating…" : "Update Password"}
           </button>
@@ -423,7 +423,7 @@ export default function ProfileSettings() {
       </SectionCard>
 
       {/* Logout */}
-      <div className="bg-white border border-hairline rounded-xl p-8 flex items-center justify-between gap-4 flex-wrap">
+      <div className="bg-bone border border-hairline rounded-xl p-8 flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h3 className="text-base font-medium text-ink mb-1">Log Out</h3>
           <p className="text-sm text-muted">Sign out of SkillBridge on this device.</p>

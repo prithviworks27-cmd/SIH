@@ -27,7 +27,7 @@ export default function StudentManagement() {
       {!roster && <LoadingState label="Loading students…" />}
 
       {roster && (
-        <section className="bg-white border border-hairline rounded-xl">
+        <section className="bg-bone border border-hairline rounded-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse">
               <thead>

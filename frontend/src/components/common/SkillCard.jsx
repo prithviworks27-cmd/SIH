@@ -17,7 +17,7 @@ export default function SkillCard({ name, category, currentScore, trustLevel }) 
   const isVerified = trustLevel && trustLevel !== "Self-Declared";
 
   return (
-    <div className="bg-white border border-hairline rounded-xl p-5 flex flex-col gap-3">
+    <div className="bg-bone border border-hairline rounded-xl p-5 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-2">
         <div>
           <h3 className="text-base font-medium text-ink">{name}</h3>

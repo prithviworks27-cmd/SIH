@@ -7,7 +7,7 @@ import { WORK_MODES } from "../../utils/locationUtils";
 import { PaperPlaneTilt, Plus, X } from "@phosphor-icons/react";
 
 const inputClass =
-  "w-full border border-hairline rounded-md px-3 py-2.5 bg-white focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
+  "w-full border border-hairline rounded-md px-3 py-2.5 bg-bone focus:border-ink focus:ring-0 text-sm outline-none transition-colors";
 
 const TYPES = ["Internship", "Full-time", "Part-time"];
 
@@ -119,7 +119,7 @@ export default function PostOpportunity() {
         <p className="text-muted mt-2">Define the role and required skills — matched candidates appear the moment it's published.</p>
       </header>
 
-      <form onSubmit={handleSubmit} className="bg-white border border-hairline rounded-xl p-8 flex flex-col gap-6 max-w-3xl">
+      <form onSubmit={handleSubmit} className="bg-bone border border-hairline rounded-xl p-8 flex flex-col gap-6 max-w-3xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted mb-1.5">Title</label>
@@ -195,7 +195,7 @@ export default function PostOpportunity() {
                   type="button"
                   onClick={() => toggleSkill(skill)}
                   className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
-                    selected ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+                    selected ? "bg-ink text-ink-contrast border-ink" : "bg-bone text-charcoal border-hairline hover:border-ink"
                   }`}
                 >
                   {skill}
@@ -216,7 +216,7 @@ export default function PostOpportunity() {
                   type="button"
                   onClick={() => (selected ? removeEligibility(label) : addEligibility(label))}
                   className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
-                    selected ? "bg-ink text-white border-ink" : "bg-white text-charcoal border-hairline hover:border-ink"
+                    selected ? "bg-ink text-ink-contrast border-ink" : "bg-bone text-charcoal border-hairline hover:border-ink"
                   }`}
                 >
                   {label}
@@ -281,7 +281,7 @@ export default function PostOpportunity() {
           <button
             type="submit"
             disabled={submitting || posted}
-            className="px-6 py-2.5 bg-ink text-white rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
+            className="px-6 py-2.5 bg-ink text-ink-contrast rounded-md text-sm hover:bg-ink-hover active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-60"
           >
             {posted ? "Published ✓" : submitting ? "Publishing…" : "Publish Opportunity"}
             <PaperPlaneTilt size={16} />

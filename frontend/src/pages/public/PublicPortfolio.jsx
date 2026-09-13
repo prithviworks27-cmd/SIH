@@ -33,7 +33,7 @@ export default function PublicPortfolio() {
   return (
     <div className="min-h-screen bg-canvas">
       {/* Nav */}
-      <header className="border-b border-hairline bg-white">
+      <header className="border-b border-hairline bg-bone">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <img src={logo} alt="SkillBridge" className="h-7" />
@@ -92,7 +92,7 @@ export default function PublicPortfolio() {
                 <div className="flex flex-wrap items-center gap-3">
                   <a
                     href="#projects"
-                    className="flex items-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
+                    className="flex items-center gap-2 bg-ink text-ink-contrast text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
                   >
                     View projects
                     <ArrowRight size={15} weight="bold" />
@@ -107,7 +107,7 @@ export default function PublicPortfolio() {
               </div>
 
               {/* Faux-window profile card */}
-              <div className="border border-hairline rounded-xl bg-white shadow-lift overflow-hidden">
+              <div className="border border-hairline rounded-xl bg-bone shadow-lift overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-2.5 border-b border-hairline bg-bone">
                   <span className="text-xs font-mono text-muted">profile.json</span>
                   <div className="flex items-center gap-1.5">
@@ -144,7 +144,7 @@ export default function PublicPortfolio() {
             {/* Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-16">
               <div className="lg:col-span-1 flex flex-col gap-6">
-                <section id="certifications" className="bg-white border border-hairline rounded-xl p-6 scroll-mt-24">
+                <section id="certifications" className="bg-bone border border-hairline rounded-xl p-6 scroll-mt-24">
                   <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Certifications</h3>
                   {data.certifications.length === 0 && <p className="text-sm text-muted">No certifications listed.</p>}
                   <ul className="flex flex-col gap-4">
@@ -168,7 +168,7 @@ export default function PublicPortfolio() {
                   </ul>
                 </section>
 
-                <section id="achievements" className="bg-white border border-hairline rounded-xl p-6 scroll-mt-24">
+                <section id="achievements" className="bg-bone border border-hairline rounded-xl p-6 scroll-mt-24">
                   <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Achievements</h3>
                   {data.achievements.length === 0 && <p className="text-sm text-muted">No achievements listed.</p>}
                   <ul className="flex flex-col gap-3 list-disc list-inside text-sm text-charcoal">
@@ -185,7 +185,7 @@ export default function PublicPortfolio() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {data.projects.length === 0 && <p className="text-sm text-muted">No projects listed.</p>}
                     {data.projects.map((p) => (
-                      <div key={p.id} className="bg-white border border-hairline rounded-xl p-5">
+                      <div key={p.id} className="bg-bone border border-hairline rounded-xl p-5">
                         <h4 className="text-sm font-medium text-ink mb-1">{p.title}</h4>
                         <p className="text-sm text-muted mb-3 leading-relaxed">{p.description}</p>
                         <div className="flex gap-1.5 flex-wrap">
@@ -200,7 +200,7 @@ export default function PublicPortfolio() {
                   </div>
                 </section>
 
-                <section id="internships" className="bg-white border border-hairline rounded-xl p-6 scroll-mt-24">
+                <section id="internships" className="bg-bone border border-hairline rounded-xl p-6 scroll-mt-24">
                   <h3 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Internships</h3>
                   {data.internships.length === 0 && <p className="text-sm text-muted">No internships listed.</p>}
                   <ul className="flex flex-col gap-4">

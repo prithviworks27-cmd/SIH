@@ -78,7 +78,7 @@ export default function CandidateDetail() {
             Back to Candidates
           </button>
 
-          <header className="bg-white border border-hairline rounded-xl p-8 mb-6 flex items-center gap-6">
+          <header className="bg-bone border border-hairline rounded-xl p-8 mb-6 flex items-center gap-6">
             <div className="w-16 h-16 rounded-full bg-bone flex items-center justify-center text-ink font-medium text-xl shrink-0">
               {candidate.avatarInitial}
             </div>
@@ -92,7 +92,7 @@ export default function CandidateDetail() {
 
           {/* Verified skill profile — what an employer sees behind the match score,
               not just a bare percentage. */}
-          <section className="bg-white border border-hairline rounded-xl p-6 mb-6">
+          <section className="bg-bone border border-hairline rounded-xl p-6 mb-6">
             <h2 className="text-base font-medium text-ink mb-4 border-b border-hairline pb-3">Verified Skill Profile</h2>
             <ul className="flex flex-col gap-1">
               {candidate.skills.map((skill) => (
@@ -107,13 +107,13 @@ export default function CandidateDetail() {
             </ul>
           </section>
 
-          <section className="bg-white border border-hairline rounded-xl p-6 mb-6">
+          <section className="bg-bone border border-hairline rounded-xl p-6 mb-6">
             <label className="block text-xs uppercase tracking-wide text-muted mb-2" htmlFor="opp-select">
               Matching against
             </label>
             <select
               id="opp-select"
-              className="w-full md:w-96 border border-hairline bg-white text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
+              className="w-full md:w-96 border border-hairline bg-bone text-charcoal rounded-md py-2 px-3 focus:border-ink focus:ring-0 text-sm h-10"
               value={opportunityId}
               onChange={(e) => setOpportunityId(e.target.value)}
             >
@@ -127,7 +127,7 @@ export default function CandidateDetail() {
           </section>
 
           {/* Adjustable matching weights */}
-          <section className="bg-white border border-hairline rounded-xl p-8 mb-6">
+          <section className="bg-bone border border-hairline rounded-xl p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-medium text-ink">Matching Weights</h2>
               <span className={`text-xs ${totalWeight === 100 ? "text-muted" : "text-pastel-red-ink"}`}>Total: {totalWeight}%</span>
@@ -160,7 +160,7 @@ export default function CandidateDetail() {
           </section>
 
           {match && selectedOpportunity ? (
-            <div className="bg-white border border-hairline rounded-xl p-8">
+            <div className="bg-bone border border-hairline rounded-xl p-8">
               <WhyThisMatch match={match} compact action={{ to: "/industry/applications", label: "View in Pipeline" }} />
             </div>
           ) : (

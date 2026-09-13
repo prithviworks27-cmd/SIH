@@ -6,6 +6,7 @@ import logo from "../../assets/logo.png";
 import { AntiMetalButton } from "../../components/ui/anti-metal-button";
 import AmbientBrandGlow from "../../components/ui/ambient-brand-glow";
 import PathwayPill from "../../components/common/PathwayPill";
+import ThemeToggle from "../../components/common/ThemeToggle";
 
 const STEPS = [
   {
@@ -37,7 +38,7 @@ export default function Landing() {
   const [pathwayOpen, setPathwayOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col text-charcoal antialiased">
+    <div className="min-h-screen bg-bone flex flex-col text-charcoal antialiased">
       <AmbientBrandGlow>
         {/* Nav */}
         <header className="w-full">
@@ -47,6 +48,7 @@ export default function Landing() {
             </Link>
 
             <nav className="flex items-center gap-8">
+              <ThemeToggle />
               <Link
                 to="/login"
                 className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70 hover:text-ink transition-colors"
@@ -55,7 +57,7 @@ export default function Landing() {
               </Link>
               <Link
                 to="/signup"
-                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] bg-ink text-white pl-5 pr-4 py-2.5 rounded-full hover:bg-[#222222] active:scale-[0.97] transition-all"
+                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] bg-ink text-ink-contrast pl-5 pr-4 py-2.5 rounded-full hover:bg-ink-hover active:scale-[0.97] transition-all"
               >
                 Sign Up
                 <ArrowUpRight size={13} weight="bold" />
@@ -71,7 +73,7 @@ export default function Landing() {
             className="reveal font-sans font-black leading-[0.9] tracking-tight bg-clip-text text-transparent"
             style={{
               fontSize: "clamp(3.4rem, 11vw, 9.5rem)",
-              backgroundImage: "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)",
+              backgroundImage: "var(--wordmark-gradient)",
             }}
           >
             SKILLBRIDGE
@@ -129,7 +131,7 @@ function StepCard({ step, index = 0, visible = true }) {
 
   return (
     <div
-      className={`border border-hairline rounded-xl p-8 bg-white hover:shadow-lift flex flex-col gap-4 transition-[opacity,transform,box-shadow] duration-500 ease-out ${
+      className={`border border-hairline rounded-xl p-8 bg-bone hover:shadow-lift flex flex-col gap-4 transition-[opacity,transform,box-shadow] duration-500 ease-out ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
       }`}
       style={{ transitionDelay: visible ? `${index * 120}ms` : "0ms" }}
