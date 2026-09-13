@@ -9,6 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
 import { getPortfolio, getAssessmentResults } from "../../services/portfolioService";
 import { X, SealCheck, DownloadSimple, UserCircle, ArrowRight, PencilSimple } from "@phosphor-icons/react";
+import avatarPlaceholderBg from "../../assets/avatar-placeholder-bg.png";
 
 export default function DigitalPortfolio() {
   const { user } = useAuth();
@@ -78,11 +79,22 @@ export default function DigitalPortfolio() {
               Manage entries
             </Link>
           </div>
+
+          <button
+            onClick={() => window.print()}
+            className="mt-3 flex items-center gap-2 bg-ink text-white text-sm font-medium rounded-md py-2.5 px-6 hover:bg-ink-hover active:scale-[0.98] transition-all"
+          >
+            Download Resume
+            <DownloadSimple size={15} />
+          </button>
         </div>
 
         {/* Faux-window profile card */}
-        <div className="w-[65%] mx-auto lg:mx-0 border border-hairline rounded-xl bg-white shadow-lift overflow-hidden">
-          <div className="flex items-center justify-between px-3 py-2 border-b border-hairline bg-bone">
+        <div
+          className="w-[65%] mx-auto lg:mx-0 border border-hairline rounded-xl shadow-lift overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: `url(${avatarPlaceholderBg})` }}
+        >
+          <div className="flex items-center justify-between px-3 py-2 border-b border-hairline bg-white/80 backdrop-blur-sm">
             <span className="text-[13px] font-mono text-muted">profile</span>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-hairline" />
@@ -98,13 +110,13 @@ export default function DigitalPortfolio() {
                 src={portfolio.avatarUrl}
               />
             ) : (
-              <div className="w-[73px] h-[73px] rounded-full bg-bone border border-hairline flex items-center justify-center">
+              <div className="w-[73px] h-[73px] rounded-full bg-white border border-hairline flex items-center justify-center">
                 <UserCircle size={31} className="text-muted" />
               </div>
             )}
-            <p className="font-geist text-lg text-ink mt-2.5">{user?.name || "Student"}</p>
+            <p className="font-geist text-lg text-ink mt-2.5 bg-white/80 backdrop-blur-sm rounded px-2">{user?.name || "Student"}</p>
           </div>
-          <div className="flex items-center justify-between px-4 py-2 border-t border-hairline text-[13px] text-muted">
+          <div className="flex items-center justify-between px-4 py-2 border-t border-hairline bg-white/80 backdrop-blur-sm text-[13px] text-muted">
             <span>{portfolio.institution || "SkillBridge"}</span>
             <span className="flex items-center gap-1.5 text-pastel-green-ink">
               <span className="w-1.5 h-1.5 rounded-full bg-pastel-green-ink" />
@@ -243,26 +255,6 @@ export default function DigitalPortfolio() {
               <li key={item.id}>{item.description}</li>
             ))}
           </ul>
-        </section>
-
-        {/*Resume — generated from the portfolio itself rather than uploaded,
-           so it can never drift out of sync with the verified evidence above.*/}
-        <section className="bg-white border border-hairline rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-2">
-              Resume
-            </h3>
-            <p className="text-sm text-muted">
-              Generated from your verified skills, projects, certifications and experience above.
-            </p>
-          </div>
-          <button
-            onClick={() => window.print()}
-            className="inline-flex items-center justify-center gap-2 border border-hairline text-charcoal px-4 py-2 rounded-md text-sm hover:bg-bone transition-colors whitespace-nowrap"
-          >
-            <DownloadSimple size={16} />
-            Download Resume
-          </button>
         </section>
       </div>
 
