@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import IndustryProfileGate from "./components/common/IndustryProfileGate";
+import StudentOnboardingGate from "./components/common/StudentOnboardingGate";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { industryNavItems, industryFooterNavItems } from "./config/industryNavConfig";
 import { useAuth } from "./hooks/useAuth";
@@ -14,6 +15,7 @@ import SignupRoleSelection from "./pages/public/SignupRoleSelection.jsx";
 import PortalPending from "./pages/public/PortalPending.jsx";
 import NotFound from "./pages/public/NotFound.jsx";
 
+import StudentOnboarding from "./pages/student/StudentOnboarding.jsx";
 import StudentDashboard from "./pages/student/StudentDashboard.jsx";
 import CourseCatalog from "./pages/student/CourseCatalog.jsx";
 import CourseDetail from "./pages/student/CourseDetail.jsx";
@@ -115,11 +117,22 @@ function App() {
             }
           />
 
+          {/* Not gated — this is the questionnaire itself. */}
+          <Route
+            path="/onboarding"
+            element={
+              <ProtectedRoute allowedRoles={STUDENT_ROLES}>
+                <StudentOnboarding />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <StudentDashboard />
+                <StudentOnboardingGate>
+                  <StudentDashboard />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -127,7 +140,9 @@ function App() {
             path="/courses"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <CourseCatalog />
+                <StudentOnboardingGate>
+                  <CourseCatalog />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -135,7 +150,9 @@ function App() {
             path="/courses/:courseId"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <CourseDetail />
+                <StudentOnboardingGate>
+                  <CourseDetail />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -143,7 +160,9 @@ function App() {
             path="/portfolio"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <DigitalPortfolio />
+                <StudentOnboardingGate>
+                  <DigitalPortfolio />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -151,7 +170,9 @@ function App() {
             path="/portfolio/edit"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <DigitalPortfolioEdit />
+                <StudentOnboardingGate>
+                  <DigitalPortfolioEdit />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -159,7 +180,9 @@ function App() {
             path="/portfolio/manage"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <PortfolioManage />
+                <StudentOnboardingGate>
+                  <PortfolioManage />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -167,7 +190,9 @@ function App() {
             path="/skill-assessment"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillAssessment />
+                <StudentOnboardingGate>
+                  <SkillAssessment />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -175,7 +200,9 @@ function App() {
             path="/skill-tests"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillTests />
+                <StudentOnboardingGate>
+                  <SkillTests />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -183,7 +210,9 @@ function App() {
             path="/skill-tests/:testId"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillTestStart />
+                <StudentOnboardingGate>
+                  <SkillTestStart />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -191,7 +220,9 @@ function App() {
             path="/skill-tests/:testId/result"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillTestResult />
+                <StudentOnboardingGate>
+                  <SkillTestResult />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -199,7 +230,9 @@ function App() {
             path="/skill-tests/dynamic/summary"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <DynamicTestSummary />
+                <StudentOnboardingGate>
+                  <DynamicTestSummary />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -207,7 +240,9 @@ function App() {
             path="/skill-tests/dynamic/run"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <DynamicTestRun />
+                <StudentOnboardingGate>
+                  <DynamicTestRun />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -215,7 +250,9 @@ function App() {
             path="/skills"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <MySkills />
+                <StudentOnboardingGate>
+                  <MySkills />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -223,7 +260,9 @@ function App() {
             path="/skill-gap"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillGap />
+                <StudentOnboardingGate>
+                  <SkillGap />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -231,7 +270,9 @@ function App() {
             path="/career-path"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <CareerPath />
+                <StudentOnboardingGate>
+                  <CareerPath />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -239,7 +280,9 @@ function App() {
             path="/ai-advisor"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <AICareerAdvisor />
+                <StudentOnboardingGate>
+                  <AICareerAdvisor />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -247,7 +290,9 @@ function App() {
             path="/skill-profile/gap-report"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillProfileGapReport />
+                <StudentOnboardingGate>
+                  <SkillProfileGapReport />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -255,7 +300,9 @@ function App() {
             path="/skill-profile/graph"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <SkillProfileGraph />
+                <StudentOnboardingGate>
+                  <SkillProfileGraph />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -266,7 +313,9 @@ function App() {
             path="/learning-paths"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <RecommendedLearningPaths />
+                <StudentOnboardingGate>
+                  <RecommendedLearningPaths />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -274,7 +323,9 @@ function App() {
             path="/learning-paths/study"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <LearningPathStudy />
+                <StudentOnboardingGate>
+                  <LearningPathStudy />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -282,7 +333,9 @@ function App() {
             path="/internships"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <InternshipJobListings />
+                <StudentOnboardingGate>
+                  <InternshipJobListings />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -290,7 +343,9 @@ function App() {
             path="/internships/:jobId"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <InternshipJobDetail />
+                <StudentOnboardingGate>
+                  <InternshipJobDetail />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -298,7 +353,9 @@ function App() {
             path="/applications"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <MyApplications />
+                <StudentOnboardingGate>
+                  <MyApplications />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -306,7 +363,9 @@ function App() {
             path="/messages"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <MessagesInbox />
+                <StudentOnboardingGate>
+                  <MessagesInbox />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -314,7 +373,9 @@ function App() {
             path="/notifications"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <Notifications />
+                <StudentOnboardingGate>
+                  <Notifications />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -322,7 +383,9 @@ function App() {
             path="/settings"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <ProfileSettings />
+                <StudentOnboardingGate>
+                  <ProfileSettings />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -330,7 +393,9 @@ function App() {
             path="/proof-of-skill"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <ProofOfSkillChallenge />
+                <StudentOnboardingGate>
+                  <ProofOfSkillChallenge />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -338,7 +403,9 @@ function App() {
             path="/match-breakdown/:jobId"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <ExplainableMatchBreakdown />
+                <StudentOnboardingGate>
+                  <ExplainableMatchBreakdown />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -346,7 +413,9 @@ function App() {
             path="/career-twin"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <CareerDigitalTwin />
+                <StudentOnboardingGate>
+                  <CareerDigitalTwin />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />
@@ -354,7 +423,9 @@ function App() {
             path="/employer-trust"
             element={
               <ProtectedRoute allowedRoles={STUDENT_ROLES}>
-                <EmployerTrustLayer />
+                <StudentOnboardingGate>
+                  <EmployerTrustLayer />
+                </StudentOnboardingGate>
               </ProtectedRoute>
             }
           />

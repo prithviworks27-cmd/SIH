@@ -97,9 +97,13 @@ export default function SignupRoleSelection() {
       // Call register function
       await register(formData.email, formData.password, formData.fullname, selectedRole);
 
-      // New industry accounts must complete company onboarding before entering
-      // the dashboard. Other roles keep their normal post-signup destination.
-      const destination = selectedRole === "industry" ? "/industry/onboarding" : getPostLoginRedirect(selectedRole);
+      // New industry accounts must complete company onboarding, and new
+      // student accounts the short self-report questionnaire, before
+      // entering their dashboard. Other roles keep their normal post-signup
+      // destination.
+      let destination = getPostLoginRedirect(selectedRole);
+      if (selectedRole === "industry") destination = "/industry/onboarding";
+      if (selectedRole === "student") destination = "/onboarding";
       navigate(destination, { replace: true });
     } catch (err) {
       setLocalError(err.message || "Registration failed. Please try again.");
