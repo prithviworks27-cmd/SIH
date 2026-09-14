@@ -1,6 +1,6 @@
 # SkillBridge — Academia–Industry Skill Intelligence Portal
 
-A platform connecting students, academic institutions, and industry recruiters through verified skill assessments, AI-driven career guidance, and a matched-opportunity marketplace.
+A platform connecting students, academic institutions, and industry recruiters through verified skill assessments, Smartly automated career guidance, and a matched-opportunity marketplace.
 
 ## Overview
 
