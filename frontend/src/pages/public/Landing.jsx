@@ -6,7 +6,6 @@ import logo from "../../assets/logo.png";
 import { AntiMetalButton } from "../../components/ui/anti-metal-button";
 import AmbientBrandGlow from "../../components/ui/ambient-brand-glow";
 import PathwayPill from "../../components/common/PathwayPill";
-import ThemeToggle from "../../components/common/ThemeToggle";
 
 const STEPS = [
   {
@@ -48,7 +47,6 @@ export default function Landing() {
             </Link>
 
             <nav className="flex items-center gap-8">
-              <ThemeToggle />
               <Link
                 to="/login"
                 className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70 hover:text-ink transition-colors"
@@ -73,7 +71,7 @@ export default function Landing() {
             className="reveal font-sans font-black leading-[0.9] tracking-tight bg-clip-text text-transparent"
             style={{
               fontSize: "clamp(3.4rem, 11vw, 9.5rem)",
-              backgroundImage: "var(--wordmark-gradient)",
+              backgroundImage: "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)",
             }}
           >
             SKILLBRIDGE

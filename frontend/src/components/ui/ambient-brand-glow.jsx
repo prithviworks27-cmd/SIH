@@ -2,11 +2,11 @@ import { cn } from "@/lib/utils";
 
 /**
  * Soft ambient background wash built from the site's own wordmark gradient
- * colors (teal/purple/orange in light mode, olive/secondary/accent green in
- * dark mode, via the --glow-* CSS custom properties) — three large blurred
- * blooms anchored near the top of the page, fading into the page background.
- * Static, no grain — purely a compositional accent, so whatever renders
- * inside `children` keeps its existing text/colors completely unchanged.
+ * colors (teal/purple/orange) — three large blurred blooms anchored near
+ * the top of the page, fading into the existing white background. Static,
+ * no dark backdrop, no grain — purely a light compositional accent, so
+ * whatever renders inside `children` keeps its existing text/colors
+ * completely unchanged.
  *
  * Sets its own bg-bone so every page using this component gets a
  * guaranteed light canvas — without it, a page with no other opaque
@@ -30,15 +30,15 @@ export default function AmbientBrandGlow({ children, className, contentClassName
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div
           className="absolute -top-24 -left-24 w-[36rem] h-[36rem] rounded-full opacity-25 blur-[110px]"
-          style={{ background: "var(--glow-1)" }}
+          style={{ background: "#4fadb0" }}
         />
         <div
           className="absolute -top-32 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full opacity-20 blur-[120px]"
-          style={{ background: "var(--glow-2)" }}
+          style={{ background: "#7a6fe0" }}
         />
         <div
           className="absolute -top-16 -right-24 w-[34rem] h-[34rem] rounded-full opacity-20 blur-[110px]"
-          style={{ background: "var(--glow-3)" }}
+          style={{ background: "#e4895c" }}
         />
       </div>
 

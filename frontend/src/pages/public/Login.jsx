@@ -78,7 +78,7 @@ export default function Login() {
               className="font-sans font-black leading-[0.9] tracking-tight bg-clip-text text-transparent"
               style={{
                 fontSize: "clamp(1.8rem, 7vw, 2.5rem)",
-                backgroundImage: "var(--wordmark-gradient)",
+                backgroundImage: "linear-gradient(115deg, #4fadb0 0%, #7a6fe0 45%, #e4895c 85%)",
               }}
             >
               SKILLBRIDGE

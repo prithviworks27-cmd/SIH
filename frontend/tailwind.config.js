@@ -1,39 +1,33 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
-  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        /* Every token here reads a CSS custom property defined in
-           styles/index.css — light-mode (":root") values are the original
-           editorial-minimalism palette, dark-mode (".dark") values are the
-           SIH_Website_Palette (RealtimeColors: Text #F0F1DF, Background
-           #181A0A, Primary #D2D69A, Secondary #4B742F, Accent #6BBC5C).
-           The rgb(var(...) / <alpha-value>) form keeps opacity modifiers
-           (e.g. bg-canvas/50) working in both modes. */
-        canvas: "rgb(var(--color-canvas) / <alpha-value>)",
-        bone: "rgb(var(--color-bone) / <alpha-value>)",
-        ink: "rgb(var(--color-ink) / <alpha-value>)",
-        /* Hover state for solid bg-ink buttons/pills. */
-        "ink-hover": "rgb(var(--color-ink-hover) / <alpha-value>)",
-        /* Text/icon color for anything placed on top of an ink or
-           ink-hover fill — white in light mode (ink is dark there), dark
-           in dark mode (ink is light there). */
-        "ink-contrast": "rgb(var(--color-ink-contrast) / <alpha-value>)",
-        charcoal: "rgb(var(--color-charcoal) / <alpha-value>)",
-        muted: "rgb(var(--color-muted) / <alpha-value>)",
-        hairline: "rgb(var(--color-hairline) / <alpha-value>)",
-        "pastel-red": "rgb(var(--color-pastel-red) / <alpha-value>)",
-        "pastel-red-ink": "rgb(var(--color-pastel-red-ink) / <alpha-value>)",
-        "pastel-blue": "rgb(var(--color-pastel-blue) / <alpha-value>)",
-        "pastel-blue-ink": "rgb(var(--color-pastel-blue-ink) / <alpha-value>)",
-        "pastel-green": "rgb(var(--color-pastel-green) / <alpha-value>)",
-        "pastel-green-ink": "rgb(var(--color-pastel-green-ink) / <alpha-value>)",
-        "pastel-yellow": "rgb(var(--color-pastel-yellow) / <alpha-value>)",
-        "pastel-yellow-ink": "rgb(var(--color-pastel-yellow-ink) / <alpha-value>)",
-        /* Single confident accent for focus states and interactive emphasis. */
-        accent: "rgb(var(--color-accent) / <alpha-value>)",
+        /* Editorial minimalism palette */
+        canvas: "#FBFBFA",
+        bone: "#F7F6F3",
+        ink: "#111111",
+        /* Hover state for solid bg-ink buttons — was hardcoded inline as
+           hover:bg-[#333333] across 40+ files; named here so a future
+           rebrand is a single edit instead of a sitewide find/replace. */
+        "ink-hover": "#333333",
+        /* Text/icon color for anything placed on top of an ink fill. */
+        "ink-contrast": "#FFFFFF",
+        charcoal: "#2F3437",
+        muted: "#787774",
+        hairline: "#EAEAEA",
+        "pastel-red": "#FDEBEC",
+        "pastel-red-ink": "#9F2F2D",
+        "pastel-blue": "#E1F3FE",
+        "pastel-blue-ink": "#1F6C9F",
+        "pastel-green": "#EDF3EC",
+        "pastel-green-ink": "#346538",
+        "pastel-yellow": "#FBF3DB",
+        "pastel-yellow-ink": "#956400",
+        /* Single confident accent for focus states and interactive emphasis
+           — reuses pastel-blue-ink rather than introducing a new hue. */
+        accent: "#1F6C9F",
       },
       borderRadius: {
         DEFAULT: "0.125rem",
@@ -41,14 +35,11 @@ export default {
         xl: "0.5rem",
       },
       boxShadow: {
-        /* Shadow color/opacity are also CSS vars — dark mode needs more
-           opacity than light mode since the card and page are closer in
-           lightness there than white-on-white ever was. */
-        hairline: "0 1px 2px rgb(var(--shadow-color) / var(--shadow-o1))",
-        lift: "0 2px 10px rgb(var(--shadow-color) / var(--shadow-o2))",
+        hairline: "0 1px 2px rgba(17, 17, 17, 0.03)",
+        lift: "0 2px 8px rgba(17, 17, 17, 0.04)",
         /* Replaces Tailwind's stock heavy double-shadow with one soft,
            restrained shadow for overlays/modals. */
-        xl: "0 12px 32px rgb(var(--shadow-color) / var(--shadow-o3))",
+        xl: "0 12px 32px rgba(17, 17, 17, 0.10)",
       },
       fontFamily: {
         editorial: ["Newsreader", "serif"],
