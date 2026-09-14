@@ -455,4 +455,12 @@ export const industryAPI = {
   createSkillProgram: (payload) => request("/industry/skill-programs", { method: "POST", body: payload }),
 };
 
+// Student-only, one-time post-signup questionnaire — see backend/src/routes/onboardingRoutes.js
+export const onboardingAPI = {
+  getStatus: () => request("/onboarding/status"),
+  getSkillSuggestions: () => request("/onboarding/skills"),
+  getResponse: () => request("/onboarding"),
+  submit: (fields) => request("/onboarding", { method: "POST", body: fields }),
+};
+
 export default authAPI;

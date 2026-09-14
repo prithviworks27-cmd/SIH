@@ -10,6 +10,7 @@ import portfolioRoutes from "./routes/portfolioRoutes.js";
 import applicationsRoutes from "./routes/applicationsRoutes.js";
 import messagesRoutes from "./routes/messagesRoutes.js";
 import industryRoutes from "./routes/industryRoutes.js";
+import onboardingRoutes from "./routes/onboardingRoutes.js";
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/applications", applicationsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/industry", industryRoutes);
+app.use("/api/onboarding", onboardingRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -2,7 +2,10 @@ import { supabase } from "../config/supabase.js";
 import { resolveUserId } from "../utils/resolveUserId.js";
 
 const PROFICIENCY_LEVELS = new Set(["Not yet started", "Beginner", "Intermediate", "Advanced", "Expert"]);
-const ASSESSABLE_SKILLS = new Set([
+// Exported so onboardingController can offer the same canonical skill names
+// as tag suggestions — keeps self-reported and assessment-verified skills
+// on one shared vocabulary instead of drifting into two separate lists.
+export const ASSESSABLE_SKILLS = new Set([
   "JavaScript", "Python Programming", "React", "SQL / Databases", "Data Structures & Algorithms",
   "Cloud Computing (AWS)", "Machine Learning", "Git & Version Control", "Communication", "Teamwork",
   "Problem Solving", "Time Management", "Power BI", "Statistics", "Excel", "TypeScript", "Java / C++ / C#",

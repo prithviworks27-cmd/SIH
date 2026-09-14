@@ -8,6 +8,7 @@ import SkillEvidencePanel from "../../components/common/SkillEvidencePanel";
 import { useAuth } from "../../hooks/useAuth";
 import { getSkillProfile } from "../../services/skillsService";
 import { getPortfolio, getAssessmentResults } from "../../services/portfolioService";
+import { getOnboardingResponse } from "../../services/onboardingService";
 import { X, SealCheck, DownloadSimple, UserCircle, ArrowRight, PencilSimple } from "@phosphor-icons/react";
 import avatarPlaceholderBg from "../../assets/avatar-placeholder-bg.png";
 
@@ -16,6 +17,7 @@ export default function DigitalPortfolio() {
   const [skillProfile, setSkillProfile] = useState(undefined);
   const [portfolio, setPortfolio] = useState(undefined);
   const [assessments, setAssessments] = useState([]);
+  const [onboarding, setOnboarding] = useState(null);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
@@ -23,6 +25,9 @@ export default function DigitalPortfolio() {
     getSkillProfile().then(setSkillProfile);
     getPortfolio().then(setPortfolio);
     getAssessmentResults().then(setAssessments);
+    getOnboardingResponse()
+      .then(setOnboarding)
+      .catch(() => setOnboarding(null));
   }, []);
 
   if (!skillProfile || !portfolio) {
@@ -58,6 +63,10 @@ export default function DigitalPortfolio() {
           <h2 className="font-geist font-bold text-3xl md:text-4xl text-ink tracking-tight leading-[1.05] mb-4">
             {user?.name || "Student"} builds skills that ship.
           </h2>
+          {onboarding?.fieldOfStudy && <p className="text-sm text-muted mb-2">{onboarding.fieldOfStudy}</p>}
+          {onboarding?.highlight && (
+            <p className="text-charcoal/80 leading-relaxed max-w-md mb-2 italic">&ldquo;{onboarding.highlight}&rdquo;</p>
+          )}
           {portfolio.bio && <p className="text-charcoal/80 leading-relaxed max-w-md mb-6">{portfolio.bio}</p>}
 
           <div className="flex flex-wrap items-center gap-3">
@@ -134,6 +143,20 @@ export default function DigitalPortfolio() {
           <h3 className="inline-block text-sm font-semibold text-ink bg-bone border border-hairline rounded-lg px-4 py-1.5 mb-4">
             Skills &amp; Trust Levels
           </h3>
+          {onboarding && (onboarding.confidentSkills?.length > 0 || onboarding.struggleSkills?.length > 0) && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {onboarding.confidentSkills?.map((skill) => (
+                <span key={`strong-${skill}`} className="bg-pastel-green text-pastel-green-ink text-xs font-medium px-2.5 py-1 rounded-full">
+                  Strong in: {skill}
+                </span>
+              ))}
+              {onboarding.struggleSkills?.map((skill) => (
+                <span key={`growing-${skill}`} className="bg-pastel-yellow text-pastel-yellow-ink text-xs font-medium px-2.5 py-1 rounded-full">
+                  Growing in: {skill}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
             {displayedSkills.map((skill, i) => (
               <button
